@@ -1,84 +1,310 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { T } from "./common/Theme.js";
 
-// Bullet-level lock toggles — each bullet/paragraph is a field
-// Props: registry: Field[], locks: Record<fieldId, boolean>, onToggle(fieldId, locked)
-
+// ── Section order — Linear density, Stripe clarity ──────────────────────────
+// Spec order: Experience / Skills / Projects / Summary / Basics / Education / custom
 const SECTION_META = {
-  experience: { label: "Experience", icon: "💼", order: 1 },
-  skills:     { label: "Skills",     icon: "🛠️", order: 2 },
-  projects:   { label: "Projects",   icon: "📦", order: 3 },
-  summary:    { label: "Summary",    icon: "📝", order: 4 },
-  // fallback sections
-  basics:       { label: "Basics / Identity", icon: "👤", order: 10 },
-  education:    { label: "Education",        icon: "🎓", order: 11 },
-  certifications:{label:"Certifications",    icon: "📜", order: 12 },
-  custom:       { label: "Custom",           icon: "📎", order: 13 },
-  metadata:     { label: "Metadata",         icon: "⚙️", order: 14 },
+  experience:     { label: "Experience",         order: 1 },
+  skills:         { label: "Skills",             order: 2 },
+  projects:       { label: "Projects",           order: 3 },
+  summary:        { label: "Summary",            order: 4 },
+  basics:         { label: "Basics / Identity",  order: 5 },
+  education:      { label: "Education",          order: 6 },
+  certifications: { label: "Certifications",     order: 7 },
+  custom:         { label: "Custom",             order: 8 },
+  metadata:       { label: "Metadata",           order: 9 },
 };
 
+// ── Always-locked predicate ─────────────────────────────────────────────────
+// Mirrors UK forbidden logic: /basics, /picture, education|certifications, equality act
 function isAlwaysLocked(f) {
   const r = f.lockReason || "";
   if (r.includes("Identity") || r.includes("Equality Act") || r.includes("Locked to A4")) return true;
   if (r.includes("Education") || r.includes("factual")) return true;
-  if (f.path.startsWith("/basics") || f.path.includes("/picture") || f.path.startsWith("/metadata/page/format")) return true;
-  if (f.path.startsWith("/sections/education") || f.path.startsWith("/sections/certifications")) return true;
+  if (f.path?.startsWith("/basics") || f.path?.includes("/picture") || f.path?.startsWith("/metadata/page/format")) return true;
+  if (f.path?.startsWith("/sections/education") || f.path?.startsWith("/sections/certifications")) return true;
   return false;
 }
 
-function SectionHeader({ meta, count, lockedCount, collapsed, onToggleCollapse, onBulk }) {
-  const allLocked = lockedCount === count;
-  const allUnlocked = lockedCount === 0;
+// ── Stripe checkbox (16px square, 4px radius) ───────────────────────────────
+function StripeCheck({ checked, disabled, alwaysLocked }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 14px", background: "#F2F0EA", borderBottom: `1px solid ${T.border}`, cursor: "pointer", userSelect: "none" }} onClick={onToggleCollapse}>
-      <span style={{ fontSize: 12, transition: "transform .15s", transform: collapsed ? "rotate(-90deg)" : "rotate(0deg)", display: "inline-block" }}>▼</span>
-      <span style={{ fontSize: 13 }}>{meta.icon}</span>
-      <span style={{ fontSize: 12, fontWeight: 800, color: T.text, letterSpacing: ".02em" }}>{meta.label}</span>
-      <span style={{ fontSize: 11, color: T.muted, background: "#fff", border: `1px solid ${T.border}`, borderRadius: 20, padding: "1px 7px" }}>{lockedCount}/{count} locked</span>
-      <span style={{ flex: 1 }} />
-      <span style={{ display: "flex", gap: 6 }} onClick={e => e.stopPropagation()}>
-        <button
-          onClick={() => onBulk(true)}
-          disabled={allLocked}
-          title="Lock all editable fields in this section"
-          style={{ padding: "3px 8px", borderRadius: 5, border: `1px solid ${T.border}`, background: allLocked ? "#F2F0EA" : "#fff", color: allLocked ? T.hint : T.muted, fontSize: 11, fontWeight: 600, cursor: allLocked ? "not-allowed" : "pointer", opacity: allLocked ? 0.6 : 1 }}
-        >Lock all</button>
-        <button
-          onClick={() => onBulk(false)}
-          disabled={allUnlocked}
-          title="Unlock all editable fields in this section"
-          style={{ padding: "3px 8px", borderRadius: 5, border: `1px solid ${T.green}`, background: allUnlocked ? "#F2F0EA" : T.green, color: allUnlocked ? T.hint : "#fff", fontSize: 11, fontWeight: 600, cursor: allUnlocked ? "not-allowed" : "pointer", opacity: allUnlocked ? 0.6 : 1 }}
-        >Unlock all</button>
-      </span>
-    </div>
+    <span
+      aria-hidden
+      style={{
+        width: 16, height: 16, minWidth: 16, minHeight: 16,
+        borderRadius: 4,
+        border: `1.5px solid ${checked ? T.blue : T.borderStrong}`,
+        background: checked ? T.blue : "#fff",
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0,
+        transition: "background 0.14s, border-color 0.14s, opacity 0.14s",
+        opacity: disabled ? 0.6 : 1,
+        filter: alwaysLocked ? "grayscale(0.2)" : "none",
+        // subtle inner shadow when unchecked
+        boxShadow: checked ? "none" : "inset 0 0 0 1px rgba(0,0,0,0.02)",
+      }}
+    >
+      {checked && (
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden>
+          <path d="M2.2 5.1L4.1 7L7.9 3.1" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </span>
   );
 }
 
-export function FieldLocks({ registry = [], locks = {}, onToggle }) {
-  const [query, setQuery] = useState("");
-  const [collapsed, setCollapsed] = useState({}); // { sectionKey: boolean }
+// ── Memoised row — 40px, 6px radius, hover #f6f9fc ─────────────────────────
+const FieldRow = React.memo(function FieldRow({ f, onToggle }) {
+  const locked = f.isLocked;
+  const always = f.alwaysLocked;
+  const canToggle = f.canToggle;
 
-  // derived effective lock state
-  const effective = useMemo(() => registry.map(f => {
+  const handleToggle = useCallback(() => {
+    if (!canToggle) return;
+    onToggle(f.id, !locked);
+  }, [canToggle, f.id, locked, onToggle]);
+
+  const tooltip = always
+    ? (f.lockReason || "Always locked — Equality Act 2010 / GDPR: identity, photo/DOB and education are factual and cannot be edited by agents.")
+    : (f.lockReason || (locked ? "Locked — agent cannot patch this field" : "Editable — agent may tailor this field"));
+
+  return (
+    <div
+      title={tooltip}
+      onClick={canToggle ? handleToggle : undefined}
+      role={canToggle ? "button" : undefined}
+      tabIndex={canToggle ? 0 : undefined}
+      onKeyDown={canToggle ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleToggle(); } } : undefined}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        minHeight: 40,
+        height: 40,
+        padding: "0 12px",
+        borderRadius: 6,
+        background: always ? "#f8fafc" : "transparent",
+        opacity: always ? 0.6 : 1,
+        filter: always ? "grayscale(0.2)" : "none",
+        cursor: canToggle ? "pointer" : "default",
+        transition: "background 0.12s",
+        userSelect: "none",
+      }}
+      onMouseEnter={(e) => { if (!always) e.currentTarget.style.background = T.surface; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = always ? "#f8fafc" : "transparent"; }}
+    >
+      {/* Checkbox — left */}
+      {canToggle ? (
+        <StripeCheck checked={locked} disabled={false} alwaysLocked={false} />
+      ) : (
+        <StripeCheck checked={true} disabled={true} alwaysLocked={true} />
+      )}
+
+      {/* Label + path */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 1 }}>
+        <span style={{
+          fontSize: 13,
+          fontWeight: 500,
+          color: T.text,
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          lineHeight: "16px",
+          fontFamily: T.sans,
+          filter: always ? "grayscale(0.2)" : "none",
+        }}>
+          {f.label || f.id}
+        </span>
+        <span style={{
+          fontSize: 11,
+          color: T.hint,
+          fontFamily: T.mono,
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          lineHeight: "13px",
+        }}>
+          {f.path}{f.bullet ? " · bullet" : ""}{f.requiresMetric ? " · needs £/%" : ""}
+        </span>
+      </div>
+
+      {/* Right: badge or lock state hint */}
+      {always ? (
+        <span
+          title="Always locked — Equality Act 2010 / GDPR: identity, photo, education and factual fields are permanently locked and cannot be tailored."
+          style={{
+            fontSize: 10,
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            color: T.hint,
+            background: "#f1f5f9",
+            border: `1px solid ${T.border}`,
+            borderRadius: 999,
+            padding: "3px 8px",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+            cursor: "help",
+          }}
+        >
+          Always locked
+        </span>
+      ) : (
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: locked ? T.muted : T.blue,
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          {locked ? "Locked" : "Editable"}
+        </span>
+      )}
+    </div>
+  );
+});
+
+// ── Accordion section header — 13px Inter 510 #64748d, chevron ▼ ────────────
+function SectionAccordionHeader({ meta, count, lockedCount, collapsed, onToggle }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      style={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "10px 12px",
+        background: T.surface,
+        border: "none",
+        borderBottom: collapsed ? "none" : `1px solid ${T.border}`,
+        cursor: "pointer",
+        textAlign: "left",
+        borderRadius: 0,
+        // top radius handled by parent overflow hidden
+      }}
+    >
+      <span
+        style={{
+          fontSize: 10,
+          color: T.muted,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 14, height: 14,
+          transform: collapsed ? "rotate(-90deg)" : "rotate(0deg)",
+          transition: "transform 0.15s ease",
+          flexShrink: 0,
+        }}
+        aria-hidden
+      >
+        ▼
+      </span>
+      <span style={{
+        fontSize: 13,
+        fontWeight: 510,
+        fontFamily: T.sans,
+        color: T.muted,
+        letterSpacing: "0.01em",
+        flexShrink: 0,
+      }}>
+        {meta.label}
+      </span>
+      <span style={{
+        fontSize: 11,
+        fontFamily: T.mono,
+        color: T.muted,
+        background: "#fff",
+        border: `1px solid ${T.border}`,
+        borderRadius: 999,
+        padding: "1px 7px",
+        lineHeight: "16px",
+        flexShrink: 0,
+      }}>
+        {lockedCount}/{count}
+      </span>
+      <span style={{ flex: 1 }} />
+      <span style={{ fontSize: 11, fontFamily: T.mono, color: T.hint, fontWeight: 500 }}>
+        {collapsed ? "Expand" : "Collapse"}
+      </span>
+    </button>
+  );
+}
+
+// ── Ghost bulk button — #f6f9fc → #533afd hover ──────────────────────────────
+function GhostBulkBtn({ children, onClick, disabled, title }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      style={{
+        padding: "0 12px",
+        height: 30,
+        borderRadius: 6,
+        border: `1px solid ${T.border}`,
+        background: T.surface,
+        color: disabled ? T.hint : T.muted,
+        fontSize: 12,
+        fontWeight: 600,
+        fontFamily: T.sans,
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.55 : 1,
+        whiteSpace: "nowrap",
+        transition: "all 0.14s ease",
+        flexShrink: 0,
+      }}
+      onMouseEnter={(e) => {
+        if (disabled) return;
+        e.currentTarget.style.background = T.blue;
+        e.currentTarget.style.color = "#fff";
+        e.currentTarget.style.borderColor = T.blue;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = T.surface;
+        e.currentTarget.style.color = T.muted;
+        e.currentTarget.style.borderColor = T.border;
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ── Main FieldLocks — Stripe clarity + Linear density ────────────────────────
+export function FieldLocks(props) {
+  // Support both contracts:
+  //  - legacy: { registry, locks, onToggle }
+  //  - spec:   { candidate, fieldLocks, onToggle, storageMeter }
+  const registry = props.registry ?? props.candidate?.registry ?? [];
+  const locks = props.locks ?? props.fieldLocks ?? {};
+  const onToggle = props.onToggle;
+  const storageMeter = props.storageMeter ?? null;
+
+  const [query, setQuery] = useState("");
+  const [focused, setFocused] = useState(false);
+  const [collapsed, setCollapsed] = useState({});
+
+  // effective lock state — preserve original contract: locks[id]===true => locked
+  const effective = useMemo(() => registry.map((f) => {
     const alwaysLocked = isAlwaysLocked(f);
-    const isLocked = alwaysLocked || (!f.editable) || locks[f.id] === true;
-    // allow explicit unlock via locks[f.id]===false only if not alwaysLocked
     const canToggle = !alwaysLocked;
+    // alwaysLocked forces true; otherwise explicit locks[id] wins, fallback to !editable
     const effectiveLocked = alwaysLocked ? true : (locks[f.id] !== undefined ? locks[f.id] : !f.editable);
     return { ...f, alwaysLocked, isLocked: effectiveLocked, canToggle };
   }), [registry, locks]);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return effective;
-    const q = query.toLowerCase();
-    return effective.filter(f =>
+    const q = query.trim().toLowerCase();
+    if (!q) return effective;
+    return effective.filter((f) =>
       (f.label || f.id).toLowerCase().includes(q) ||
       f.path.toLowerCase().includes(q) ||
       (f.lockReason || "").toLowerCase().includes(q)
     );
   }, [effective, query]);
 
-  // group filtered by section
   const groups = useMemo(() => {
     const map = {};
     for (const f of filtered) {
@@ -86,7 +312,6 @@ export function FieldLocks({ registry = [], locks = {}, onToggle }) {
       if (!map[key]) map[key] = [];
       map[key].push(f);
     }
-    // sort groups by SECTION_META order
     const entries = Object.entries(map).sort((a, b) => {
       const ao = SECTION_META[a[0]]?.order ?? 99;
       const bo = SECTION_META[b[0]]?.order ?? 99;
@@ -95,115 +320,236 @@ export function FieldLocks({ registry = [], locks = {}, onToggle }) {
     return entries;
   }, [filtered]);
 
-  const totalLocked = effective.filter(f => f.isLocked).length;
-  const totalEditable = effective.filter(f => f.canToggle).length;
-  const totalLockedEditable = effective.filter(f => f.canToggle && f.isLocked).length;
+  const totalLocked = effective.filter((f) => f.isLocked).length;
+  const totalLockedEditable = effective.filter((f) => f.canToggle && f.isLocked).length;
+  const totalEditable = effective.filter((f) => f.canToggle).length;
 
-  const handleBulk = (sectionKey, lock) => {
-    const fields = effective.filter(f => (f.section || "custom") === sectionKey && f.canToggle);
-    fields.forEach(f => {
-      if (f.isLocked !== lock) onToggle(f.id, lock);
-    });
-  };
-  const handleGlobalBulk = (lock) => {
-    effective.filter(f => f.canToggle && f.isLocked !== lock).forEach(f => onToggle(f.id, lock));
-  };
+  const handleBulk = useCallback((sectionKey, lock) => {
+    const fields = effective.filter((f) => (f.section || "custom") === sectionKey && f.canToggle);
+    fields.forEach((f) => { if (f.isLocked !== lock) onToggle?.(f.id, lock); });
+  }, [effective, onToggle]);
 
-  const toggleCollapse = (key) => setCollapsed(s => ({ ...s, [key]: !s[key] }));
+  const handleGlobalBulk = useCallback((lock) => {
+    effective.filter((f) => f.canToggle && f.isLocked !== lock).forEach((f) => onToggle?.(f.id, lock));
+  }, [effective, onToggle]);
+
+  const toggleCollapse = useCallback((key) => setCollapsed((s) => ({ ...s, [key]: !s[key] })), []);
+
+  const allEditableLocked = totalEditable > 0 && totalLockedEditable === totalEditable;
+  const allEditableUnlocked = totalLockedEditable === 0;
 
   return (
-    <div style={{ border: `1px solid ${T.border}`, borderRadius: 8, overflow: "hidden", background: T.card }}>
-      {/* Header bar: title + search + global bulk */}
-      <div style={{ padding: "10px 14px", background: T.bg, borderBottom: `1px solid ${T.border}`, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: ".06em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-          Field Locks — toggle what agents may edit
-        </span>
-        <span style={{ fontSize: 11, color: T.muted, background: "#fff", border: `1px solid ${T.border}`, borderRadius: 20, padding: "1px 8px", whiteSpace: "nowrap" }}>
-          {totalLocked} locked · {effective.length} fields
-        </span>
-        <span style={{ flex: 1, minWidth: 12 }} />
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <button onClick={() => handleGlobalBulk(true)} disabled={totalLockedEditable === totalEditable} title="Lock all editable fields"
-            style={{ padding: "4px 10px", borderRadius: 6, border: `1px solid ${T.border}`, background: "#fff", color: T.muted, fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Lock all</button>
-          <button onClick={() => handleGlobalBulk(false)} disabled={totalLockedEditable === 0} title="Unlock all editable fields"
-            style={{ padding: "4px 10px", borderRadius: 6, border: `1px solid ${T.green}`, background: T.green, color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Unlock all</button>
+    <div
+      style={{
+        border: `1px solid ${T.border}`,
+        borderRadius: T.radiusMd,
+        overflow: "hidden",
+        background: T.card,
+        boxShadow: T.shadowSm,
+      }}
+    >
+      {/* ── Header: 18px #061b31 600 + subtitle + right actions ─────────── */}
+      <div
+        style={{
+          padding: "16px 16px 12px",
+          background: T.card,
+          borderBottom: `1px solid ${T.border}`,
+          display: "flex",
+          gap: 16,
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ minWidth: 180, flex: "1 1 auto" }}>
+          <div style={{
+            fontSize: 18,
+            fontWeight: 600,
+            color: T.heading,
+            fontFamily: T.sans,
+            letterSpacing: "-0.02em",
+            lineHeight: "22px",
+          }}>
+            Field locks
+          </div>
+          <div style={{
+            fontSize: 13,
+            color: T.muted,
+            fontFamily: T.sans,
+            marginTop: 3,
+            lineHeight: "16px",
+          }}>
+            Choose what agents may tailor — locked bullets stay verbatim.
+          </div>
+        </div>
+
+        {/* Right actions: Search + Clear + bulk */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", flexShrink: 0 }}>
+          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+            <span style={{
+              position: "absolute", left: 10, pointerEvents: "none",
+              fontSize: 12, color: T.hint, lineHeight: 1,
+            }}>⌕</span>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              placeholder="Search fields…"
+              aria-label="Search fields"
+              style={{
+                width: 280,
+                height: 36,
+                padding: "0 12px 0 28px",
+                borderRadius: 6,
+                border: `1px solid ${focused ? T.blue : T.border}`,
+                boxShadow: focused ? `0 0 0 3px ${T.blue}14` : "none",
+                background: "#fff",
+                color: T.text,
+                fontSize: 13,
+                fontFamily: T.sans,
+                outline: "none",
+                boxSizing: "border-box",
+                transition: "border-color 0.14s, box-shadow 0.14s",
+              }}
+            />
+          </div>
+
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              style={{
+                height: 36,
+                padding: "0 12px",
+                borderRadius: 6,
+                border: `1px solid ${T.border}`,
+                background: "#fff",
+                color: T.muted,
+                fontSize: 12,
+                fontWeight: 600,
+                fontFamily: T.sans,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                transition: "all 0.14s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderStrong; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = T.border; }}
+            >
+              Clear
+            </button>
+          )}
+
+          <GhostBulkBtn
+            onClick={() => handleGlobalBulk(true)}
+            disabled={allEditableLocked}
+            title="Lock all editable fields"
+          >
+            Lock all
+          </GhostBulkBtn>
+          <GhostBulkBtn
+            onClick={() => handleGlobalBulk(false)}
+            disabled={allEditableUnlocked}
+            title="Unlock all editable fields"
+          >
+            Unlock all
+          </GhostBulkBtn>
         </div>
       </div>
 
-      {/* Search */}
-      <div style={{ padding: "8px 12px", borderBottom: `1px solid ${T.border}`, background: "#fff", display: "flex", gap: 8, alignItems: "center" }}>
-        <span style={{ fontSize: 12, color: T.hint }}>🔍</span>
-        <input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Filter by label, path or reason…  e.g.  bullet,  /experience,  Identity"
-          style={{ flex: 1, border: "none", outline: "none", fontSize: 12, color: T.text, fontFamily: T.sans, background: "transparent" }}
-        />
-        {query && <button onClick={() => setQuery("")} style={{ border: `1px solid ${T.border}`, background: T.bg, borderRadius: 6, padding: "2px 8px", fontSize: 11, cursor: "pointer", color: T.muted }}>Clear</button>}
-        <span style={{ fontSize: 10, color: T.hint, whiteSpace: "nowrap" }}>{filtered.length}/{effective.length}</span>
+      {/* ── Stats row: 12px mono #64748d ─────────────────────────────────── */}
+      <div
+        style={{
+          display: "flex",
+          gap: 16,
+          alignItems: "center",
+          flexWrap: "wrap",
+          padding: "8px 16px",
+          background: T.card,
+          borderBottom: `1px solid ${T.border}`,
+          fontSize: 12,
+          fontFamily: T.mono,
+          color: T.muted,
+          lineHeight: "16px",
+        }}
+      >
+        <span>{filtered.length}/{effective.length} shown</span>
+        <span style={{ width: 3, height: 3, borderRadius: 999, background: T.borderStrong, display: "inline-block" }} />
+        <span>{totalLocked} locked</span>
+        <span style={{ width: 3, height: 3, borderRadius: 999, background: T.borderStrong, display: "inline-block" }} />
+        <span>{effective.length - totalLocked} editable</span>
+        {query && (
+          <>
+            <span style={{ width: 3, height: 3, borderRadius: 999, background: T.borderStrong, display: "inline-block" }} />
+            <span style={{ color: T.text, fontWeight: 600 }}>filter: “{query}”</span>
+          </>
+        )}
+        <span style={{ flex: 1 }} />
+        {storageMeter ? <span style={{ fontFamily: T.sans }}>{storageMeter}</span> : null}
       </div>
 
-      {/* Sections */}
-      <div style={{ maxHeight: 420, overflowY: "auto" }}>
+      {/* ── Body: grouped accordion ──────────────────────────────────────── */}
+      <div style={{ maxHeight: 520, overflowY: "auto", padding: 8, display: "flex", flexDirection: "column", gap: 8, background: "#fff" }}>
         {groups.length === 0 && (
-          <div style={{ padding: 20, textAlign: "center", fontSize: 12, color: T.muted }}>No fields match “{query}”</div>
+          <div style={{ padding: 28, textAlign: "center", fontSize: 13, color: T.muted, fontFamily: T.sans, border: `1px dashed ${T.border}`, borderRadius: T.radiusMd, background: T.surface }}>
+            No fields match “{query}”
+          </div>
         )}
         {groups.map(([key, fields]) => {
-          const meta = SECTION_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), icon: "📄", order: 99 };
-          const lockedCount = fields.filter(f => f.isLocked).length;
+          const meta = SECTION_META[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), order: 99 };
+          const lockedCount = fields.filter((f) => f.isLocked).length;
           const isCollapsed = !!collapsed[key];
           return (
-            <div key={key} style={{ borderBottom: `1px solid ${T.border}` }}>
-              <SectionHeader
+            <div
+              key={key}
+              style={{
+                border: `1px solid ${T.border}`,
+                borderRadius: T.radiusMd,
+                overflow: "hidden",
+                background: "#fff",
+              }}
+            >
+              <SectionAccordionHeader
                 meta={meta}
                 count={fields.length}
                 lockedCount={lockedCount}
                 collapsed={isCollapsed}
-                onToggleCollapse={() => toggleCollapse(key)}
-                onBulk={(lock) => handleBulk(key, lock)}
+                onToggle={() => toggleCollapse(key)}
               />
               {!isCollapsed && (
-                <div>
-                  {fields.map(f => (
-                    <div
-                      key={f.id}
-                      title={f.alwaysLocked ? (f.lockReason || "Always locked — Equality Act / factual identity") : f.lockReason || (f.isLocked ? "Locked — agent cannot patch" : "Editable — agent may tailor")}
+                <div style={{ padding: 6, display: "flex", flexDirection: "column", gap: 2 }}>
+                  {/* per-section bulk (subtle, Linear density) */}
+                  <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", padding: "4px 6px 6px" }}>
+                    <button
+                      type="button"
+                      onClick={() => handleBulk(key, true)}
+                      disabled={fields.every((f) => !f.canToggle || f.isLocked)}
                       style={{
-                        display: "flex", alignItems: "center", gap: 10, padding: "8px 14px",
-                        borderTop: `1px solid ${T.border}`,
-                        background: f.alwaysLocked ? "#F5F5F4" : (f.isLocked ? "#FFF7ED" : "#F0FDF4"),
-                        opacity: f.alwaysLocked ? 0.92 : 1,
+                        fontSize: 11, fontWeight: 600, fontFamily: T.sans,
+                        color: T.muted, background: "transparent", border: "none",
+                        cursor: "pointer", padding: "2px 6px", borderRadius: 4,
+                        opacity: fields.every((f) => !f.canToggle || f.isLocked) ? 0.45 : 1,
                       }}
                     >
-                      <span style={{ fontSize: 14, flexShrink: 0, filter: f.alwaysLocked ? "grayscale(0.6)" : "none" }}>{f.isLocked ? "🔒" : "✏️"}</span>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: f.alwaysLocked ? T.hint : T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{f.label || f.id}</div>
-                        <div style={{ fontSize: 10, color: T.muted, fontFamily: T.mono, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{f.path} {f.bullet ? "· bullet" : ""} {f.requiresMetric ? "· needs £/%" : ""}</div>
-                        {f.lockReason && <div style={{ fontSize: 10, color: f.isLocked ? (f.alwaysLocked ? T.hint : T.yellow) : T.green }}>{f.lockReason}</div>}
-                      </div>
-                      {f.canToggle ? (
-                        <button
-                          onClick={() => onToggle(f.id, !f.isLocked)}
-                          style={{
-                            padding: "4px 10px", borderRadius: 6, border: `1px solid ${f.isLocked ? T.border : T.green}`,
-                            background: f.isLocked ? T.card : T.green, color: f.isLocked ? T.muted : "#fff",
-                            fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0
-                          }}
-                        >
-                          {f.isLocked ? "Unlock" : "Lock"}
-                        </button>
-                      ) : (
-                        <span
-                          title={f.lockReason || "Always locked — cannot be unlocked (Identity / Education / photo / Equality Act)"}
-                          style={{
-                            fontSize: 10, color: "#fff", fontWeight: 700, whiteSpace: "nowrap",
-                            background: "#A8A29E", borderRadius: 20, padding: "3px 8px", cursor: "help", flexShrink: 0
-                          }}
-                        >
-                          Always locked
-                        </span>
-                      )}
-                    </div>
+                      Lock all
+                    </button>
+                    <span style={{ color: T.border, fontSize: 11, lineHeight: "18px" }}>·</span>
+                    <button
+                      type="button"
+                      onClick={() => handleBulk(key, false)}
+                      disabled={fields.every((f) => !f.canToggle || !f.isLocked)}
+                      style={{
+                        fontSize: 11, fontWeight: 600, fontFamily: T.sans,
+                        color: T.muted, background: "transparent", border: "none",
+                        cursor: "pointer", padding: "2px 6px", borderRadius: 4,
+                        opacity: fields.every((f) => !f.canToggle || !f.isLocked) ? 0.45 : 1,
+                      }}
+                    >
+                      Unlock all
+                    </button>
+                  </div>
+                  {fields.map((f) => (
+                    <FieldRow key={f.id} f={f} onToggle={onToggle} />
                   ))}
                 </div>
               )}
@@ -212,12 +558,33 @@ export function FieldLocks({ registry = [], locks = {}, onToggle }) {
         })}
       </div>
 
-      <div style={{ padding: "8px 14px", fontSize: 11, color: T.muted, background: T.bg, display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <span>🔒 Locked = agent cannot patch.</span>
+      {/* Footer legend — subtle, Linear density */}
+      <div style={{
+        padding: "9px 16px",
+        fontSize: 11,
+        color: T.muted,
+        fontFamily: T.sans,
+        background: T.surface,
+        borderTop: `1px solid ${T.border}`,
+        display: "flex",
+        gap: 8,
+        flexWrap: "wrap",
+        alignItems: "center",
+        lineHeight: "14px",
+      }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: 3, border: `1.5px solid ${T.blue}`, background: T.blue, display: "inline-block" }} />
+          Locked
+        </span>
         <span style={{ color: T.borderStrong }}>·</span>
-        <span>Blue/bullet fields are tailorable.</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: 3, border: `1.5px solid ${T.borderStrong}`, background: "#fff", display: "inline-block" }} />
+          Editable
+        </span>
         <span style={{ color: T.borderStrong }}>·</span>
-        <span title="Identity, Education, photo/DOB and page format are permanently locked per Equality Act / GDPR">“Always locked” is greyed with tooltip — not unlockable.</span>
+        <span title="Always locked rows are #f8fafc, grayscale 0.2, opacity 0.6 — Equality Act 2010 / GDPR: identity, photo/DOB and education cannot be unlocked." style={{ cursor: "help", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}>
+          Always locked = Equality Act — not toggleable
+        </span>
       </div>
     </div>
   );
@@ -226,30 +593,32 @@ export function FieldLocks({ registry = [], locks = {}, onToggle }) {
 export function DiffView({ original, patched, operations, verifier }) {
   if (!operations?.length) return null;
   return (
-    <div style={{ border: `1px solid ${T.border}`, borderRadius: 8, overflow: "hidden", background: T.card }}>
-      <div style={{ padding: "10px 14px", background: T.bg, borderBottom: `1px solid ${T.border}` }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: ".06em", textTransform: "uppercase" }}>Changes — {operations.length} patch operations</span>
+    <div style={{ border: `1px solid ${T.border}`, borderRadius: T.radiusMd, overflow: "hidden", background: T.card, boxShadow: T.shadowSm }}>
+      <div style={{ padding: "12px 16px", background: T.surface, borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: T.muted, letterSpacing: ".04em", textTransform: "uppercase", fontFamily: T.sans }}>
+          Changes — {operations.length} patch operations
+        </span>
         {verifier && (
-          <span style={{ float: "right", fontSize: 11, color: verifier.passed ? T.green : T.red, fontWeight: 700 }}>
+          <span style={{ fontSize: 12, color: verifier.passed ? T.green : T.red, fontWeight: 700, fontFamily: T.sans }}>
             Verifier: {verifier.passed ? "✓ Passed" : "✗ Issues"} · Confidence {verifier.confidenceScore}%
           </span>
         )}
       </div>
       <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
         {operations.map((op, i) => (
-          <div key={i} style={{ padding: "8px 10px", borderRadius: 6, background: op.path?.includes("summary") ? "#FEF3EC" : "#F0FDF4", border: `1px solid ${T.border}`, fontSize: 11, fontFamily: T.mono }}>
+          <div key={i} style={{ padding: "9px 11px", borderRadius: 6, background: op.path?.includes("summary") ? "#FEF3EC" : T.surface, border: `1px solid ${T.border}`, fontSize: 12, fontFamily: T.mono }}>
             <span style={{ color: T.muted }}>{op.op}</span> <strong style={{ color: T.text }}>{op.path}</strong>
-            <div style={{ marginTop: 4, color: T.text, whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: "system-ui, sans-serif" }}>
+            <div style={{ marginTop: 5, color: T.text, whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: T.sans, fontSize: 12 }}>
               {typeof op.value === "string" ? op.value.slice(0, 280) : JSON.stringify(op.value)?.slice(0, 280)}
             </div>
           </div>
         ))}
         {verifier?.issues?.length > 0 && (
           <div style={{ marginTop: 6 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T.text, marginBottom: 6 }}>Verifier issues</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: T.text, marginBottom: 8, fontFamily: T.sans }}>Verifier issues</div>
             {verifier.issues.map((iss, i) => (
-              <div key={i} style={{ padding: "6px 10px", borderRadius: 6, background: iss.severity === "error" ? "#FEF2F2" : iss.severity === "warning" ? "#FFFBEB" : "#F5F3FF", border: `1px solid ${T.border}`, fontSize: 11, marginBottom: 4 }}>
-                <strong style={{ color: iss.severity === "error" ? T.red : iss.severity === "warning" ? T.yellow : "#6d28d9" }}>[{iss.severity}]</strong> {iss.path && <span style={{ fontFamily: T.mono, color: T.muted }}>{iss.path} — </span>}{iss.message}
+              <div key={i} style={{ padding: "7px 11px", borderRadius: 6, background: iss.severity === "error" ? T.redLight : iss.severity === "warning" ? T.yellowLight : T.purpleLight, border: `1px solid ${T.border}`, fontSize: 12, marginBottom: 6, fontFamily: T.sans }}>
+                <strong style={{ color: iss.severity === "error" ? T.red : iss.severity === "warning" ? T.amber : T.indigo }}>[{iss.severity}]</strong> {iss.path && <span style={{ fontFamily: T.mono, color: T.muted }}>{iss.path} — </span>}{iss.message}
               </div>
             ))}
           </div>

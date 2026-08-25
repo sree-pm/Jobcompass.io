@@ -1,17 +1,69 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { T } from "../common/Theme.js";
-import { Card, Row, Btn, Field, Modal } from "../common/UiPrimitives.jsx";
 import { updateCandidate, req } from "../../lib/cloudflareApi.js";
 
-// ---- GDPR delete helper (tries DELETE /candidates/:id, falls back to req) ----
+// DELETE helper — preserves existing data flow: DELETE /candidates/:id
 async function deleteCandidateAccount(id) {
-  try {
-    return await req(`/candidates/${id}`, { method: "DELETE" });
-  } catch (e) {
-    throw e;
-  }
+  return req(`/candidates/${id}`, { method: "DELETE" });
 }
 
+// ── shared input styles matching Stripe Billing spec ──
+const LABEL_STYLE = {
+  display: "block",
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#273951",
+  marginBottom: 6,
+  letterSpacing: 0,
+  fontFamily: T.sans,
+};
+
+const INPUT_BASE = {
+  width: "100%",
+  height: 44,
+  borderRadius: 6,
+  border: `1px solid ${T.border}`,
+  background: T.card,
+  padding: "0 12px",
+  fontSize: 14,
+  fontFamily: T.sans,
+  color: T.text,
+  outline: "none",
+  boxSizing: "border-box",
+  transition: "border-color 0.15s, box-shadow 0.15s",
+};
+
+function SInput({ label, value, onChange, placeholder, disabled, type = "text" }) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div style={{ marginBottom: 16 }}>
+      {label && <label style={LABEL_STYLE}>{label}</label>}
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => !disabled && onChange(e.target.value)}
+        placeholder={placeholder}
+        disabled={disabled}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        style={{
+          ...INPUT_BASE,
+          ...(disabled
+            ? { background: T.surface, color: T.muted, cursor: "not-allowed" }
+            : null),
+          ...(focused && !disabled
+            ? {
+                borderColor: T.blue,
+                boxShadow: `0 0 0 3px rgba(83,58,253,0.15)`,
+              }
+            : null),
+        }}
+      />
+    </div>
+  );
+}
+
+// ── DELETE confirm modal ──
 function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
   const [typed, setTyped] = useState("");
   const [confirmTick, setConfirmTick] = useState(false);
@@ -23,85 +75,183 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
     setIsDeleting(true);
     try {
       await onConfirm();
-    } finally {
+    } catch {
       setIsDeleting(false);
     }
   };
 
   return (
-    <Modal title="Delete account & data — GDPR" onClose={onClose} maxWidth={480}>
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(6,27,49,0.40)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        zIndex: 999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+      }}
+    >
       <div
+        role="dialog"
+        aria-modal="true"
         style={{
-          background: T.redLight,
-          border: `1px solid ${T.redMid}`,
-          borderRadius: 8,
-          padding: "12px 14px",
-          marginBottom: 16,
+          background: T.card,
+          border: `1px solid ${T.border}`,
+          borderRadius: 12,
+          width: 440,
+          maxWidth: "100%",
+          padding: 28,
+          boxShadow: T.shadowFloat,
+          boxSizing: "border-box",
         }}
       >
-        <div style={{ fontSize: 13, fontWeight: 700, color: T.red, marginBottom: 4 }}>⚠️ This is irreversible</div>
-        <div style={{ fontSize: 12, color: "#7f1d1d", lineHeight: 1.5 }}>
-          This will permanently delete <strong>{candidateEmail || "your account"}</strong>, all resumes, applications,
-          tailored dossiers and credit history. This action exercises your <strong>Right to Erasure (GDPR Art. 17)</strong>{" "}
-          and cannot be undone.
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: T.text, fontFamily: T.sans, letterSpacing: "-0.01em" }}>
+            Delete account &amp; data
+          </h3>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: T.muted, lineHeight: 1, padding: "0 0 0 12px" }}
+          >
+            ×
+          </button>
+        </div>
+
+        <div
+          style={{
+            background: T.redLight,
+            border: `1px solid ${T.redMid}`,
+            borderRadius: 8,
+            padding: "12px 14px",
+            marginBottom: 16,
+          }}
+        >
+          <div style={{ fontSize: 13, fontWeight: 700, color: T.red, marginBottom: 4, fontFamily: T.sans }}>This is irreversible</div>
+          <div style={{ fontSize: 12, color: "#7f1d1d", lineHeight: 1.5, fontFamily: T.sans }}>
+            This will permanently delete <strong>{candidateEmail || "your account"}</strong>, all resumes, applications, tailored
+            dossiers and credit history. This exercises your <strong>Right to Erasure (GDPR Art. 17)</strong> and cannot be undone.
+          </div>
+        </div>
+
+        <div style={{ fontSize: 12, color: T.muted, marginBottom: 8, lineHeight: 1.5, fontFamily: T.sans }}>
+          To confirm, type{" "}
+          <span
+            style={{
+              fontFamily: T.mono,
+              fontWeight: 700,
+              color: T.text,
+              background: T.surface,
+              padding: "1px 6px",
+              borderRadius: 4,
+              border: `1px solid ${T.border}`,
+            }}
+          >
+            DELETE
+          </span>{" "}
+          in the box below, tick the acknowledgement, then press Delete.
+        </div>
+
+        <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#273951", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 6, fontFamily: T.sans }}>
+          Type DELETE to confirm
+        </label>
+        <input
+          value={typed}
+          onChange={(e) => setTyped(e.target.value.trim())}
+          placeholder="DELETE"
+          autoFocus
+          style={{
+            width: "100%",
+            background: T.card,
+            border: `1px solid ${typed && typed !== "DELETE" ? T.redMid : T.border}`,
+            borderRadius: 6,
+            height: 44,
+            padding: "0 12px",
+            fontSize: 14,
+            fontFamily: T.mono,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            color: T.text,
+            outline: "none",
+            boxSizing: "border-box",
+            marginBottom: 14,
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = typed && typed !== "DELETE" ? T.redMid : T.blue;
+            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(83,58,253,0.15)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = typed && typed !== "DELETE" ? T.redMid : T.border;
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        />
+
+        <label
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "flex-start",
+            cursor: "pointer",
+            marginBottom: 20,
+            userSelect: "none",
+          }}
+        >
+          <input type="checkbox" checked={confirmTick} onChange={(e) => setConfirmTick(e.target.checked)} style={{ marginTop: 3, accentColor: T.blue }} />
+          <span style={{ fontSize: 12, color: T.text, lineHeight: 1.5, fontFamily: T.sans }}>
+            I understand this will <strong>permanently erase</strong> my personal data and generated documents under GDPR and I want to proceed.
+          </span>
+        </label>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+          <button
+            onClick={onClose}
+            disabled={isDeleting}
+            style={{
+              background: T.card,
+              color: T.text,
+              border: `1px solid ${T.border}`,
+              borderRadius: 6,
+              padding: "0 16px",
+              height: 36,
+              fontSize: 13,
+              fontWeight: 600,
+              fontFamily: T.sans,
+              cursor: isDeleting ? "not-allowed" : "pointer",
+              opacity: isDeleting ? 0.5 : 1,
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={!canDelete}
+            style={{
+              background: canDelete ? T.red : "#f1f5f9",
+              color: canDelete ? "#fff" : T.hint,
+              border: `1px solid ${canDelete ? T.red : T.border}`,
+              borderRadius: 6,
+              padding: "0 18px",
+              height: 36,
+              fontSize: 13,
+              fontWeight: 600,
+              fontFamily: T.sans,
+              cursor: !canDelete ? "not-allowed" : "pointer",
+              opacity: !canDelete ? 0.9 : 1,
+              transition: "all 0.15s",
+            }}
+          >
+            {isDeleting ? "Deleting…" : "Permanently delete my data"}
+          </button>
         </div>
       </div>
-
-      <div style={{ fontSize: 12, color: T.muted, marginBottom: 8, lineHeight: 1.5 }}>
-        To confirm, type <span style={{ fontFamily: T.mono, fontWeight: 700, color: T.text, background: T.surface, padding: "1px 6px", borderRadius: 4 }}>DELETE</span> in the box
-        below, tick the acknowledgement, then press Delete.
-      </div>
-
-      <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 6 }}>
-        Type DELETE to confirm
-      </label>
-      <input
-        value={typed}
-        onChange={(e) => setTyped(e.target.value.trim())}
-        placeholder="DELETE"
-        autoFocus
-        style={{
-          width: "100%",
-          background: T.bg,
-          border: `1px solid ${typed && typed !== "DELETE" ? T.redMid : T.border}`,
-          borderRadius: 7,
-          padding: "10px 13px",
-          fontSize: 14,
-          fontFamily: T.mono,
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          color: T.text,
-          outline: "none",
-          boxSizing: "border-box",
-          marginBottom: 14,
-        }}
-      />
-
-      <label
-        style={{
-          display: "flex",
-          gap: 8,
-          alignItems: "flex-start",
-          cursor: "pointer",
-          marginBottom: 18,
-          userSelect: "none",
-        }}
-      >
-        <input type="checkbox" checked={confirmTick} onChange={(e) => setConfirmTick(e.target.checked)} style={{ marginTop: 3 }} />
-        <span style={{ fontSize: 12, color: T.text, lineHeight: 1.5 }}>
-          I understand this will <strong>permanently erase</strong> my personal data and generated documents under GDPR and I want to proceed.
-        </span>
-      </label>
-
-      <Row justify="flex-end" gap={10}>
-        <Btn variant="ghost" onClick={onClose} disabled={isDeleting}>
-          Cancel
-        </Btn>
-        <Btn variant="danger" onClick={handleDelete} disabled={!canDelete}>
-          {isDeleting ? "Deleting…" : "Permanently delete my data"}
-        </Btn>
-      </Row>
-    </Modal>
+    </div>
   );
 }
 
@@ -114,11 +264,10 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
     rightToWork: "",
     noticePeriod: "",
   });
-  const [saveStatus, setSaveStatus] = useState("idle"); // idle | saving | saved | error
+  const [saveStatus, setSaveStatus] = useState("idle"); // idle | saving | saved | error | unsaved
   const [message, setMessage] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // keep initial snapshot to detect real changes
   const initialRef = useRef(null);
   const debounceRef = useRef(null);
   const isFirstLoad = useRef(true);
@@ -137,9 +286,9 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
       setForm(next);
       initialRef.current = next;
       isFirstLoad.current = true;
-      // clear debounce on candidate switch
       if (debounceRef.current) clearTimeout(debounceRef.current);
       setSaveStatus("idle");
+      setMessage("");
     }
   }, [candidate]);
 
@@ -154,7 +303,6 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
         setMessage("✓ Auto-saved");
         initialRef.current = payload;
         onUpdateCandidate?.();
-        // fade the badge back to idle after 2s
         setTimeout(() => setSaveStatus("idle"), 2000);
       } catch (e) {
         setSaveStatus("error");
@@ -164,214 +312,303 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
     [candidate, onUpdateCandidate]
   );
 
-  // debounced auto-save whenever form changes (skip first hydration)
+  // debounced auto-save 800ms via useRef timer + useEffect
   useEffect(() => {
     if (isFirstLoad.current) {
       isFirstLoad.current = false;
       return;
     }
     if (!initialRef.current) return;
-    // no change vs last saved → stay idle
-    const same =
-      JSON.stringify(form) === JSON.stringify(initialRef.current) ||
-      (saveStatus === "saving");
-    if (same && saveStatus !== "saving") {
-      // still schedule if user is typing, but avoid noop saves
-      // compare with initialRef to decide; if identical we just reset status
-      if (JSON.stringify(form) === JSON.stringify(initialRef.current)) {
-        setSaveStatus("idle");
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        return;
-      }
+
+    const isDirty = JSON.stringify(form) !== JSON.stringify(initialRef.current);
+    if (!isDirty) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      // if we were showing saving/saved, let it settle; otherwise idle
+      if (saveStatus !== "saving" && saveStatus !== "saved") setSaveStatus("idle");
+      return;
     }
-    setSaveStatus("saving");
+
+    // mark unsaved immediately, then debounce the actual save
+    if (saveStatus !== "saving") setSaveStatus("unsaved");
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       doSave(form);
     }, 800);
+
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [form, doSave, saveStatus]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, doSave]);
 
   const handleManualSave = async () => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     await doSave(form);
   };
 
+  const handleReset = () => {
+    if (initialRef.current) setForm({ ...initialRef.current });
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+  };
+
   const handleGdprDelete = async () => {
     await deleteCandidateAccount(candidate.id);
     localStorage.removeItem("agentic_cv_uk_token");
     setShowDeleteModal(false);
-    // hard reload to login
     window.location.reload();
   };
 
   const isDirty = initialRef.current ? JSON.stringify(form) !== JSON.stringify(initialRef.current) : false;
 
-  return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 0 40px" }}>
-      {/* header */}
-      <div style={{ marginBottom: 18 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: T.text, margin: "0 0 6px", letterSpacing: "-0.02em" }}>
-          ⚙️ Settings & Compliance
-        </h2>
-        <p style={{ fontSize: 13, color: T.muted, margin: 0, lineHeight: 1.5 }}>
-          Manage your UK profile, privacy preferences, and API configuration. Profile fields auto-save — no need to press Save.
-        </p>
-      </div>
+  // status pill config
+  const pill = (() => {
+    if (saveStatus === "saving") {
+      return { label: "Saving…", dot: T.blue, bg: T.blueLight, border: T.blueMid, color: T.blue, pulse: true };
+    }
+    if (saveStatus === "saved") {
+      return { label: "Saved ✓", dot: T.green, bg: T.greenLight, border: T.greenMid, color: T.green, pulse: false };
+    }
+    if (saveStatus === "error") {
+      return { label: "Save failed", dot: T.red, bg: T.redLight, border: T.redMid, color: T.red, pulse: false };
+    }
+    if (saveStatus === "unsaved" || isDirty) {
+      return { label: "Unsaved", dot: T.amber, bg: T.amberLight, border: T.amberMid, color: T.amber, pulse: false };
+    }
+    return { label: "All saved", dot: T.hint, bg: T.card, border: T.border, color: T.hint, pulse: false };
+  })();
 
-      {/* profile card */}
-      <Card style={{ marginBottom: 16, boxShadow: T.shadowSm }}>
-        <Row justify="space-between" align="center" style={{ marginBottom: 14 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: T.text }}>Candidate Profile</h3>
-          {/* auto-save indicator */}
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              padding: "4px 10px",
-              borderRadius: 20,
-              border: `1px solid ${saveStatus === "error" ? T.redMid : saveStatus === "saved" ? T.greenMid : T.border}`,
-              background: saveStatus === "error" ? T.redLight : saveStatus === "saved" ? T.greenLight : saveStatus === "saving" ? T.surface : T.card,
-              color: saveStatus === "error" ? T.red : saveStatus === "saved" ? T.green : saveStatus === "saving" ? T.muted : T.hint,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              minWidth: 90,
-              justifyContent: "center",
-            }}
-          >
+  return (
+    <div style={{ maxWidth: 1004, margin: "0 auto", padding: "32px 24px 48px", fontFamily: T.sans }}>
+      {/* 2-col layout: 640 form + 320 rail */}
+      <div style={{ display: "flex", gap: 24, alignItems: "flex-start", flexWrap: "wrap" }}>
+        {/* LEFT 640 */}
+        <div style={{ flex: "0 0 640px", maxWidth: 640, minWidth: 0, width: "100%" }}>
+          {/* header with Profile + pill top-right */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 14 }}>
+            <div>
+              <h2 style={{ fontSize: 18, fontWeight: 600, color: T.text, margin: "0 0 4px", letterSpacing: "-0.015em", lineHeight: 1.3, fontFamily: T.sans }}>
+                Profile
+              </h2>
+              <p style={{ fontSize: 13, color: T.muted, margin: 0, lineHeight: 1.5, fontFamily: T.sans }}>Manage your personal information.</p>
+            </div>
             <span
               style={{
-                width: 6,
-                height: 6,
-                borderRadius: 99,
-                background: saveStatus === "saving" ? T.yellow : saveStatus === "saved" ? T.green : saveStatus === "error" ? T.red : T.hint,
-                display: "inline-block",
-                animation: saveStatus === "saving" ? "pulse 1s ease-in-out infinite" : "none",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "5px 12px",
+                borderRadius: 999,
+                border: `1px solid ${pill.border}`,
+                background: pill.bg,
+                color: pill.color,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                fontFamily: T.sans,
+                letterSpacing: "0.02em",
               }}
-            />
-            {saveStatus === "saving" ? "Saving…" : saveStatus === "saved" ? "Saved ✓" : saveStatus === "error" ? "Save failed" : isDirty ? "Unsaved changes" : "All saved"}
-          </span>
-        </Row>
-
-        <Field label="Full Name" value={form.fullName} onChange={(v) => setForm({ ...form, fullName: v })} placeholder="Your full name" />
-        {/* Email is immutable — show as disabled */}
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: 5 }}>
-            Email (cannot be changed here)
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 999,
+                  background: pill.dot,
+                  display: "inline-block",
+                  animation: pill.pulse ? "svPulse 1s ease-in-out infinite" : "none",
+                  flexShrink: 0,
+                }}
+              />
+              {pill.label}
+            </span>
           </div>
-          <input
-            value={candidate?.email || ""}
-            disabled
-            style={{
-              width: "100%",
-              background: T.surface,
-              border: `1px solid ${T.border}`,
-              borderRadius: 7,
-              padding: "9px 13px",
-              color: T.muted,
-              fontSize: 13,
-              fontFamily: T.sans,
-              boxSizing: "border-box",
-              cursor: "not-allowed",
-            }}
-          />
-        </div>
 
-        <Row gap={12} style={{ alignItems: "flex-start" }}>
-          <div style={{ flex: 1 }}>
-            <Field label="Target Role" value={form.targetRole} onChange={(v) => setForm({ ...form, targetRole: v })} placeholder="e.g. Senior Engineer" />
-          </div>
-          <div style={{ flex: 1 }}>
-            <Field label="Preferred Location" value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="London / Remote" />
-          </div>
-        </Row>
-
-        <Row gap={12} style={{ alignItems: "flex-start" }}>
-          <div style={{ flex: 1 }}>
-            <Field label="Phone Number" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="+44 7xxx xxxxxx" />
-          </div>
-          <div style={{ flex: 1 }}>
-            <Field label="Notice Period" value={form.noticePeriod} onChange={(v) => setForm({ ...form, noticePeriod: v })} placeholder="e.g. 1 month" />
-          </div>
-        </Row>
-
-        <Field
-          label="Right to Work Status"
-          value={form.rightToWork}
-          onChange={(v) => setForm({ ...form, rightToWork: v })}
-          placeholder="British Citizen / Settled Status / Skilled Worker"
-        />
-
-        {message && (
+          {/* form card */}
           <div
             style={{
-              padding: "8px 12px",
-              borderRadius: 6,
-              background: message.startsWith("✓") ? T.greenLight : message.startsWith("✕") ? T.redLight : T.surface,
-              color: message.startsWith("✓") ? T.green : message.startsWith("✕") ? T.red : T.muted,
-              fontSize: 12,
-              fontWeight: 600,
-              marginBottom: 12,
-              border: `1px solid ${message.startsWith("✓") ? T.greenMid : message.startsWith("✕") ? T.redMid : T.border}`,
+              background: T.card,
+              border: `1px solid ${T.border}`,
+              borderRadius: 8,
+              padding: 20,
+              boxShadow: T.shadowSm,
             }}
           >
-            {message}
+            <SInput label="Full name" value={form.fullName} onChange={(v) => setForm({ ...form, fullName: v })} placeholder="Your full name" />
+
+            <SInput label="Email — cannot be changed here" value={candidate?.email || ""} onChange={() => {}} disabled placeholder="" />
+
+            <div style={{ display: "flex", gap: 12 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <SInput label="Target role" value={form.targetRole} onChange={(v) => setForm({ ...form, targetRole: v })} placeholder="e.g. Senior Engineer" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <SInput label="Preferred location" value={form.location} onChange={(v) => setForm({ ...form, location: v })} placeholder="London / Remote" />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 12 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <SInput label="Phone number" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="+44 7xxx xxxxxx" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <SInput label="Notice period" value={form.noticePeriod} onChange={(v) => setForm({ ...form, noticePeriod: v })} placeholder="e.g. 1 month" />
+              </div>
+            </div>
+
+            <SInput label="Right to work status" value={form.rightToWork} onChange={(v) => setForm({ ...form, rightToWork: v })} placeholder="British Citizen / Settled Status / Skilled Worker" />
+
+            {message && (
+              <div
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: 6,
+                  background: message.startsWith("✓") ? T.greenLight : message.startsWith("✕") ? T.redLight : T.surface,
+                  color: message.startsWith("✓") ? T.green : message.startsWith("✕") ? T.red : T.muted,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  marginBottom: 12,
+                  border: `1px solid ${message.startsWith("✓") ? T.greenMid : message.startsWith("✕") ? T.redMid : T.border}`,
+                  fontFamily: T.sans,
+                }}
+              >
+                {message}
+              </div>
+            )}
+
+            {/* Buttons: Save primary #533afd + Reset ghost + hint 12px */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 12, color: T.hint, marginRight: "auto", fontFamily: T.sans }}>Auto-save debounced 800 ms · manual save also available</span>
+              <button
+                onClick={handleReset}
+                disabled={!isDirty || saveStatus === "saving"}
+                style={{
+                  background: T.card,
+                  color: T.text,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 6,
+                  padding: "0 14px",
+                  height: 36,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: T.sans,
+                  cursor: !isDirty || saveStatus === "saving" ? "not-allowed" : "pointer",
+                  opacity: !isDirty || saveStatus === "saving" ? 0.5 : 1,
+                  transition: "all 0.15s",
+                }}
+              >
+                Reset
+              </button>
+              <button
+                onClick={handleManualSave}
+                disabled={saveStatus === "saving" || !isDirty}
+                style={{
+                  background: !isDirty || saveStatus === "saving" ? "#e8eaf0" : T.blue,
+                  color: !isDirty || saveStatus === "saving" ? T.hint : "#fff",
+                  border: `1px solid ${!isDirty || saveStatus === "saving" ? T.border : T.blue}`,
+                  borderRadius: 6,
+                  padding: "0 18px",
+                  height: 36,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: T.sans,
+                  cursor: !isDirty || saveStatus === "saving" ? "not-allowed" : "pointer",
+                  boxShadow: !isDirty || saveStatus === "saving" ? "none" : T.shadowSm,
+                  opacity: !isDirty || saveStatus === "saving" ? 0.9 : 1,
+                  transition: "all 0.15s",
+                }}
+              >
+                {saveStatus === "saving" ? "Saving…" : "Save"}
+              </button>
+            </div>
           </div>
-        )}
-
-        <Row justify="flex-end" gap={10} style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 11, color: T.hint, marginRight: "auto" }}>
-            Auto-save debounced 800 ms · manual save also available
-          </span>
-          <Btn variant="ghost" size="sm" onClick={() => candidate && setForm({ ...initialRef.current })} disabled={!isDirty || saveStatus === "saving"}>
-            Reset
-          </Btn>
-          <Btn variant="primary" onClick={handleManualSave} disabled={saveStatus === "saving" || !isDirty}>
-            {saveStatus === "saving" ? "Saving…" : "Save now"}
-          </Btn>
-        </Row>
-      </Card>
-
-      {/* compliance card */}
-      <Card style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, margin: "0 0 8px", color: T.text }}>UK Compliance (Equality Act 2010 & GDPR)</h3>
-        <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, margin: "0 0 12px" }}>
-          Agentic CV UK strictly prohibits age, marital status, gender, nationality, photos, or NI numbers in résumé patches.
-          This prevents discrimination and keeps processing compliant with <strong>ICO</strong> data-privacy regulations. Your
-          constraints and locks are the ground truth — the agent never invents facts.
-        </p>
-        <div style={{ padding: "10px 12px", background: T.greenLight, color: T.green, borderRadius: 8, fontSize: 12, fontWeight: 600, border: `1px solid ${T.greenMid}`, display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ fontSize: 14 }}>✓</span> All Equality Act & GDPR safeguards are actively enforced at the patch layer.
         </div>
-      </Card>
 
-      {/* GDPR danger zone */}
-      <Card style={{ borderColor: T.redMid, background: "#fff" }}>
-        <h3 style={{ fontSize: 14, fontWeight: 800, margin: "0 0 6px", color: T.red }}>Danger zone — GDPR Article 17</h3>
-        <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, margin: "0 0 14px" }}>
-          Permanently delete your account and all associated data (profile, Master CV, applications, tailored dossiers, credits).
-          You will be logged out immediately. This exercises your <strong>Right to Erasure</strong>.
-        </p>
-        <Row justify="space-between" align="center">
-          <span style={{ fontSize: 11, color: T.hint }}>Requires typing DELETE + second confirmation</span>
-          <Btn variant="danger" size="sm" onClick={() => setShowDeleteModal(true)}>
-            Delete my data…
-          </Btn>
-        </Row>
-      </Card>
+        {/* RIGHT rail 320 */}
+        <div style={{ flex: "0 0 320px", width: 320, display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
+          {/* Compliance card (#f6f9fc, 8px) */}
+          <div
+            style={{
+              background: T.surface,
+              border: `1px solid ${T.border}`,
+              borderRadius: 8,
+              padding: 18,
+            }}
+          >
+            <h3 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 8px", color: T.text, fontFamily: T.sans, letterSpacing: "-0.01em" }}>
+              UK Compliance
+            </h3>
+            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, margin: "0 0 12px", fontFamily: T.sans }}>
+              Agentic CV UK strictly prohibits age, marital status, gender, nationality, photos, or NI numbers in résumé patches.
+              This prevents discrimination and keeps processing compliant with <strong style={{ color: T.text, fontWeight: 600 }}>ICO</strong>{" "}
+              data-privacy regulations.
+            </p>
+            <div
+              style={{
+                padding: "10px 12px",
+                background: T.greenLight,
+                color: T.green,
+                borderRadius: 8,
+                fontSize: 12,
+                fontWeight: 600,
+                border: `1px solid ${T.greenMid}`,
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                fontFamily: T.sans,
+                lineHeight: 1.4,
+              }}
+            >
+              <span style={{ fontSize: 13, flexShrink: 0 }}>✓</span>
+              <span>All Equality Act &amp; GDPR safeguards are actively enforced at the patch layer.</span>
+            </div>
+          </div>
+
+          {/* Danger zone card (white, 1px #fecaca, 8px, red header #df1b41) */}
+          <div
+            style={{
+              background: T.card,
+              border: "1px solid #fecaca",
+              borderRadius: 8,
+              padding: 18,
+            }}
+          >
+            <h3 style={{ fontSize: 13, fontWeight: 800, margin: "0 0 6px", color: T.red, fontFamily: T.sans }}>Danger zone</h3>
+            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, margin: "0 0 14px", fontFamily: T.sans }}>
+              Permanently delete your account and all associated data (profile, Master CV, applications, tailored dossiers, credits).
+              You will be logged out immediately.
+            </p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 11, color: T.hint, fontFamily: T.sans }}>Requires typing DELETE + confirmation</span>
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                style={{
+                  background: T.red,
+                  color: "#fff",
+                  border: `1px solid ${T.red}`,
+                  borderRadius: 6,
+                  padding: "0 14px",
+                  height: 32,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  fontFamily: T.sans,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Delete my data…
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {showDeleteModal && (
-        <DeleteConfirmModal
-          candidateEmail={candidate?.email}
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleGdprDelete}
-        />
+        <DeleteConfirmModal candidateEmail={candidate?.email} onClose={() => setShowDeleteModal(false)} onConfirm={handleGdprDelete} />
       )}
 
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}`}</style>
+      <style>{`@keyframes svPulse{0%,100%{opacity:1}50%{opacity:0.35}}`}</style>
     </div>
   );
 }
