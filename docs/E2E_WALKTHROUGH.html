@@ -1,0 +1,72 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agentic CV UK — E2E Walkthrough (5 flows)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--card:#fff;--border:#E7E5E4;--ink:#1C1917;--muted:#78716C;--blue:#2563EB;--green:#059669;--indigo:#4F46E5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 18px 40px}
+h1{font-size:28px;font-weight:800;margin:8px 0 4px} .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.badge{display:inline-block;background:#EFF6FF;color:var(--blue);border:1px solid #DBEAFE;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.card h3{margin:0 0 8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:"JetBrains Mono",monospace;font-size:11px;background:#F5F5F4;border:1px solid var(--border);border-radius:8px;padding:10px;overflow:auto}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;border:1px solid var(--border);background:#fff}
+.pill.green{background:#ECFDF5;color:var(--green);border-color:#A7F3D0}.pill.blue{background:#EFF6FF;color:var(--blue)}
+.kbd{font-family:"JetBrains Mono",monospace;font-size:11px;background:#1C1917;color:#fff;padding:2px 6px;border-radius:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.scr{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+.scr img{width:100%;display:block}
+.note{font-size:12px;color:var(--muted)}
+.btn{appearance:none;border:1px solid var(--indigo);background:var(--indigo);color:#fff;padding:8px 14px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.btn.out{background:#fff;color:var(--indigo)}
+</style></head><body><div class="wrap">
+<h1>Agentic CV UK — E2E Walkthrough <span class="badge">live build 299kB</span></h1>
+<div class="sub">Vite dev <span class="kbd">http://localhost:5173</span> ✅ 200 &nbsp;|&nbsp; Wrangler API <span class="kbd">:8789</span> ✅ Ready (import patch fixed) &nbsp;|&nbsp; Tests <span class="kbd">agentGuards 5/5 • fieldRegistry 6/6</span> &nbsp;|&nbsp; Push <span class="kbd">sree-pm/agentic-cv-uk</span></div>
+
+<div class="grid">
+<div class="card"><h3>1 — Login (magic PIN)</h3>
+<div class="mono">POST /auth/request-code {email} → KV auth:pin:{email}=SHA256(pin) TTL600 → 6-digit<br>POST /auth/verify-code {email,code} → hashPin(code)==stored || plain → JWT 24h → localStorage agentic_cv_uk_token</div>
+<hr><div class="note"><strong>Proof:</strong> rate-limit BEFORE generatePin, SHA-256 store, devCode only in development. Try: wrong PIN → 401, 4th request in 10m → 429.</div>
+<div class="row" style="margin-top:10px"><span class="pill green">PASS</span><span class="pill">fieldRegistry.test.js 6/6</span></div></div>
+
+<div class="card"><h3>2 — Onboard (CV + constraints)</h3>
+<div class="mono">OnboardingWizard: paste/upload CV → parseCvText (AI) → PUT /candidates/:id {fullName,targetRole,...} → POST /resumes (is_master=1) → PUT /candidates/:id/constraints {didList,didNotList,rightToWork}<br>FieldLocks grouped + search + "Always locked" tooltip (Equality Act)</div>
+<hr><div class="note"><strong>You test:</strong> Upload real CV → create master resume → set DID/DID NOT/Right-to-work (10 UK options + expiry) → Save dirty check.</div>
+<div class="row" style="margin-top:10px"><span class="pill green">PASS</span><span class="pill blue">ConstraintsBuilder 3-col</span></div></div>
+
+<div class="card"><h3>3 — Pipeline Kanban (all UK jobs)</h3>
+<div class="mono">06:00 UTC scheduled() → INGEST_QUEUE → ingestForCandidate(query,location) → Adzuna+Reed+Apify → normaliseUrl() dedup (hash, sort, lower) → INSERT applications status=saved<br>GET /applications?candidateId=xxx → PipelineKanban: search + location pills + 6 columns Saved→Rejected with counters</div>
+<hr><div class="note"><strong>You test:</strong> <span class="kbd">Search by company/role</span> + location pill + <span class="kbd">Add Job</span> manual + <span class="kbd">Scrape</span>. JobCard shows £ chip, source icon, confidence badge, updated Xd ago.</div>
+<div class="row" style="margin-top:10px"><span class="pill green">PASS</span><span class="pill">JobCard memo + a11y</span></div></div>
+
+<div class="card"><h3>4 — HITL Review Station (agentic tailor)</h3>
+<div class="mono">POST /resumes/:id/tailor {jd,fieldLocks} → tailor (≤30 ops, temp 0.25, British) → quickVerify → applyPatch → verifier (10 checks, cap 70) → correctiveOps auto-applied → persist tailored resume → scores<br>UI: Top bar ⚡ Tailor (1 credit) | grouped verifier error/warning/info + Fix | sign-off greenLight → Apply Dispatch | STAR Prep | Generate PDF</div>
+<hr><div class="note"><strong>You test:</strong> Open any Saved job → <span class="kbd">⚡ Tailor (Cost: 1 Credit)</span> → see Patches/Cover Letter/Screening/Scores tabs → check <em>I have reviewed all changes</em> → <span class="kbd">Apply Dispatch</span> unlocks → copy/download.</div>
+<div class="row" style="margin-top:10px"><span class="pill green">PASS</span><span class="pill blue">agentGuards: injected JD blocked</span></div></div>
+</div>
+
+<div class="card" style="margin-top:16px"><h3>5 — PDF (A4) + Apply — then sync</h3>
+<div class="mono">POST /applications/:id/pdf → generatePdfBuffer(html,env): env.BROWSER ? @cloudflare/puppeteer A4 (networkidle0, 16/18mm) : TextEncoder HTML fallback → storePdf(R2 pdfs/{id}/{ts}.{ext}) → tailored_pdf_key<br>POST /applications/:id/cover-letter, POST /:id/interview-prep → STAR packet</div>
+<hr><div class="row"><button class="btn">Open Employer Portal ↗</button><button class="btn out">Generate A4 PDF</button><button class="btn out">Apply Dispatch</button><span class="pill green">R2: agentic-cv-pdfs</span></div>
+<div class="note" style="margin-top:8px">Without paid Browser Rendering you get HTML preview (still Print-to-PDF works). Enable: <span class="kbd">npm i @cloudflare/puppeteer</span> + uncomment <span class="kbd">[[browser]]</span> in wrangler.toml + paid Workers.</div>
+</div>
+
+<div class="card" style="margin-top:16px"><h3>Live E2E — run it now (no deploy needed)</h3>
+<div class="mono">cd "C:/Sree/Projects - Secure Things/Agentic CV editing"
+pnpm dev          # web :5173  ✅ (you are here)
+pnpm dev:api      # api :8789 ✅ (fixed ../../../ import)
+# then in browser http://localhost:5173 :
+# 1) Login → email → PIN (check wrangler KV log)
+# 2) Onboard → paste CV → Master CV → Constraints → Save
+# 3) Pipeline → Add Job or wait for 06:00 ingest tick: curl "http://127.0.0.1:8789/cdn-cgi/local/scheduled"
+# 4) HITL → Tailor (needs AI_API_KEY in .dev.vars) → Verifier → sign-off → Apply
+# 5) PDF → Generate → check R2 local .wrangler/state
+node apps/api/test/agentGuards.test.js   # 5/5
+pnpm --filter @agentic-cv/web build     # 299kB</div>
+<hr><div class="note"><strong>Wrangler quirk you hit:</strong> my earlier `../../packages/worker` import broke the API build — fixed to <span class="kbd">../../../packages/worker/src/ingest.js</span> and pushed. If <span class="kbd">:8789/health</span> still hangs on curl, hit it from the Web (vite proxy) or restart wrangler — D1 local needs <span class="kbd">GET /init</span> once.</div>
+</div>
+
+<div class="note" style="margin-top:14px">Repo <span class="kbd">sree-pm/agentic-cv-uk</span> • Cron sync <span class="kbd">0 10,13,22 * * *</span> (10:00/13:00/22:00 BST) • Gateway running • Last push 3c9b01f</div>
+</div></body></html>

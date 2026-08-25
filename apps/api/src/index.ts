@@ -9,7 +9,7 @@ import auth from "./routes/auth.js";
 import { rateLimiter } from "./lib/rateLimit.js";
 import { CandidateInputSchema, SaveConstraintsSchema } from "./lib/validation.js";
 import type { Env, CandidateRow, ConstraintDocRow } from "./lib/types.js";
-import { ingestForCandidate } from "../../packages/worker/src/ingest.js";
+import { ingestForCandidate } from "../../../packages/worker/src/ingest.js";
 import { verifyJwt } from "./routes/auth.js";
 
 const app = new Hono<{ Bindings: Env }>();
