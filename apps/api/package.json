@@ -1,0 +1,22 @@
+{
+  "name": "@agentic-cv/api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8789",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 execute agentic-cv-uk --file=./drizzle/schema.sql",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.7.0",
+    "zod": "^3.24.0",
+    "fast-json-patch": "^3.1.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.20.0",
+    "typescript": "^5.7.0",
+    "@cloudflare/workers-types": "^4.20250214.0"
+  }
+}

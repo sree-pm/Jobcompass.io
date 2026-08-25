@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck API
+        run: pnpm --filter @agentic-cv/api typecheck
+
+      - name: Build Web
+        run: pnpm --filter @agentic-cv/web build
+
+      - name: Run Schema Tests
+        run: node packages/schema/fieldRegistry.test.js
+
+      - name: Run API Tests
+        run: |
+          node --experimental-strip-types apps/api/test/validation.test.js
+          node --experimental-strip-types apps/api/test/credits.test.js
+          node --experimental-strip-types apps/api/test/matcher.test.js
+          node --experimental-strip-types apps/api/test/interview.test.js

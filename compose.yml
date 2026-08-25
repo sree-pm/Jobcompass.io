@@ -1,0 +1,53 @@
+# LEGACY: local Reactive Resume reference only — do not use for production.
+# Production uses Cloudflare Workers (Hono + D1 + R2 + KV + Queue + Cron), not Docker/Postgres.
+# Default local dev is `pnpm dev:api` (Wrangler + D1 local). This file is optional legacy
+# for running the upstream Reactive Resume Docker image (postgres + app) for reference/comparison only.
+# Usage (optional): docker compose up
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: reactive_resume
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+  reactive-resume:
+    image: ghcr.io/amruthpillai/reactive-resume:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      APP_URL: http://localhost:3000
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/reactive_resume
+      AUTH_SECRET: change-me-generate-openssl-rand-hex-32
+      # UK defaults: A4 enforced in app, local storage for PDFs
+      # For prod add: S3_*, SMTP_*, REDIS_URL, ENCRYPTION_SECRET
+    volumes:
+      - storage:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 10s
+
+  # Add later: dashboard (Next.js) and ingest worker
+  # dashboard:
+  #   build: ./apps/dashboard
+  #   ports: ["3001:3000"]
+  #   environment:
+  #     REACTIVE_API_URL: http://reactive-resume:3000/api/openapi
+  #     REACTIVE_MCP_URL: http://reactive-resume:3000/mcp
+
+volumes:
+  pgdata:
+  storage:

@@ -1,0 +1,13 @@
+# Copy to .dev.vars for wrangler dev (never commit real keys)
+AI_BASE_URL=https://api.openai.com/v1
+AI_API_KEY=sk-...
+AI_MODEL=gpt-4o-mini
+
+# UK job ingest — get free tiers
+ADZUNA_APP_ID=
+ADZUNA_APP_KEY=
+REED_API_KEY=
+APIFY_TOKEN=
+
+# Optional: Cloudflare Browser Rendering for PDF (paid)
+# BROWSER_RENDERING=false

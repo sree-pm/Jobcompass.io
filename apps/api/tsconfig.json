@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["@cloudflare/workers-types"],
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@agentic-cv/*": ["../../packages/*/src"]
+    }
+  },
+  "include": ["src/**/*"]
+}

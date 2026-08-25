@@ -1,0 +1,11 @@
+{
+  "name": "@agentic-cv/schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "fieldRegistry.js",
+  "exports": {
+    "./fieldRegistry": "./fieldRegistry.js",
+    "./ukResumeSchema": "./ukResumeSchema.js"
+  }
+}

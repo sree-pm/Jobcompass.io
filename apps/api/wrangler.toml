@@ -1,0 +1,46 @@
+name = "agentic-cv-api"
+main = "src/index.ts"
+compatibility_date = "2025-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 — single DB, env-bound
+[[d1_databases]]
+binding = "DB"
+database_name = "agentic-cv-uk"
+database_id = "local-dev-placeholder"  # Replace: run `wrangler d1 create agentic-cv-uk` and paste the ID here
+
+# R2 — PDFs + cover letters
+[[r2_buckets]]
+binding = "PDF_BUCKET"
+bucket_name = "agentic-cv-pdfs"
+
+# KV — cache, rate limits, dedupe
+[[kv_namespaces]]
+binding = "CACHE"
+id = "local-dev-placeholder"  # Replace: run `wrangler kv namespace create CACHE` and paste the ID here
+
+# Queue — ingest jobs
+[[queues.producers]]
+binding = "INGEST_QUEUE"
+queue = "ingest-queue"
+
+[[queues.consumers]]
+queue = "ingest-queue"
+max_batch_size = 10
+max_batch_timeout = 10
+
+[triggers]
+crons = ["0 6 * * *"]  # 06:00 UTC == 06:00 GMT / 07:00 BST — adjust via cron override in dashboard
+
+[vars]
+AI_PROVIDER = "openai-compatible"
+AI_BASE_URL = "https://api.openai.com/v1"
+ENVIRONMENT = "production"
+# AI_API_KEY, AI_MODEL set via `wrangler secret put` — never in toml
+# API_KEY set via `wrangler secret put API_KEY` — guards all routes except /health, /init
+
+# Optional: Browser Rendering for real PDF generation
+# Uncomment to enable @cloudflare/puppeteer → A4 PDF via Cloudflare Browser Rendering.
+# Requires `npm i @cloudflare/puppeteer` and a paid Workers plan with Browser Rendering enabled.
+# [[browser]]
+# binding = "BROWSER"

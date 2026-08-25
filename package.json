@@ -1,0 +1,19 @@
+{
+  "name": "agentic-cv-uk",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Agentic CV editing + UK job finding — headless Reactive Resume + MCP connectors, A4 GBP daily queue",
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "pnpm --filter @agentic-cv/web dev",
+    "dev:api": "pnpm --filter @agentic-cv/api dev --port 8789",
+    "dev:all": "pnpm --parallel --filter @agentic-cv/web --filter @agentic-cv/api dev",
+    "build": "pnpm --filter @agentic-cv/web build",
+    "preview": "pnpm --filter @agentic-cv/web preview",
+    "deploy:api": "pnpm --filter @agentic-cv/api deploy",
+    "deploy:web": "wrangler deploy --config apps/web/wrangler.toml",
+    "worker": "echo 'Worker ingest logic is in apps/api (queue consumer). Use pnpm dev:api instead.'"
+  },
+  "engines": { "node": ">=20" }
+}

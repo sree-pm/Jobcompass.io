@@ -1,0 +1,16 @@
+{
+  "name": "@agentic-cv/ai",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": ["src"],
+  "note": "This package is consumed through bundlers (wrangler/esbuild) that handle TypeScript natively. No build step needed."
+}
