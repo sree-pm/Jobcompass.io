@@ -37,35 +37,93 @@ export function Row({ children, gap = 10, align = "center", justify = "flex-star
   );
 }
 
-export function Btn({ onClick, children, variant = "primary", size = "md", disabled = false, style = {} }) {
+export function Btn({ onClick, children, variant = "primary", size = "md", disabled = false, style = {}, title }) {
   const V = {
-    primary: { background: T.blue, color: "#fff", border: `1px solid ${T.blue}` },
+    primary: {
+      background: T.stripePrimary || "#533afd",
+      color: "#fff",
+      border: `1px solid ${T.stripePrimary || "#533afd"}`,
+      boxShadow: T.shadowStripe,
+    },
+    stripe: {
+      background: T.stripePrimary,
+      color: "#fff",
+      border: `1px solid ${T.stripePrimary}`,
+      boxShadow: T.shadowStripe,
+    },
+    indigo: {
+      background: T.indigo,
+      color: "#fff",
+      border: `1px solid ${T.indigo}`,
+      boxShadow: "0 1px 2px rgba(67,56,202,0.15)",
+    },
+    ghost: {
+      background: T.card,
+      color: T.textStrong || "#061b31",
+      border: `1px solid ${T.border}`,
+    },
+    outline: {
+      background: "transparent",
+      color: T.textStrong || "#061b31",
+      border: `1px solid ${T.borderStrong}`,
+    },
+    subtle: {
+      background: T.stripeBg || "#f6f9fc",
+      color: T.stripePrimary,
+      border: `1px solid ${T.border}`,
+    },
     success: { background: T.green, color: "#fff", border: `1px solid ${T.green}` },
-    ghost: { background: "transparent", color: T.muted, border: `1px solid ${T.border}` },
-    outline: { background: "transparent", color: T.blue, border: `1px solid ${T.blueMid}` },
     danger: { background: T.red, color: "#fff", border: `1px solid ${T.red}` },
-    subtle: { background: T.blueLight, color: T.blue, border: `1px solid ${T.blueMid}` },
-    indigo: { background: T.indigo, color: "#fff", border: `1px solid ${T.indigo}` },
   };
   const S = {
-    xs: { padding: "3px 9px", fontSize: 11, borderRadius: 5 },
-    sm: { padding: "5px 11px", fontSize: 12, borderRadius: 6 },
-    md: { padding: "8px 16px", fontSize: 13, borderRadius: 7 },
-    lg: { padding: "10px 22px", fontSize: 14, borderRadius: 8 },
+    xs: { padding: "3px 9px", fontSize: 11, borderRadius: 6, minHeight: 26 },
+    sm: { padding: "5px 11px", fontSize: 12, borderRadius: 6, minHeight: 30 },
+    md: { padding: "0 16px", fontSize: 13, borderRadius: 6, minHeight: 36, height: 36 },
+    lg: { padding: "0 22px", fontSize: 14, borderRadius: 6, minHeight: 40, height: 40 },
   };
+  const base = V[variant] || V.primary;
+  const sz = S[size] || S.md;
   return (
     <button
       onClick={disabled ? undefined : onClick}
+      title={title}
+      disabled={disabled}
       style={{
-        ...V[variant],
-        ...S[size],
+        ...base,
+        ...sz,
         fontWeight: 600,
         fontFamily: T.sans,
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,
         flexShrink: 0,
         transition: "all 0.15s ease",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+        whiteSpace: "nowrap",
         ...style,
+      }}
+      onMouseEnter={e => {
+        if (disabled) return;
+        if (variant === "subtle") {
+          e.currentTarget.style.background = T.stripePrimary;
+          e.currentTarget.style.color = "#fff";
+          e.currentTarget.style.borderColor = T.stripePrimary;
+        }
+        if (variant === "ghost" || variant === "outline") {
+          e.currentTarget.style.borderColor = T.stripePrimary;
+        }
+      }}
+      onMouseLeave={e => {
+        if (variant === "subtle") {
+          e.currentTarget.style.background = T.stripeBg;
+          e.currentTarget.style.color = T.stripePrimary;
+          e.currentTarget.style.borderColor = T.border;
+        }
+        if (variant === "ghost" || variant === "outline") {
+          e.currentTarget.style.borderColor = variant === "outline" ? T.borderStrong : T.border;
+        }
       }}
     >
       {children}
@@ -84,17 +142,19 @@ export function Label({ children }) {
 export function Field({ label, value, onChange, placeholder, multi, rows = 4, style = {}, type = "text" }) {
   const base = {
     width: "100%",
-    background: T.bg,
+    background: T.card,
     border: `1px solid ${T.border}`,
-    borderRadius: 7,
-    padding: "9px 13px",
+    borderRadius: T.radiusSm,
+    height: multi ? undefined : 44,
+    minHeight: multi ? undefined : 44,
+    padding: multi ? "10px 13px" : "0 13px",
     color: T.text,
     fontSize: 13,
     fontFamily: T.sans,
     outline: "none",
     boxSizing: "border-box",
     resize: multi ? "vertical" : "none",
-    transition: "border-color 0.15s",
+    transition: "border-color 0.15s, box-shadow 0.15s",
   };
   return (
     <div style={{ marginBottom: 14, ...style }}>
@@ -108,17 +168,19 @@ export function Field({ label, value, onChange, placeholder, multi, rows = 4, st
   );
 }
 
-export function Tag({ label, color = T.blue, bg }) {
+export function Tag({ label, color, bg }) {
+  const c = color || T.stripePrimary;
   return (
     <span
       style={{
-        background: bg || color + "18",
-        color,
+        background: bg || c + "14",
+        color: c,
         fontSize: 11,
         fontWeight: 600,
         padding: "2px 8px",
         borderRadius: 20,
         letterSpacing: "0.03em",
+        border: `1px solid ${c}28`,
       }}
     >
       {label}
@@ -130,15 +192,15 @@ export function ScoreBar({ label, score, target = 75, note }) {
   const color = score >= target ? T.green : score >= target - 15 ? T.yellow : T.red;
   return (
     <div style={{ marginBottom: 14 }}>
-      <Row justify="space-between" style={{ marginBottom: 4 }}>
+      <Row justify="space-between" style={{ marginBottom: 6 }}>
         <div>
-          <span style={{ fontSize: 12, color: T.text, fontWeight: 600 }}>{label}</span>
+          <span style={{ fontSize: 12, color: T.textStrong, fontWeight: 600 }}>{label}</span>
           {note && <span style={{ fontSize: 11, color: T.muted, marginLeft: 6 }}>{note}</span>}
         </div>
-        <span style={{ fontFamily: T.mono, fontSize: 16, fontWeight: 700, color }}>{score}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color }}>{score}</span>
       </Row>
-      <div style={{ background: T.surface, borderRadius: 4, height: 6 }}>
-        <div style={{ background: color, width: `${Math.min(score, 100)}%`, height: "100%", borderRadius: 4, transition: "width 0.8s ease-out" }} />
+      <div style={{ background: T.stripeBg, borderRadius: 999, height: 6, overflow: "hidden", border: `1px solid ${T.border}` }}>
+        <div style={{ background: color, width: `${Math.min(score, 100)}%`, height: "100%", borderRadius: 999, transition: "width 0.8s ease-out" }} />
       </div>
     </div>
   );
@@ -150,8 +212,8 @@ export function Modal({ title, children, onClose, maxWidth = 520 }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.45)",
-        backdropFilter: "blur(2px)",
+        background: "rgba(6,27,49,0.42)",
+        backdropFilter: "blur(3px)",
         zIndex: 999,
         display: "flex",
         alignItems: "center",
@@ -169,11 +231,11 @@ export function Modal({ title, children, onClose, maxWidth = 520 }) {
           width: "100%",
           maxHeight: "90vh",
           overflowY: "auto",
-          boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+          boxShadow: T.shadowFloat,
         }}
       >
         <Row justify="space-between" style={{ marginBottom: 18 }}>
-          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: T.text }}>{title}</h3>
+          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: T.textStrong }}>{title}</h3>
           <button
             onClick={onClose}
             style={{ background: "none", border: "none", cursor: "pointer", fontSize: 22, color: T.muted, lineHeight: 1 }}

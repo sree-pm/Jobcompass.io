@@ -1,23 +1,20 @@
 import React from "react";
 import { T, STAGES, STAGE_COLOR } from "../common/Theme.js";
-import { Row } from "../common/UiPrimitives.jsx";
 import { JobCard } from "./JobCard.jsx";
 import * as api from "../../lib/cloudflareApi.js";
 
 const EMPTY_COPY = {
-  Saved: { icon: "📥", title: "No saved jobs", desc: "Add a role or scrape from a URL to get started." },
-  Tailored: { icon: "✨", title: "Nothing tailored yet", desc: "Tailor a saved job to create your first tailored CV." },
-  Applied: { icon: "📨", title: "No applications sent", desc: "Jobs move here after you apply." },
-  Interview: { icon: "🎤", title: "No interviews", desc: "Track upcoming interviews here." },
-  Offer: { icon: "🎉", title: "No offers yet", desc: "Offers will appear here — keep going!" },
-  Rejected: { icon: "↩", title: "No rejections", desc: "Rejections are tracked here for learning." },
-  "Awaiting Response": { icon: "⏳", title: "Awaiting response", desc: "Follow-ups live here." },
+  Saved: { title: "No saved jobs", desc: "Add a role or scrape from a URL to get started." },
+  Tailored: { title: "Nothing tailored yet", desc: "Tailor a saved job to create your first tailored CV." },
+  Applied: { title: "No applications sent", desc: "Jobs move here after you apply." },
+  Interview: { title: "No interviews", desc: "Track upcoming interviews here." },
+  Offer: { title: "No offers yet", desc: "Offers will appear here — keep going!" },
+  Rejected: { title: "No rejections", desc: "Rejections are tracked here for learning." },
 };
 
 function normalizeStage(raw) {
   const s = String(raw || "saved").toLowerCase();
   if (s === "awaiting_response" || s === "awaiting response") return "Tailored";
-  // map any existing API values to UI stages
   const map = {
     saved: "Saved",
     tailored: "Tailored",
@@ -30,15 +27,7 @@ function normalizeStage(raw) {
 }
 
 function toApiStatus(stage) {
-  // UI stage -> API status value
-  const s = String(stage).toLowerCase();
-  if (s === "tailored") return "tailored";
-  if (s === "saved") return "saved";
-  if (s === "applied") return "applied";
-  if (s === "interview") return "interview";
-  if (s === "offer") return "offer";
-  if (s === "rejected") return "rejected";
-  return s;
+  return String(stage).toLowerCase();
 }
 
 export function PipelineKanban({ jobs = [], selectedJobId, onSelectJob, onStatusChange }) {
@@ -46,6 +35,20 @@ export function PipelineKanban({ jobs = [], selectedJobId, onSelectJob, onStatus
   const [locFilter, setLocFilter] = React.useState("");
   const [dragId, setDragId] = React.useState(null);
   const [dragOver, setDragOver] = React.useState(null);
+  const [searchFocused, setSearchFocused] = React.useState(false);
+  const searchRef = React.useRef(null);
+
+  // ⌘K focus
+  React.useEffect(() => {
+    function onKey(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const locations = React.useMemo(() => {
     const set = new Set();
@@ -93,11 +96,6 @@ export function PipelineKanban({ jobs = [], selectedJobId, onSelectJob, onStatus
     try {
       await api.updateApplication(job.id, { status: apiStatus });
     } catch (err) {
-      // fallback: allow tailored to be applied if API rejects, try applied
-      if (String(apiStatus) === "tailored") {
-        try { await api.updateApplication(job.id, { status: "applied" }); } catch {}
-      }
-      // surface quietly
       // eslint-disable-next-line no-console
       console.warn("status change failed", err);
     } finally {
@@ -107,138 +105,195 @@ export function PipelineKanban({ jobs = [], selectedJobId, onSelectJob, onStatus
   }
 
   return (
-    <div style={{ padding: "12px 0 20px" }}>
-      {/* Filters */}
+    <div style={{ padding: "14px 0 20px" }}>
+      {/* Header row: Pipeline 22px #061b31 w600 + count + search 320x36 6px #e5edf5 focus #533afd ⌘K + location pills */}
       <div
         style={{
-          background: T.card,
-          border: `1px solid ${T.border}`,
-          borderRadius: 10,
-          padding: "10px 12px",
           display: "flex",
           flexWrap: "wrap",
-          gap: 10,
           alignItems: "center",
+          justifyContent: "space-between",
+          gap: 14,
           marginBottom: 14,
         }}
       >
-        <div style={{ position: "relative", flex: "1 1 220px", maxWidth: 360 }}>
-          <span
-            aria-hidden
+        {/* left: title + result count */}
+        <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexShrink: 0 }}>
+          <h2
             style={{
-              position: "absolute",
-              left: 10,
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: T.hint,
-              fontSize: 13,
+              margin: 0,
+              fontSize: 22,
+              fontWeight: 600,
+              color: T.ink,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              fontFamily: T.sans,
             }}
           >
-            ⌕
-          </span>
-          <input
-            aria-label="Search by company or role"
-            placeholder="Search by company or role…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            Pipeline
+          </h2>
+          <span
+            aria-label={`${filteredCount} results`}
             style={{
-              width: "100%",
-              padding: "8px 10px 8px 30px",
-              borderRadius: 8,
-              border: `1px solid ${T.border}`,
-              background: T.bg,
-              color: T.text,
               fontSize: 13,
+              fontWeight: 500,
+              color: T.slate,
               fontFamily: T.sans,
-              outline: "none",
-              boxSizing: "border-box",
             }}
-          />
+          >
+            {query || locFilter ? `${filteredCount} of ${totalCount}` : `${totalCount} ${totalCount === 1 ? "job" : "jobs"}`}
+          </span>
         </div>
 
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", flex: "1 1 260px" }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: "0.04em", textTransform: "uppercase", marginRight: 2 }}>
-            Location
-          </span>
-          <button
-            onClick={() => setLocFilter("")}
-            aria-pressed={locFilter === ""}
-            style={{
-              padding: "4px 10px",
-              borderRadius: 20,
-              border: `1px solid ${locFilter === "" ? T.blue : T.border}`,
-              background: locFilter === "" ? T.blue : T.card,
-              color: locFilter === "" ? "#fff" : T.muted,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            All
-          </button>
-          {locations.map((loc) => (
-            <button
-              key={loc}
-              onClick={() => setLocFilter((prev) => (prev === loc ? "" : loc))}
-              aria-pressed={locFilter === loc}
-              title={loc}
+        {/* right: search + pills */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", flex: 1, justifyContent: "flex-end", minWidth: 280 }}>
+          {/* search input 320px 36px 6px #e5edf5 focus #533afd ⌘K hint */}
+          <div style={{ position: "relative", width: 320, maxWidth: "100%", flexShrink: 0 }}>
+            <span
+              aria-hidden
               style={{
-                padding: "4px 10px",
-                borderRadius: 20,
-                border: `1px solid ${locFilter === loc ? T.blue : T.border}`,
-                background: locFilter === loc ? T.blueLight : T.card,
-                color: locFilter === loc ? T.blue : T.text,
+                position: "absolute",
+                left: 10,
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: T.hint,
+                fontSize: 13,
+                pointerEvents: "none",
+                lineHeight: 1,
+              }}
+            >
+              ⌕
+            </span>
+            <input
+              ref={searchRef}
+              aria-label="Search by company or role"
+              placeholder="Search company or role"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              style={{
+                width: "100%",
+                height: 36,
+                padding: "0 44px 0 30px",
+                borderRadius: 6,
+                border: `1px solid ${searchFocused ? T.violet : T.border}`,
+                background: T.card,
+                color: T.ink,
+                fontSize: 13,
+                fontFamily: T.sans,
+                outline: "none",
+                boxSizing: "border-box",
+                boxShadow: searchFocused ? `0 0 0 3px ${T.violet}20` : "none",
+                transition: "border-color 150ms, box-shadow 150ms",
+              }}
+            />
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                right: 6,
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: T.pillBg,
+                border: `1px solid ${T.border}`,
+                borderRadius: 5,
+                padding: "2px 6px",
+                fontSize: 11,
+                fontWeight: 600,
+                color: T.slate,
+                fontFamily: T.mono,
+                lineHeight: 1,
+                pointerEvents: "none",
+              }}
+            >
+              ⌘K
+            </span>
+          </div>
+
+          {/* location pills: 6px pill? spec 6px pill radius, #f6f9fc → #533afd active */}
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+            <button
+              onClick={() => setLocFilter("")}
+              aria-pressed={locFilter === ""}
+              style={{
+                padding: "6px 12px",
+                borderRadius: 999,
+                border: `1px solid ${locFilter === "" ? T.violet : T.border}`,
+                background: locFilter === "" ? T.violet : T.pillBg,
+                color: locFilter === "" ? "#fff" : T.slate,
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: "pointer",
-                maxWidth: 140,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                lineHeight: 1,
+                transition: "all 150ms",
+                fontFamily: T.sans,
               }}
             >
-              {loc}
+              All
             </button>
-          ))}
-        </div>
-
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 11, color: T.muted, fontFamily: T.mono }}>
-            {filteredCount} / {totalCount}
-          </span>
-          {(query || locFilter) && (
-            <button
-              onClick={() => {
-                setQuery("");
-                setLocFilter("");
-              }}
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                color: T.blue,
-                background: T.blueLight,
-                border: `1px solid ${T.blueMid}`,
-                padding: "4px 8px",
-                borderRadius: 6,
-                cursor: "pointer",
-              }}
-            >
-              Clear
-            </button>
-          )}
+            {locations.map((loc) => {
+              const active = locFilter === loc;
+              return (
+                <button
+                  key={loc}
+                  onClick={() => setLocFilter((prev) => (prev === loc ? "" : loc))}
+                  aria-pressed={active}
+                  title={loc}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: 999,
+                    border: `1px solid ${active ? T.violet : T.border}`,
+                    background: active ? T.violet : T.pillBg,
+                    color: active ? "#fff" : T.slate,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    maxWidth: 160,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    lineHeight: 1,
+                    transition: "all 150ms",
+                    fontFamily: T.sans,
+                  }}
+                >
+                  {loc}
+                </button>
+              );
+            })}
+            {(query || locFilter) && (
+              <button
+                onClick={() => {
+                  setQuery("");
+                  setLocFilter("");
+                }}
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: T.violet,
+                  background: T.violetLight,
+                  border: `1px solid ${T.violetMid}`,
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  cursor: "pointer",
+                  fontFamily: T.sans,
+                  lineHeight: 1,
+                }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Kanban columns */}
-      <div
-        role="region"
-        aria-label="Job pipeline kanban"
-        style={{ overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4 }}
-      >
-        <div style={{ display: "flex", gap: 16, minWidth: 1080, alignItems: "flex-start" }}>
+      {/* Kanban columns: Linear 280px fixed 12px gap */}
+      <div role="region" aria-label="Job pipeline kanban" style={{ overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 8 }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "flex-start", minWidth: "max-content" }}>
           {STAGES.map((stage) => {
             const list = jobsByStage[stage] || [];
-            const empty = EMPTY_COPY[stage] || { icon: "📄", title: "No jobs", desc: "Jobs in this stage will appear here." };
+            const empty = EMPTY_COPY[stage] || { title: "No jobs", desc: "Jobs in this stage will appear here." };
             const isOver = dragOver === stage;
             return (
               <section
@@ -251,40 +306,49 @@ export function PipelineKanban({ jobs = [], selectedJobId, onSelectJob, onStatus
                 onDragLeave={() => setDragOver((prev) => (prev === stage ? null : prev))}
                 onDrop={(e) => handleDrop(e, stage)}
                 style={{
-                  flex: 1,
-                  minWidth: 176,
-                  maxWidth: 220,
-                  background: isOver ? T.blueLight : T.surface,
+                  width: 280,
+                  minWidth: 280,
+                  maxWidth: 280,
+                  flex: "0 0 280px",
+                  background: isOver ? T.violetLight : T.surface,
                   borderRadius: 10,
-                  border: `1px solid ${isOver ? T.blueMid : T.border}`,
+                  border: `1px solid ${isOver ? T.violetMid : T.border}`,
                   display: "flex",
                   flexDirection: "column",
-                  maxHeight: "calc(100vh - 210px)",
-                  minHeight: 260,
-                  transition: "background 0.15s, border-color 0.15s",
+                  maxHeight: "calc(100vh - 180px)",
+                  minHeight: 360,
+                  transition: "background 150ms, border-color 150ms",
                 }}
               >
+                {/* column header 13px Inter 510 #64748d + count badge #f6f9fc + dot STAGE_COLOR */}
                 <header
                   style={{
-                    padding: "10px 12px",
+                    padding: "12px 12px 10px",
                     borderBottom: `1px solid ${T.border}`,
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                     position: "sticky",
                     top: 0,
-                    background: isOver ? T.blueLight : T.surface,
+                    background: isOver ? T.violetLight : T.surface,
                     borderTopLeftRadius: 10,
                     borderTopRightRadius: 10,
                     zIndex: 1,
+                    gap: 8,
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+                    <span aria-hidden style={{ width: 8, height: 8, borderRadius: "50%", background: STAGE_COLOR[stage] || T.violet, flexShrink: 0 }} />
                     <span
-                      aria-hidden
-                      style={{ width: 8, height: 8, borderRadius: "50%", background: STAGE_COLOR[stage] || T.blue, flexShrink: 0 }}
-                    />
-                    <span style={{ fontSize: 12, fontWeight: 800, color: T.text, letterSpacing: "0.02em", whiteSpace: "nowrap" }}>
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 510,
+                        color: T.slate,
+                        fontFamily: T.inter,
+                        letterSpacing: "-0.01em",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {stage}
                     </span>
                   </div>
@@ -292,39 +356,77 @@ export function PipelineKanban({ jobs = [], selectedJobId, onSelectJob, onStatus
                     aria-label={`${list.length} jobs in ${stage}`}
                     style={{
                       fontSize: 11,
-                      fontWeight: 800,
-                      color: list.length ? T.text : T.muted,
-                      background: list.length ? T.card : "transparent",
-                      border: `1px solid ${list.length ? T.border : "transparent"}`,
-                      padding: "1px 7px",
-                      borderRadius: 10,
+                      fontWeight: 700,
+                      color: T.slate,
+                      background: T.pillBg,
+                      border: `1px solid ${T.border}`,
+                      padding: "2px 7px",
+                      borderRadius: 6,
                       minWidth: 22,
                       textAlign: "center",
+                      fontFamily: T.mono,
+                      fontVariantNumeric: "tabular-nums",
+                      lineHeight: 1.2,
                     }}
                   >
                     {list.length}
                   </span>
                 </header>
 
-                <div role="list" aria-label={`${stage} jobs`} style={{ padding: 8, overflowY: "auto", flex: 1, minHeight: 120 }}>
+                {/* column body 8px gap */}
+                <div
+                  role="list"
+                  aria-label={`${stage} jobs`}
+                  style={{
+                    padding: 8,
+                    overflowY: "auto",
+                    flex: 1,
+                    minHeight: 200,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                  }}
+                >
                   {list.length === 0 ? (
                     <div
                       role="status"
                       aria-live="polite"
                       style={{
                         textAlign: "center",
-                        padding: "22px 10px",
+                        padding: "28px 12px 18px",
                         border: `1px dashed ${T.borderStrong}`,
                         borderRadius: 8,
                         background: T.card,
-                        marginTop: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 6,
                       }}
                     >
-                      <div aria-hidden style={{ fontSize: 20, marginBottom: 6 }}>
-                        {empty.icon}
+                      {/* empty illustration */}
+                      <div
+                        aria-hidden
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 10,
+                          background: T.pillBg,
+                          border: `1px solid ${T.border}`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 18,
+                          color: T.hint,
+                          marginBottom: 4,
+                        }}
+                      >
+                        <span style={{ opacity: 0.9 }}>◇</span>
                       </div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: T.text, marginBottom: 4 }}>{empty.title}</div>
-                      <div style={{ fontSize: 11, color: T.hint, lineHeight: 1.4 }}>{empty.desc}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: T.ink }}>{empty.title}</div>
+                      <div style={{ fontSize: 11, color: T.hint, lineHeight: 1.4, maxWidth: 180 }}>{empty.desc}</div>
+                      <div style={{ marginTop: 8, fontSize: 11, fontWeight: 600, color: T.slate, background: T.pillBg, border: `1px solid ${T.border}`, padding: "4px 10px", borderRadius: 999 }}>
+                        Drop here
+                      </div>
                     </div>
                   ) : (
                     list.map((job) => (

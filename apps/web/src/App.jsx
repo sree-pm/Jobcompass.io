@@ -98,7 +98,7 @@ export default function App() {
 
   // Handle Onboarding Completion — uses existing candidate from JWT (updateCandidate, not createCandidate)
   // Requires valid agentic_cv_uk_token; redirects to LoginView if missing.
-  const handleOnboardingComplete = async ({ profile, cvText }) => {
+  const handleOnboardingComplete = async ({ profile, cvText, didList: wizardDidList, didNotList: wizardDidNotList, fieldLocks: wizardLocks }) => {
     const token = localStorage.getItem("agentic_cv_uk_token");
     if (!token) {
       setCandidate(null);
@@ -175,14 +175,35 @@ export default function App() {
       const fullResume = await api.getResume(createdResume.id);
       setMasterResume(fullResume);
 
-      // 3. Save initial starter constraints
-      const initialConstraints = {
+      // 3. Save initial starter constraints (prefer wizard-provided DID/DID NOT when present)
+      const initialConstraints = (wizardDidList?.length || wizardDidNotList?.length)
+        ? {
+            content: [
+              "CAREER CONSTRAINTS — UK GROUND TRUTH",
+              "",
+              "DID (Verified Experience & Metrics):",
+              ...(wizardDidList?.length ? wizardDidList.map((d) => `• ${d}`) : ["• [none yet]"]),
+              "",
+              "DID NOT (Strictly Forbidden for AI to Claim):",
+              ...(wizardDidNotList?.length ? wizardDidNotList.map((d) => `• ${d}`) : ["• [none yet]"]),
+              "",
+              `RIGHT TO WORK: ${profile.rightToWork || "British Citizen"}${profile.rightToWorkExpiry ? ` (expiry ${profile.rightToWorkExpiry})` : ""}`,
+              "UK RULES: A4 format, British English spelling, £ metrics, 0 hallucination.",
+            ].join("\n"),
+            didList: wizardDidList || [],
+            didNotList: wizardDidNotList || [],
+          }
+        : {
         content: `CAREER CONSTRAINTS — UK GROUND TRUTH\nDID:\n• Led key architecture migration with 24% gain (£400k saved)\n• Delivered core features\n\nDID NOT:\n• Did not manage people/hiring\n• Did not write mobile code\n\nUK RULES: A4 format, British spelling, £ metrics, 0 hallucination.`,
         didList: ["Led key architecture migration with 24% gain (£400k saved)", "Delivered core features"],
         didNotList: ["Did not manage people/hiring", "Did not write mobile code"],
       };
       await api.saveConstraints(mergedCand.id, initialConstraints);
       setConstraints(initialConstraints);
+      // Persist wizard field locks if provided
+      if (wizardLocks && Object.keys(wizardLocks).length && fullResume?.id) {
+        try { await api.putFieldLocks(fullResume.id, wizardLocks); setFieldLocks(wizardLocks); } catch {}
+      }
 
       // 4. Create a sample initial application
       const sampleApp = await api.createApplication({
