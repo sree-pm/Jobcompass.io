@@ -18,6 +18,19 @@ export interface Env {
   JWT_SECRET?: string;
   ENVIRONMENT?: string;
   FRONTEND_URL?: string;
+  // ── JobCompass platform pipeline (A1–A5) ──
+  VECTORIZE?: any;              // VectorizeIndex binding — job embeddings for the Matchmaker
+  AI?: any;                     // Workers AI binding — classify/verify/embed (free tier)
+  ACCOUNT_ID?: string;          // Cloudflare account id (Workers AI REST fallback)
+  AI_GATEWAY_URL?: string;      // AI Gateway prefix for caching/fallback/cost tracking
+  OPENAI_API_KEY?: string;      // creative tasks (interview prep, cover letters)
+  ANTHROPIC_API_KEY?: string;   // verifier (Claude 3.5 Haiku)
+  DEEPSEEK_API_KEY?: string;    // tailor (DeepSeek V3)
+  COMPANIES_HOUSE_API_KEY?: string; // FREE UK govt company data
+  BRAVE_API_KEY?: string;       // website finder (2K queries/mo free)
+  GREENHOUSE_BOARDS?: string;   // comma list "token:CompanyName,..."
+  LEVER_COMPANIES?: string;     // comma list of Lever slugs
+  ASHBY_ORGS?: string;          // comma list of Ashby org slugs
 }
 
 export interface CandidateRow {

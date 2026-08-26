@@ -114,6 +114,62 @@ CREATE TABLE IF NOT EXISTS credit_transactions (
 );
 
 CREATE INDEX IF NOT EXISTS idx_credit_transactions_candidate ON credit_transactions(candidate_id);
+
+-- ══ JobCompass v2: global job library + company enrichment (platform agents A1–A5) ══
+-- Shared library: enriched once, used by every user.
+CREATE TABLE IF NOT EXISTS companies (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  company_number TEXT,
+  status TEXT, -- active / dissolved / liquidation
+  sic_codes TEXT, -- JSON array of SIC codes
+  industry TEXT, -- mapped from SIC
+  website TEXT,
+  careers_url TEXT,
+  registered_office TEXT,
+  trust_score INTEGER DEFAULT 50, -- 0-100
+  enriched_at TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS jobs (
+  id TEXT PRIMARY KEY,
+  company_id TEXT REFERENCES companies(id),
+  company_name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  location TEXT,
+  salary TEXT,
+  source TEXT,
+  source_url TEXT UNIQUE,
+  job_description TEXT,
+  -- A4 classifier outputs
+  industry TEXT,
+  seniority TEXT, -- junior / mid / senior / lead / director
+  contract_type TEXT, -- permanent / contract / temp / internship
+  work_mode TEXT, -- hybrid / remote / onsite
+  salary_band TEXT,
+  uk_region TEXT,
+  tags TEXT, -- JSON array
+  -- A3 verifier outputs
+  hiring_confidence INTEGER, -- 0-100, genuinely-hiring score
+  job_verified INTEGER DEFAULT 0,
+  verified_at TEXT,
+  -- A5 matchmaker
+  embedding_id TEXT,
+  first_seen TEXT DEFAULT (datetime('now')),
+  last_seen TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company_id);
+CREATE INDEX IF NOT EXISTS idx_jobs_industry ON jobs(industry);
+CREATE INDEX IF NOT EXISTS idx_jobs_region ON jobs(uk_region);
+CREATE INDEX IF NOT EXISTS idx_jobs_confidence ON jobs(hiring_confidence);
+CREATE INDEX IF NOT EXISTS idx_companies_name ON companies(name);
+
+-- link candidate applications back to the global library
+-- NOTE: SQLite forbids REFERENCES on ALTER TABLE ADD COLUMN — keep it a plain column
+ALTER TABLE applications ADD COLUMN job_id TEXT;
+CREATE INDEX IF NOT EXISTS idx_applications_job ON applications(job_id);
 `;
 
 // Typed helpers
@@ -128,8 +184,20 @@ export type Env = {
 };
 
 export async function initDb(db: D1Database) {
-  for (const stmt of MIGRATION_SQL.split(";").map(s => s.trim()).filter(Boolean)) {
-    await db.prepare(stmt).run();
+  // Strip SQL comments FIRST — comments can contain ';' which would break naive splitting
+  const cleaned = MIGRATION_SQL
+    .split("\n")
+    .filter(l => !l.trim().startsWith("--"))
+    .join("\n");
+  for (const stmt of cleaned.split(";").map(s => s.trim()).filter(Boolean)) {
+    try {
+      await db.prepare(stmt).run();
+    } catch (e: any) {
+      // Idempotent: ignore "duplicate column" / "already exists" from re-runs
+      const msg = String(e?.message || e?.cause?.message || "");
+      if (/duplicate column|already exists/i.test(msg)) continue;
+      throw e;
+    }
   }
 }
 

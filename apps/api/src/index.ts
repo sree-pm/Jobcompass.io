@@ -11,6 +11,9 @@ import { CandidateInputSchema, SaveConstraintsSchema } from "./lib/validation.js
 import type { Env, CandidateRow, ConstraintDocRow } from "./lib/types.js";
 import { ingestForCandidate } from "../../../packages/worker/src/ingest.js";
 import { verifyJwt } from "./routes/auth.js";
+import jobsLibrary from "./routes/jobs-library.js";
+import { runPlatformPipeline } from "../../../packages/worker/src/pipeline.js";
+import { embedNewJobs } from "../../../packages/worker/src/agents/matchmaker.js";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -88,8 +91,12 @@ app.get("/api/health", (c) => c.json({ ok: true }));
 
 // init db (idempotent)
 app.get("/init", async (c) => {
-  await initDb(c.env.DB);
-  return c.json({ ok: true });
+  try {
+    await initDb(c.env.DB);
+    return c.json({ ok: true });
+  } catch (e: any) {
+    return c.json({ ok: false, error: String(e?.message || e) }, 500);
+  }
 });
 
 // candidates
@@ -170,6 +177,7 @@ app.route("/applications", applications);
 app.route("/ingest", ingest);
 app.route("/billing", billing);
 app.route("/auth", auth);
+app.route("/jobs", jobsLibrary);
 
 // MCP endpoint (stub for Claude / MCP clients) — exposes tools list
 app.post("/mcp", async (c) => {
@@ -187,9 +195,21 @@ app.post("/mcp", async (c) => {
   return c.json({ error: "unsupported mcp method" }, 400);
 });
 
-// Cron handler — 06:00 GMT ingest
+// Cron handler — 06:00 GMT: platform pipeline first, then per-candidate ingest
 export async function scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-  console.log("cron ingest tick", event.cron);
+  console.log("cron tick", event.cron);
+
+  // ── Phase 1: platform pipeline (A1–A4) — shared job library ──
+  try {
+    const summary = await runPlatformPipeline(env as any);
+    console.log("platform pipeline:", JSON.stringify(summary));
+    const embedded = await embedNewJobs(env.DB, env as any);
+    console.log("embedded jobs for matchmaker:", embedded);
+  } catch (e: any) {
+    console.error("platform pipeline failed:", e?.message);
+  }
+
+  // ── Phase 2: per-candidate ingest (Adzuna/Reed/Apify) ──
   const BATCH = 50;
   let offset = 0;
   let hasMore = true;

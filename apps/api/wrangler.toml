@@ -1,4 +1,4 @@
-name = "agentic-cv-api"
+name = "jobcompass-api"
 main = "src/index.ts"
 compatibility_date = "2025-08-01"
 compatibility_flags = ["nodejs_compat"]
@@ -6,31 +6,40 @@ compatibility_flags = ["nodejs_compat"]
 # D1 — single DB, env-bound
 [[d1_databases]]
 binding = "DB"
-database_name = "agentic-cv-uk"
-database_id = "local-dev-placeholder"  # Replace: run `wrangler d1 create agentic-cv-uk` and paste the ID here
+database_name = "jobcompass-db"
+database_id = "58eb5864-0d30-412e-a6d8-b22c1384d88f"
 
 # R2 — PDFs + cover letters
 [[r2_buckets]]
 binding = "PDF_BUCKET"
-bucket_name = "agentic-cv-pdfs"
+bucket_name = "jobcompass-pdfs"
 
 # KV — cache, rate limits, dedupe
 [[kv_namespaces]]
 binding = "CACHE"
-id = "local-dev-placeholder"  # Replace: run `wrangler kv namespace create CACHE` and paste the ID here
+id = "6e7fa9600a5b47b4be60ef4a03e8a16d"
 
 # Queue — ingest jobs
 [[queues.producers]]
 binding = "INGEST_QUEUE"
-queue = "ingest-queue"
+queue = "jobcompass-ingest-queue"
 
 [[queues.consumers]]
-queue = "ingest-queue"
+queue = "jobcompass-ingest-queue"
 max_batch_size = 10
 max_batch_timeout = 10
 
 [triggers]
 crons = ["0 6 * * *"]  # 06:00 UTC == 06:00 GMT / 07:00 BST — adjust via cron override in dashboard
+
+# Workers AI — A3 verifier, A4 classifier, A5 embeddings (free tier: 10K neurons/day)
+[ai]
+binding = "AI"
+
+# Vectorize — job embeddings for the A5 Matchmaker (free: 5M stored + 30M queried dims/mo)
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "jobcompass-jobs"
 
 [vars]
 AI_PROVIDER = "openai-compatible"

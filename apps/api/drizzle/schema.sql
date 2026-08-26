@@ -1,8 +1,3 @@
--- Run with: wrangler d1 execute agentic-cv-uk --file=./apps/api/drizzle/schema.sql
--- Or via initDb() on first request (dev)
--- ⚠️  IMPORTANT: This SQL MUST match MIGRATION_SQL in src/lib/db.ts.
--- If you edit the schema, update BOTH files.
-
 -- candidates (one per user; auth via Cloudflare Access / API key)
 CREATE TABLE IF NOT EXISTS candidates (
   id TEXT PRIMARY KEY,
@@ -25,7 +20,7 @@ CREATE TABLE IF NOT EXISTS resumes (
   id TEXT PRIMARY KEY,
   candidate_id TEXT NOT NULL REFERENCES candidates(id) ON DELETE CASCADE,
   title TEXT NOT NULL DEFAULT 'Master CV',
-  data TEXT NOT NULL,
+  data TEXT NOT NULL, -- JSON ResumeData
   is_master INTEGER DEFAULT 1,
   parent_id TEXT REFERENCES resumes(id),
   application_id TEXT,
@@ -37,7 +32,7 @@ CREATE TABLE IF NOT EXISTS resumes (
 CREATE TABLE IF NOT EXISTS field_locks (
   id TEXT PRIMARY KEY,
   candidate_id TEXT NOT NULL REFERENCES candidates(id) ON DELETE CASCADE,
-  field_id TEXT NOT NULL,
+  field_id TEXT NOT NULL, -- e.g. exp.0.bullet.2
   path TEXT NOT NULL,
   locked INTEGER NOT NULL DEFAULT 0,
   reason TEXT,
@@ -49,8 +44,8 @@ CREATE TABLE IF NOT EXISTS constraints_docs (
   id TEXT PRIMARY KEY,
   candidate_id TEXT NOT NULL REFERENCES candidates(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
-  did_list TEXT,
-  did_not_list TEXT,
+  did_list TEXT, -- JSON array
+  did_not_list TEXT, -- JSON array
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now')),
   UNIQUE(candidate_id)
@@ -65,15 +60,15 @@ CREATE TABLE IF NOT EXISTS applications (
   role TEXT NOT NULL,
   location TEXT,
   salary TEXT,
-  source TEXT,
+  source TEXT, -- indeed, adzuna, reed, apify, manual
   source_url TEXT,
   job_description TEXT,
-  status TEXT DEFAULT 'saved',
-  tags TEXT,
-  tailored_pdf_key TEXT,
-  cover_letter_key TEXT,
-  scores TEXT,
-  verifier_report TEXT,
+  status TEXT DEFAULT 'saved', -- saved, tailored, applied, awaiting_response, interview, offer, rejected
+  tags TEXT, -- JSON array
+  tailored_pdf_key TEXT, -- R2 key
+  cover_letter_key TEXT, -- R2 key
+  scores TEXT, -- JSON {ats, readability, match, confidence}
+  verifier_report TEXT, -- JSON VerifyOutput
   applied_date TEXT,
   added_date TEXT DEFAULT (datetime('now')),
   archived_at TEXT
@@ -113,3 +108,59 @@ CREATE TABLE IF NOT EXISTS credit_transactions (
 );
 
 CREATE INDEX IF NOT EXISTS idx_credit_transactions_candidate ON credit_transactions(candidate_id);
+
+-- ══ JobCompass v2: global job library + company enrichment (platform agents A1–A5) ══
+-- Shared library: enriched once, used by every user.
+CREATE TABLE IF NOT EXISTS companies (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  company_number TEXT,
+  status TEXT, -- active / dissolved / liquidation
+  sic_codes TEXT, -- JSON array of SIC codes
+  industry TEXT, -- mapped from SIC
+  website TEXT,
+  careers_url TEXT,
+  registered_office TEXT,
+  trust_score INTEGER DEFAULT 50, -- 0-100
+  enriched_at TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS jobs (
+  id TEXT PRIMARY KEY,
+  company_id TEXT REFERENCES companies(id),
+  company_name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  location TEXT,
+  salary TEXT,
+  source TEXT,
+  source_url TEXT UNIQUE,
+  job_description TEXT,
+  -- A4 classifier outputs
+  industry TEXT,
+  seniority TEXT, -- junior / mid / senior / lead / director
+  contract_type TEXT, -- permanent / contract / temp / internship
+  work_mode TEXT, -- hybrid / remote / onsite
+  salary_band TEXT,
+  uk_region TEXT,
+  tags TEXT, -- JSON array
+  -- A3 verifier outputs
+  hiring_confidence INTEGER, -- 0-100, genuinely-hiring score
+  job_verified INTEGER DEFAULT 0,
+  verified_at TEXT,
+  -- A5 matchmaker
+  embedding_id TEXT,
+  first_seen TEXT DEFAULT (datetime('now')),
+  last_seen TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_jobs_company ON jobs(company_id);
+CREATE INDEX IF NOT EXISTS idx_jobs_industry ON jobs(industry);
+CREATE INDEX IF NOT EXISTS idx_jobs_region ON jobs(uk_region);
+CREATE INDEX IF NOT EXISTS idx_jobs_confidence ON jobs(hiring_confidence);
+CREATE INDEX IF NOT EXISTS idx_companies_name ON companies(name);
+
+-- link candidate applications back to the global library
+-- NOTE: SQLite forbids REFERENCES on ALTER TABLE ADD COLUMN — keep it a plain column
+ALTER TABLE applications ADD COLUMN job_id TEXT;
+CREATE INDEX IF NOT EXISTS idx_applications_job ON applications(job_id);
