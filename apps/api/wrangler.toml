@@ -20,14 +20,22 @@ binding = "CACHE"
 id = "6e7fa9600a5b47b4be60ef4a03e8a16d"
 
 # Queue — ingest jobs
+# Producer: cron + manual refresh enqueue candidate ingest messages
 [[queues.producers]]
 binding = "INGEST_QUEUE"
 queue = "jobcompass-ingest-queue"
 
+# Consumer: batched, with retries + dead-letter queue for poison messages.
+# max_batch_size 10 → each batch = up to 10 candidate ingests; batches of 10
+# keep per-message CPU inside the 30s limit while still parallelising.
+# max_retries 2 + DLQ = failed jobs are preserved for inspection, never lost,
+# and never block the queue (poison-message protection at 100k-user scale).
 [[queues.consumers]]
 queue = "jobcompass-ingest-queue"
 max_batch_size = 10
-max_batch_timeout = 10
+max_batch_timeout = 5
+max_retries = 2
+dead_letter_queue = "jobcompass-ingest-dlq"
 
 [triggers]
 crons = ["0 6 * * *"]  # 06:00 UTC == 06:00 GMT / 07:00 BST — adjust via cron override in dashboard

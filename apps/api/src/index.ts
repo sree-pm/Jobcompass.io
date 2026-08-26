@@ -17,7 +17,24 @@ import { embedNewJobs } from "../../../packages/worker/src/agents/matchmaker.js"
 
 const app = new Hono<{ Bindings: Env }>();
 
-app.use("/*", cors());
+// CORS — allow only our own origins in production (comma-separable via env for future domains)
+app.use("/*", async (c, next) => {
+  const defaults = [
+    "https://jobcompass.io",
+    "https://www.jobcompass.io",
+    "https://jobcompass-web.infonaut.workers.dev",
+    "http://localhost:5173", // local dev
+    "http://localhost:5174",
+  ];
+  const extra = ((c.env as any).CORS_ORIGINS as string | undefined) || "";
+  const origins = [...defaults, ...extra.split(",").map(s => s.trim()).filter(Boolean)];
+  return cors({
+    origin: (o) => (origins.includes(o) ? o : null),
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization", "x-api-key"],
+    maxAge: 86400,
+  })(c, next);
+});
 
 // Auth middleware — skip health/init, accept either x-api-key OR JWT (verifyJwt)
 app.use("/*", async (c, next) => {
