@@ -21,6 +21,7 @@ export interface Env {
   // ── JobCompass platform pipeline (A1–A5) ──
   VECTORIZE?: any;              // VectorizeIndex binding — job embeddings for the Matchmaker
   AI?: any;                     // Workers AI binding — classify/verify/embed (free tier)
+  EMAIL?: any;                  // Cloudflare Email Sending binding (jobcompass.io)
   ACCOUNT_ID?: string;          // Cloudflare account id (Workers AI REST fallback)
   AI_GATEWAY_URL?: string;      // AI Gateway prefix for caching/fallback/cost tracking
   OPENAI_API_KEY?: string;      // creative tasks (interview prep, cover letters)

@@ -41,6 +41,11 @@ binding = "AI"
 binding = "VECTORIZE"
 index_name = "jobcompass-jobs"
 
+# Email Sending — transactional emails from jobcompass.io (PIN codes, receipts)
+# SPF/DKIM auto-configured by Cloudflare on domain onboarding
+[[send_email]]
+name = "EMAIL"
+
 [vars]
 AI_PROVIDER = "openai-compatible"
 AI_BASE_URL = "https://api.openai.com/v1"

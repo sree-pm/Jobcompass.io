@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { Env } from "../lib/types.js";
 import { getCreditBalance, listCreditTransactions, addCredits } from "../lib/credits.js";
+import { sendReceiptEmail } from "../lib/email.js";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -158,6 +159,16 @@ app.post("/webhook", async (c) => {
 
     if (candidateId && credits > 0) {
       await addCredits(c.env.DB, candidateId, credits, "purchase", `Stripe Purchase: ${packId} (+${credits} credits)`, session.id);
+      // Send receipt email (non-blocking — never fail the webhook over email)
+      try {
+        const cand: any = await c.env.DB.prepare("SELECT email, full_name FROM candidates WHERE id = ?").bind(candidateId).first();
+        if (cand?.email) {
+          const pack = CREDIT_PACKS.find(p => p.id === packId);
+          await sendReceiptEmail(cand.email, pack?.name || packId, credits, pack?.priceGbp || 0, c.env as any);
+        }
+      } catch (e: any) {
+        console.error("Receipt email failed (webhook unaffected):", e?.message);
+      }
     }
   }
 

@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { Env } from "../lib/types.js";
 import { initDb } from "../lib/db.js";
 import { getCreditBalance } from "../lib/credits.js";
+import { sendPinEmail } from "../lib/email.js";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -130,10 +131,17 @@ app.post("/request-code", async (c) => {
   const kvKey = `auth:pin:${email.toLowerCase()}`;
   await kv.put(kvKey, pinHash, { expirationTtl: 600 }); // 10 minutes
 
-  // In production, send the PIN via email (Resend, SendGrid, etc.)
-  // For MVP, log it and return a hint in development mode
+  // Send the PIN via Cloudflare Email Sending (noreply@jobcompass.io)
   const env = c.env.ENVIRONMENT || "production";
-  console.log(`[Auth] PIN for ${email}: ${pin}`);
+  const emailResult = await sendPinEmail(email, pin, c.env as any);
+  if (!emailResult.sent) {
+    console.error(`[Auth] PIN email failed for ${email}: ${emailResult.error}`);
+    // Dev fallback: surface the code so local testing still works
+    if (env !== "development") {
+      await kv.delete(kvKey); // don't leave an unusable PIN around
+      return c.json({ error: "Could not send verification email. Please try again." }, 500);
+    }
+  }
 
   const response: any = {
     ok: true,
@@ -141,10 +149,10 @@ app.post("/request-code", async (c) => {
     expiresInSeconds: 600,
   };
 
-  // In dev mode, include the code directly for testing
-  if (env === "development") {
+  // In dev mode (or when email delivery is unavailable in dev), include the code directly
+  if (env === "development" && !emailResult.sent) {
     response.devCode = pin;
-    response.message = `[Dev Mode] Your code is: ${pin}`;
+    response.message = `[Dev Mode — email unavailable] Your code is: ${pin}`;
   }
 
   return c.json(response);
