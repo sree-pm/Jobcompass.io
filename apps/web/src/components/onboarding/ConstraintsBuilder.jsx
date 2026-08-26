@@ -181,7 +181,7 @@ export function ConstraintsBuilder({
   const labelStyle = {
     fontSize: 12,
     fontWeight: 600,
-    color: "#273951",
+    color: T.label,
     fontFamily: T.sans,
     letterSpacing: 0,
     marginBottom: 6,
@@ -209,7 +209,7 @@ export function ConstraintsBuilder({
         </p>
       </div>
 
-      {/* Toggle — Linear pill tabs 6px, active #533afd white */}
+      {/* Toggle — Linear pill tabs 6px, active T.blue (white text) */}
       <div style={{ display: "inline-flex", background: T.surface, border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: 3, gap: 4, marginBottom: 16 }}>
         <button
           onClick={() => setActiveMode("structured")}
@@ -222,7 +222,7 @@ export function ConstraintsBuilder({
             fontFamily: T.sans,
             cursor: "pointer",
             background: activeMode === "structured" ? T.blue : "transparent",
-            color: activeMode === "structured" ? "#fff" : T.muted,
+            color: activeMode === "structured" ? T.card : T.muted,
             borderColor: activeMode === "structured" ? T.blue : "transparent",
             transition: "all 0.15s",
             lineHeight: 1,
@@ -241,7 +241,7 @@ export function ConstraintsBuilder({
             fontFamily: T.sans,
             cursor: "pointer",
             background: activeMode === "raw" ? T.blue : "transparent",
-            color: activeMode === "raw" ? "#fff" : T.muted,
+            color: activeMode === "raw" ? T.card : T.muted,
             borderColor: activeMode === "raw" ? T.blue : "transparent",
             transition: "all 0.15s",
             lineHeight: 1,
@@ -287,7 +287,7 @@ export function ConstraintsBuilder({
             />
           </div>
 
-          {/* Right-to-work panel: white card 8px border #e5edf5 p16 */}
+          {/* Right-to-work panel: white card 8px border T.border p16 */}
           <div
             style={{
               background: T.card,
@@ -420,7 +420,7 @@ export function ConstraintsBuilder({
         </div>
       )}
 
-      {/* Live preview: mono pre 11px JetBrains, #061b31, bg #f6f9fc border #e5edf5 8px radius */}
+      {/* Live preview: mono pre 11px JetBrains, T.text, bg T.surface border T.border 8px radius */}
       <div
         style={{
           background: T.surface,
@@ -464,7 +464,7 @@ export function ConstraintsBuilder({
         </pre>
       </div>
 
-      {/* Footer: dirty indicator (left) + StorageMeter 6px bar (center) + Save button #533afd 44px primary */}
+      {/* Footer: dirty indicator (left) + StorageMeter 6px bar (center) + Save button T.blue 44px primary */}
       <div
         style={{
           background: T.card,
@@ -474,14 +474,14 @@ export function ConstraintsBuilder({
         }}
       >
         <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-          {/* Left: dirty indicator ● Unsaved #e17a00 vs ✓ Up to date #0e9f6e */}
+          {/* Left: dirty indicator ● Unsaved T.amberAccent vs ✓ Up to date T.green */}
           <div style={{ minWidth: 130, display: "flex", alignItems: "center", gap: 8 }}>
             <span
               style={{
                 fontSize: 12,
                 fontWeight: 600,
                 fontFamily: T.sans,
-                color: dirty ? "#e17a00" : T.green,
+                color: dirty ? T.amberAccent : T.green,
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
@@ -509,7 +509,7 @@ export function ConstraintsBuilder({
             <div style={{ background: T.surface, borderRadius: 999, height: 6, overflow: "hidden", border: `1px solid ${T.border}` }}>
               <div
                 style={{
-                  background: charCount >= LIMIT ? T.red : charCount >= WARN ? "#e17a00" : T.green,
+                  background: charCount >= LIMIT ? T.red : charCount >= WARN ? T.amberAccent : T.green,
                   width: `${Math.min((charCount / LIMIT) * 100, 100)}%`,
                   height: "100%",
                   borderRadius: 999,
@@ -523,7 +523,7 @@ export function ConstraintsBuilder({
             </div>
           </div>
 
-          {/* Right: Save button #533afd 44px primary (disabled ghost when clean) */}
+          {/* Right: Save button T.blue 44px primary (disabled ghost when clean) */}
           <button
             onClick={handleSave}
             disabled={!dirty || isSaving}
@@ -541,7 +541,7 @@ export function ConstraintsBuilder({
               justifyContent: "center",
               transition: "all 0.15s ease",
               background: !dirty || isSaving ? T.card : T.blue,
-              color: !dirty || isSaving ? T.muted : "#fff",
+              color: !dirty || isSaving ? T.muted : T.card,
               border: `1px solid ${!dirty || isSaving ? T.border : T.blue}`,
               opacity: !dirty || isSaving ? 0.9 : 1,
               boxShadow: !dirty || isSaving ? "none" : T.shadowSm,

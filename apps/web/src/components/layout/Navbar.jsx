@@ -330,7 +330,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
                 padding: "7px 14px",
                 borderRadius: 6,
                 background: T.primary,
-                color: "#fff",
+                color: T.onColor,
                 border: `1px solid ${T.primary}`,
                 fontFamily: T.sansTabs,
                 fontSize: 13,
@@ -370,7 +370,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
                     height: 32,
                     borderRadius: 999,
                     background: T.primary,
-                    color: "#fff",
+                    color: T.onColor,
                     border: `1px solid ${T.primary}`,
                     fontFamily: T.sansTabs,
                     fontSize: 11,
@@ -485,7 +485,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(6,27,49,0.32)",
+            background: T.overlaySoft,
             backdropFilter: "blur(2px)",
             WebkitBackdropFilter: "blur(2px)",
             opacity: mobileOpen ? 1 : 0,
@@ -615,7 +615,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
                 <button
                   type="button"
                   onClick={() => { setMobileOpen(false); onOpenNewJob?.(); }}
-                  style={{ flex: 1, padding: "10px 12px", borderRadius: 6, border: `1px solid ${T.primary}`, background: T.primary, color: "#fff", fontFamily: T.sansTabs, fontSize: 13, fontWeight: 600, cursor: "pointer", boxShadow: T.shadowStripe }}
+                  style={{ flex: 1, padding: "10px 12px", borderRadius: 6, border: `1px solid ${T.primary}`, background: T.primary, color: T.onColor, fontFamily: T.sansTabs, fontSize: 13, fontWeight: 600, cursor: "pointer", boxShadow: T.shadowStripe }}
                 >
                   + Add Job
                 </button>
@@ -625,7 +625,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
             {candidate && (
               <div style={{ marginTop: "auto", paddingTop: 12, borderTop: `1px solid ${T.borderNav}`, display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 999, background: T.primary, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.sansTabs, fontSize: 11, fontWeight: 800 }}>{initials}</div>
+                  <div style={{ width: 32, height: 32, borderRadius: 999, background: T.primary, color: T.onColor, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.sansTabs, fontSize: 11, fontWeight: 800 }}>{initials}</div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontFamily: T.sansTabs, fontSize: 12, fontWeight: 700, color: T.textStrong, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{candidate.full_name || candidate.fullName || "Candidate"}</div>
                     <div style={{ fontFamily: T.sansTabs, fontSize: 11, color: T.tabInactive, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{candidate.email || ""}</div>
@@ -648,7 +648,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
         .nav-tab-btn:focus-visible {
           outline: 2px solid ${T.primary};
           outline-offset: 2px;
-          box-shadow: 0 0 0 3px rgba(83,58,253,0.18);
+          box-shadow: 0 0 0 3px ${T.hoverTint};
         }
         .nav-cmdk:focus-visible, .nav-topup:focus-visible {
           outline: 2px solid ${T.primary};

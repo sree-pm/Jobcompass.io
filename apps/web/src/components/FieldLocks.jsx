@@ -35,26 +35,26 @@ function StripeCheck({ checked, disabled, alwaysLocked }) {
         width: 16, height: 16, minWidth: 16, minHeight: 16,
         borderRadius: 4,
         border: `1.5px solid ${checked ? T.blue : T.borderStrong}`,
-        background: checked ? T.blue : "#fff",
+        background: checked ? T.blue : T.card,
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         flexShrink: 0,
         transition: "background 0.14s, border-color 0.14s, opacity 0.14s",
         opacity: disabled ? 0.6 : 1,
         filter: alwaysLocked ? "grayscale(0.2)" : "none",
         // subtle inner shadow when unchecked
-        boxShadow: checked ? "none" : "inset 0 0 0 1px rgba(0,0,0,0.02)",
+        boxShadow: checked ? "none" : `inset 0 0 0 1px ${T.overlayLight}`,
       }}
     >
       {checked && (
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden>
-          <path d="M2.2 5.1L4.1 7L7.9 3.1" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M2.2 5.1L4.1 7L7.9 3.1" stroke={T.card} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )}
     </span>
   );
 }
 
-// ── Memoised row — 40px, 6px radius, hover #f6f9fc ─────────────────────────
+// ── Memoised row — 40px, 6px radius, hover T.surface ─────────────────────────
 const FieldRow = React.memo(function FieldRow({ f, onToggle }) {
   const locked = f.isLocked;
   const always = f.alwaysLocked;
@@ -84,7 +84,7 @@ const FieldRow = React.memo(function FieldRow({ f, onToggle }) {
         height: 40,
         padding: "0 12px",
         borderRadius: 6,
-        background: always ? "#f8fafc" : "transparent",
+        background: always ? T.surfaceAlt : "transparent",
         opacity: always ? 0.6 : 1,
         filter: always ? "grayscale(0.2)" : "none",
         cursor: canToggle ? "pointer" : "default",
@@ -92,7 +92,7 @@ const FieldRow = React.memo(function FieldRow({ f, onToggle }) {
         userSelect: "none",
       }}
       onMouseEnter={(e) => { if (!always) e.currentTarget.style.background = T.surface; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = always ? "#f8fafc" : "transparent"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = always ? T.surfaceAlt : "transparent"; }}
     >
       {/* Checkbox — left */}
       {canToggle ? (
@@ -135,7 +135,7 @@ const FieldRow = React.memo(function FieldRow({ f, onToggle }) {
             letterSpacing: "0.04em",
             textTransform: "uppercase",
             color: T.hint,
-            background: "#f1f5f9",
+            background: T.surfaceCool,
             border: `1px solid ${T.border}`,
             borderRadius: 999,
             padding: "3px 8px",
@@ -163,7 +163,7 @@ const FieldRow = React.memo(function FieldRow({ f, onToggle }) {
   );
 });
 
-// ── Accordion section header — 13px Inter 510 #64748d, chevron ▼ ────────────
+// ── Accordion section header — 13px sans 510 T.muted, chevron ▼ ────────────
 function SectionAccordionHeader({ meta, count, lockedCount, collapsed, onToggle }) {
   return (
     <button
@@ -214,7 +214,7 @@ function SectionAccordionHeader({ meta, count, lockedCount, collapsed, onToggle 
         fontSize: 11,
         fontFamily: T.mono,
         color: T.muted,
-        background: "#fff",
+        background: T.card,
         border: `1px solid ${T.border}`,
         borderRadius: 999,
         padding: "1px 7px",
@@ -231,7 +231,7 @@ function SectionAccordionHeader({ meta, count, lockedCount, collapsed, onToggle 
   );
 }
 
-// ── Ghost bulk button — #f6f9fc → #533afd hover ──────────────────────────────
+// ── Ghost bulk button — T.surface → T.blue hover ──────────────────────────────
 function GhostBulkBtn({ children, onClick, disabled, title }) {
   return (
     <button
@@ -258,7 +258,7 @@ function GhostBulkBtn({ children, onClick, disabled, title }) {
       onMouseEnter={(e) => {
         if (disabled) return;
         e.currentTarget.style.background = T.blue;
-        e.currentTarget.style.color = "#fff";
+        e.currentTarget.style.color = T.card;
         e.currentTarget.style.borderColor = T.blue;
       }}
       onMouseLeave={(e) => {
@@ -348,7 +348,7 @@ export function FieldLocks(props) {
         boxShadow: T.shadowSm,
       }}
     >
-      {/* ── Header: 18px #061b31 600 + subtitle + right actions ─────────── */}
+      {/* ── Header: 18px T.heading 600 + subtitle + right actions ─────────── */}
       <div
         style={{
           padding: "16px 16px 12px",
@@ -404,7 +404,7 @@ export function FieldLocks(props) {
                 borderRadius: 6,
                 border: `1px solid ${focused ? T.blue : T.border}`,
                 boxShadow: focused ? `0 0 0 3px ${T.blue}14` : "none",
-                background: "#fff",
+                background: T.card,
                 color: T.text,
                 fontSize: 13,
                 fontFamily: T.sans,
@@ -424,7 +424,7 @@ export function FieldLocks(props) {
                 padding: "0 12px",
                 borderRadius: 6,
                 border: `1px solid ${T.border}`,
-                background: "#fff",
+                background: T.card,
                 color: T.muted,
                 fontSize: 12,
                 fontWeight: 600,
@@ -457,7 +457,7 @@ export function FieldLocks(props) {
         </div>
       </div>
 
-      {/* ── Stats row: 12px mono #64748d ─────────────────────────────────── */}
+      {/* ── Stats row: 12px mono T.muted ─────────────────────────────────── */}
       <div
         style={{
           display: "flex",
@@ -489,7 +489,7 @@ export function FieldLocks(props) {
       </div>
 
       {/* ── Body: grouped accordion ──────────────────────────────────────── */}
-      <div style={{ maxHeight: 520, overflowY: "auto", padding: 8, display: "flex", flexDirection: "column", gap: 8, background: "#fff" }}>
+      <div style={{ maxHeight: 520, overflowY: "auto", padding: 8, display: "flex", flexDirection: "column", gap: 8, background: T.card }}>
         {groups.length === 0 && (
           <div style={{ padding: 28, textAlign: "center", fontSize: 13, color: T.muted, fontFamily: T.sans, border: `1px dashed ${T.border}`, borderRadius: T.radiusMd, background: T.surface }}>
             No fields match “{query}”
@@ -506,7 +506,7 @@ export function FieldLocks(props) {
                 border: `1px solid ${T.border}`,
                 borderRadius: T.radiusMd,
                 overflow: "hidden",
-                background: "#fff",
+                background: T.card,
               }}
             >
               <SectionAccordionHeader
@@ -578,11 +578,11 @@ export function FieldLocks(props) {
         </span>
         <span style={{ color: T.borderStrong }}>·</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 10, height: 10, borderRadius: 3, border: `1.5px solid ${T.borderStrong}`, background: "#fff", display: "inline-block" }} />
+          <span style={{ width: 10, height: 10, borderRadius: 3, border: `1.5px solid ${T.borderStrong}`, background: T.card, display: "inline-block" }} />
           Editable
         </span>
         <span style={{ color: T.borderStrong }}>·</span>
-        <span title="Always locked rows are #f8fafc, grayscale 0.2, opacity 0.6 — Equality Act 2010 / GDPR: identity, photo/DOB and education cannot be unlocked." style={{ cursor: "help", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}>
+        <span title="Always locked rows are T.surfaceAlt, grayscale 0.2, opacity 0.6 — Equality Act 2010 / GDPR: identity, photo/DOB and education cannot be unlocked." style={{ cursor: "help", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}>
           Always locked = Equality Act — not toggleable
         </span>
       </div>
@@ -606,7 +606,7 @@ export function DiffView({ original, patched, operations, verifier }) {
       </div>
       <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 8 }}>
         {operations.map((op, i) => (
-          <div key={i} style={{ padding: "9px 11px", borderRadius: 6, background: op.path?.includes("summary") ? "#FEF3EC" : T.surface, border: `1px solid ${T.border}`, fontSize: 12, fontFamily: T.mono }}>
+          <div key={i} style={{ padding: "9px 11px", borderRadius: 6, background: op.path?.includes("summary") ? T.blueLight : T.surface, border: `1px solid ${T.border}`, fontSize: 12, fontFamily: T.mono }}>
             <span style={{ color: T.muted }}>{op.op}</span> <strong style={{ color: T.text }}>{op.path}</strong>
             <div style={{ marginTop: 5, color: T.text, whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: T.sans, fontSize: 12 }}>
               {typeof op.value === "string" ? op.value.slice(0, 280) : JSON.stringify(op.value)?.slice(0, 280)}

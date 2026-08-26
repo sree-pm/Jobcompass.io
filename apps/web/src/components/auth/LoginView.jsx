@@ -80,7 +80,7 @@ export function LoginView({ onLogin }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#f6f9fc",
+        background: T.surface,
         padding: 20,
         fontFamily: T.sans,
       }}
@@ -91,9 +91,9 @@ export function LoginView({ onLogin }) {
         style={{
           width: "100%",
           maxWidth: 440,
-          background: "#ffffff",
+          background: T.card,
           borderRadius: 12,
-          border: "1px solid #e5edf5",
+          border: `1px solid ${T.border}`,
           boxShadow: T.shadowFloat,
           padding: "36px 36px 28px",
           boxSizing: "border-box",
@@ -110,7 +110,7 @@ export function LoginView({ onLogin }) {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#fff",
+              color: T.onColor,
               fontWeight: 700,
               fontSize: 16,
               letterSpacing: "-0.02em",
@@ -122,11 +122,11 @@ export function LoginView({ onLogin }) {
           </div>
           <h1
             style={{
-              fontFamily: "'Source Sans 3', Inter, sans-serif",
+              fontFamily: T.sansDisplay,
               fontSize: 28,
               fontWeight: 300,
               letterSpacing: "-0.6px",
-              color: "#061b31",
+              color: T.text,
               margin: "0 0 6px",
               lineHeight: 1.2,
             }}
@@ -173,7 +173,7 @@ export function LoginView({ onLogin }) {
                 width: "100%",
                 height: 44,
                 borderRadius: 6,
-                border: `1px solid ${emailFocused ? T.blue : emailError ? T.red : "#e5edf5"}`,
+                border: `1px solid ${emailFocused ? T.blue : emailError ? T.red : T.border}`,
                 boxShadow: emailFocused ? `0 0 0 3px ${T.blue}18` : "none",
                 padding: "0 13px",
                 fontSize: 14,
@@ -182,10 +182,10 @@ export function LoginView({ onLogin }) {
                 outline: "none",
                 boxSizing: "border-box",
                 transition: "border-color 0.15s, box-shadow 0.15s",
-                background: "#fff",
+                background: T.card,
               }}
             />
-            <style>{`#login-email::placeholder{color:#94a3b8}`}</style>
+            <style>{`#login-email::placeholder{color:${T.hint}}`}</style>
             {emailError && <div style={{ color: T.red, fontSize: 12, marginTop: 6, fontWeight: 500 }}>{emailError}</div>}
             {error && !emailError && <div style={{ color: T.red, fontSize: 12, marginTop: 8, fontWeight: 600 }}>{error}</div>}
 
@@ -193,18 +193,18 @@ export function LoginView({ onLogin }) {
               type="submit"
               disabled={loading || !email}
               onMouseEnter={(e) => {
-                if (!loading && email) e.currentTarget.style.background = "#4434d4";
+                if (!loading && email) e.currentTarget.style.background = T.blueHover;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#533afd";
+                e.currentTarget.style.background = T.blue;
               }}
               style={{
                 width: "100%",
                 height: 44,
                 borderRadius: 6,
-                background: "#533afd",
-                color: "#fff",
-                border: "1px solid #533afd",
+                background: T.blue,
+                color: T.onColor,
+                border: `1px solid ${T.blue}`,
                 fontSize: 14,
                 fontWeight: 600,
                 fontFamily: T.sans,
@@ -216,7 +216,7 @@ export function LoginView({ onLogin }) {
                 gap: 8,
                 marginTop: 16,
                 transition: "background 0.15s, opacity 0.15s",
-                boxShadow: "0 1px 2px rgba(83,58,253,0.18)",
+                boxShadow: `0 1px 2px ${T.hoverTint}`,
               }}
             >
               {loading && (
@@ -224,8 +224,8 @@ export function LoginView({ onLogin }) {
                   style={{
                     width: 16,
                     height: 16,
-                    border: "2px solid rgba(255,255,255,0.35)",
-                    borderTopColor: "#fff",
+                    border: `2px solid ${T.onColor}59`,
+                    borderTopColor: T.onColor,
                     borderRadius: 999,
                     display: "inline-block",
                     animation: "spin 0.7s linear infinite",
@@ -246,19 +246,19 @@ export function LoginView({ onLogin }) {
                   alignItems: "center",
                   gap: 8,
                   fontSize: 11,
-                  color: "#94a3b8",
+                  color: T.hint,
                   letterSpacing: "0.02em",
                   fontWeight: 500,
-                  borderTop: "1px solid #f1f5f9",
+                  borderTop: `1px solid ${T.surfaceCool}`,
                   paddingTop: 12,
                   width: "100%",
                   justifyContent: "center",
                 }}
               >
                 <span>GDPR</span>
-                <span style={{ color: "#e2e8f0" }}>•</span>
+                <span style={{ color: T.borderCool }}>•</span>
                 <span>UK-hosted</span>
-                <span style={{ color: "#e2e8f0" }}>•</span>
+                <span style={{ color: T.borderCool }}>•</span>
                 <span>D1 / R2</span>
               </div>
             </div>
@@ -336,7 +336,7 @@ export function LoginView({ onLogin }) {
                 width: "100%",
                 height: 44,
                 borderRadius: 6,
-                border: `1px solid ${codeFocused ? T.blue : "#e5edf5"}`,
+                border: `1px solid ${codeFocused ? T.blue : T.border}`,
                 boxShadow: codeFocused ? `0 0 0 3px ${T.blue}18` : "none",
                 padding: "0 13px",
                 fontSize: 16,
@@ -346,11 +346,11 @@ export function LoginView({ onLogin }) {
                 outline: "none",
                 boxSizing: "border-box",
                 transition: "border-color 0.15s, box-shadow 0.15s",
-                background: "#fff",
+                background: T.card,
                 textAlign: "center",
               }}
             />
-            <style>{`#login-code::placeholder{color:#94a3b8; letter-spacing:0.08em}`}</style>
+            <style>{`#login-code::placeholder{color:${T.hint}; letter-spacing:0.08em}`}</style>
 
             {error && <div style={{ color: T.red, fontSize: 12, marginTop: 8, fontWeight: 600 }}>{error}</div>}
 
@@ -358,18 +358,18 @@ export function LoginView({ onLogin }) {
               type="submit"
               disabled={loading || code.length !== 6}
               onMouseEnter={(e) => {
-                if (!loading && code.length === 6) e.currentTarget.style.background = "#4434d4";
+                if (!loading && code.length === 6) e.currentTarget.style.background = T.blueHover;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#533afd";
+                e.currentTarget.style.background = T.blue;
               }}
               style={{
                 width: "100%",
                 height: 44,
                 borderRadius: 6,
-                background: "#533afd",
-                color: "#fff",
-                border: "1px solid #533afd",
+                background: T.blue,
+                color: T.onColor,
+                border: `1px solid ${T.blue}`,
                 fontSize: 14,
                 fontWeight: 600,
                 fontFamily: T.sans,
@@ -381,7 +381,7 @@ export function LoginView({ onLogin }) {
                 gap: 8,
                 marginTop: 16,
                 transition: "background 0.15s, opacity 0.15s",
-                boxShadow: "0 1px 2px rgba(83,58,253,0.18)",
+                boxShadow: `0 1px 2px ${T.hoverTint}`,
               }}
             >
               {loading && (
@@ -389,8 +389,8 @@ export function LoginView({ onLogin }) {
                   style={{
                     width: 16,
                     height: 16,
-                    border: "2px solid rgba(255,255,255,0.35)",
-                    borderTopColor: "#fff",
+                    border: `2px solid ${T.onColor}59`,
+                    borderTopColor: T.onColor,
                     borderRadius: 999,
                     display: "inline-block",
                     animation: "spin 0.7s linear infinite",
@@ -400,7 +400,7 @@ export function LoginView({ onLogin }) {
               {loading ? "Verifying…" : "Sign in"}
             </button>
 
-            <p style={{ fontSize: 11, color: "#94a3b8", textAlign: "center", margin: "12px 0 0" }}>
+            <p style={{ fontSize: 11, color: T.hint, textAlign: "center", margin: "12px 0 0" }}>
               Code expires in 10 minutes · Check spam folder
             </p>
           </form>

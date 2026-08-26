@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { T } from "../common/Theme.js";
+import { T, PACK_BADGE } from "../common/Theme.js";
 import { createCheckoutSession } from "../../lib/cloudflareApi.js";
-// Stripe pricing table spec: overlay #061b31@40% + blur 8px, card 640px/12px/shadowFloat rgba(50,50,93,0.25), mono JetBrains Mono, hover #4434d4
+// Stripe pricing table spec: overlay T.scrim + blur 8px, card 640px/12px/shadowFloat T.shadowFloat, mono T.mono, hover T.blueHover
 
 const PACKS = [
   {
@@ -12,8 +12,9 @@ const PACKS = [
     price: "£10",
     priceNum: 10,
     perApp: "£0.10 / app",
-    badgeBg: "#efeaff",
-    badgeColor: "#533afd",
+    badgeBg: PACK_BADGE.Starter.bg,
+    badgeColor: PACK_BADGE.Starter.color,
+    badgeBorder: PACK_BADGE.Starter.border,
   },
   {
     id: "pack_active",
@@ -23,8 +24,9 @@ const PACKS = [
     price: "£25",
     priceNum: 25,
     perApp: "£0.10 / app",
-    badgeBg: "#ecfdf5",
-    badgeColor: "#0e9f6e",
+    badgeBg: PACK_BADGE.Active.bg,
+    badgeColor: PACK_BADGE.Active.color,
+    badgeBorder: PACK_BADGE.Active.border,
   },
   {
     id: "pack_power",
@@ -34,8 +36,9 @@ const PACKS = [
     price: "£50",
     priceNum: 50,
     perApp: "£0.10 / app",
-    badgeBg: "#eef2ff",
-    badgeColor: "#5e6ad2",
+    badgeBg: PACK_BADGE.Power.bg,
+    badgeColor: PACK_BADGE.Power.color,
+    badgeBorder: PACK_BADGE.Power.border,
   },
 ];
 
@@ -160,7 +163,7 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(6,27,49,0.40)",
+        background: T.scrim,
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         zIndex: 999,
@@ -238,7 +241,7 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
               transition: "background 0.15s, border-color 0.15s, color 0.15s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#f6f9fc";
+              e.currentTarget.style.background = T.surface;
               e.currentTarget.style.borderColor = T.border;
               e.currentTarget.style.color = T.text;
             }}
@@ -289,12 +292,12 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
                   }}
                   style={{
                     position: "relative",
-                    background: "#ffffff",
+                    background: T.card,
                     borderRadius: 8,
                     padding: "16px 14px",
                     cursor: "pointer",
                     border: isSelected ? `2px solid ${T.blue}` : `1px solid ${T.border}`,
-                    boxShadow: isSelected ? `0 0 0 3px rgba(83,58,253,0.12)` : "none",
+                    boxShadow: isSelected ? `0 0 0 3px ${T.selectRing}` : "none",
                     outline: "none",
                     transition: "border-color 0.15s, box-shadow 0.15s, transform 0.15s",
                     display: "flex",
@@ -305,14 +308,14 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
                   onFocus={(e) => {
                     if (!isSelected) {
                       e.currentTarget.style.borderColor = T.borderStrong;
-                      e.currentTarget.style.boxShadow = "0 1px 4px rgba(6,27,49,0.06)";
+                      e.currentTarget.style.boxShadow = `0 1px 4px ${T.overlayLight}`;
                     } else {
-                      e.currentTarget.style.boxShadow = `0 0 0 3px rgba(83,58,253,0.18)`;
+                      e.currentTarget.style.boxShadow = `0 0 0 3px ${T.hoverTint}`;
                     }
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.borderColor = isSelected ? T.blue : T.border;
-                    e.currentTarget.style.boxShadow = isSelected ? `0 0 0 3px rgba(83,58,253,0.12)` : "none";
+                    e.currentTarget.style.boxShadow = isSelected ? `0 0 0 3px ${T.selectRing}` : "none";
                   }}
                 >
                   {isSelected && (
@@ -326,7 +329,7 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
                         height: 20,
                         borderRadius: 999,
                         background: T.blue,
-                        color: "#fff",
+                        color: T.card,
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -349,7 +352,7 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
                       borderRadius: 999,
                       background: pack.badgeBg,
                       color: pack.badgeColor,
-                      border: `1px solid ${pack.badgeBg}`,
+                      border: `1px solid ${pack.badgeBorder}`,
                       fontSize: 10,
                       fontWeight: 510,
                       letterSpacing: "0.04em",
@@ -441,8 +444,8 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
               display: "flex",
               alignItems: "center",
               gap: 8,
-              border: `1px solid ${devMode ? "#b9b9f9" : "#86efac"}`,
-              background: devMode ? "#f0f0ff" : "#ecfdf5",
+              border: `1px solid ${devMode ? T.blueMid : T.greenMid}`,
+              background: devMode ? T.blueLight : T.greenPale,
               color: devMode ? T.blue : T.green,
               lineHeight: 1.4,
             }}
@@ -461,8 +464,8 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
                 textTransform: "uppercase",
                 padding: "3px 8px",
                 borderRadius: 999,
-                background: "#fff",
-                border: `1px solid ${devMode ? "#b9b9f9" : "#86efac"}`,
+                background: T.card,
+                border: `1px solid ${devMode ? T.blueMid : T.greenMid}`,
                 color: devMode ? T.blue : T.green,
                 whiteSpace: "nowrap",
               }}
@@ -481,7 +484,7 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
               borderRadius: 8,
               border: `1px solid ${T.blue}`,
               background: isLoading ? T.blue : T.blue,
-              color: "#fff",
+              color: T.card,
               fontSize: 13,
               fontWeight: 600,
               fontFamily: T.sans,
@@ -491,7 +494,7 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
               justifyContent: "center",
               gap: 6,
               opacity: isLoading ? 0.72 : 1,
-              boxShadow: isLoading ? `0 0 0 3px rgba(83,58,253,0.18)` : "none",
+              boxShadow: isLoading ? `0 0 0 3px ${T.hoverTint}` : "none",
               transition: "background 0.15s, box-shadow 0.15s, opacity 0.15s",
               outline: "none",
             }}
@@ -505,10 +508,10 @@ export function BuyCreditsModal({ candidateId, currentBalance = 0, onClose, onPu
               e.currentTarget.style.borderColor = T.blue;
             }}
             onFocus={(e) => {
-              e.currentTarget.style.boxShadow = `0 0 0 3px rgba(83,58,253,0.28)`;
+              e.currentTarget.style.boxShadow = `0 0 0 3px ${T.focusRingStrong}`;
             }}
             onBlur={(e) => {
-              e.currentTarget.style.boxShadow = isLoading ? `0 0 0 3px rgba(83,58,253,0.18)` : "none";
+              e.currentTarget.style.boxShadow = isLoading ? `0 0 0 3px ${T.hoverTint}` : "none";
             }}
           >
             {isLoading ? (devMode ? "Adding credits…" : "Redirecting to Stripe…") : "Continue to checkout →"}

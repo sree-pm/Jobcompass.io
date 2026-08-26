@@ -35,3 +35,10 @@ jobs:
           node --experimental-strip-types apps/api/test/credits.test.js
           node --experimental-strip-types apps/api/test/matcher.test.js
           node --experimental-strip-types apps/api/test/interview.test.js
+          node apps/api/test/agentGuards.test.js
+
+      - name: Run Platform Agent Tests
+        run: node --experimental-strip-types --import apps/api/test/_registerTsResolver.mjs apps/api/test/platformAgents.test.js
+
+      - name: Design System Guard (no hardcoded styles outside Theme.js)
+        run: node apps/api/test/designSystemGuard.test.js

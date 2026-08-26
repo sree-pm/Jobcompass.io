@@ -44,9 +44,9 @@ function Stepper({ step }) {
                   fontSize: 13,
                   fontWeight: 700,
                   fontFamily: T.sans,
-                  border: `1.5px solid ${isActive || isDone ? "#533afd" : "#e5edf5"}`,
-                  background: isActive || isDone ? "#533afd" : "#fff",
-                  color: isActive || isDone ? "#fff" : T.muted,
+                  border: `1.5px solid ${isActive || isDone ? T.blue : T.border}`,
+                  background: isActive || isDone ? T.blue : T.card,
+                  color: isActive || isDone ? T.card : T.muted,
                   transition: "all 0.15s",
                 }}
               >
@@ -56,7 +56,7 @@ function Stepper({ step }) {
                 style={{
                   fontSize: 11,
                   fontWeight: isActive ? 700 : 500,
-                  color: isActive ? "#533afd" : isDone ? T.text : T.muted,
+                  color: isActive ? T.blue : isDone ? T.text : T.muted,
                   letterSpacing: "0.02em",
                 }}
               >
@@ -68,7 +68,7 @@ function Stepper({ step }) {
                 style={{
                   width: 56,
                   height: 2,
-                  background: s.id < step ? "#533afd" : "#e5edf5",
+                  background: s.id < step ? T.blue : T.border,
                   margin: "0 8px",
                   marginBottom: 18,
                   borderRadius: 999,
@@ -234,7 +234,7 @@ export function OnboardingWizard({ onComplete }) {
   const cvLines = cvText ? cvText.split("\n").length : 0;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f6f9fc", padding: "32px 16px 40px", fontFamily: T.sans }}>
+    <div style={{ minHeight: "100vh", background: T.surface, padding: "32px 16px 40px", fontFamily: T.sans }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap');`}</style>
 
       <div style={{ maxWidth: 720, margin: "0 auto" }}>
@@ -249,7 +249,7 @@ export function OnboardingWizard({ onComplete }) {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#fff",
+              color: T.card,
               fontWeight: 700,
               fontSize: 16,
               letterSpacing: "-0.02em",
@@ -265,7 +265,7 @@ export function OnboardingWizard({ onComplete }) {
               fontSize: 28,
               fontWeight: 300,
               letterSpacing: "-0.6px",
-              color: "#061b31",
+              color: T.text,
               margin: "0 0 6px",
               lineHeight: 1.2,
             }}
@@ -280,8 +280,8 @@ export function OnboardingWizard({ onComplete }) {
         {/* Card */}
         <div
           style={{
-            background: "#fff",
-            border: "1px solid #e5edf5",
+            background: T.card,
+            border: `1px solid ${T.border}`,
             borderRadius: 12,
             boxShadow: T.shadowFloat,
             overflow: "hidden",
@@ -314,20 +314,20 @@ export function OnboardingWizard({ onComplete }) {
                     }
                   }}
                   style={{
-                    border: `1.5px dashed ${dragOver ? "#533afd" : "#b9b9f9"}`,
+                    border: `1.5px dashed ${dragOver ? T.blue : T.blueMid}`,
                     borderRadius: 12,
                     padding: 28,
                     textAlign: "center",
-                    background: dragOver ? "#f0f0ff" : "#fff",
+                    background: dragOver ? T.blueLight : T.card,
                     cursor: "pointer",
                     transition: "background 0.15s, border-color 0.15s",
                     marginBottom: 16,
                   }}
                   onMouseEnter={(e) => {
-                    if (!dragOver) e.currentTarget.style.background = "#f0f0ff";
+                    if (!dragOver) e.currentTarget.style.background = T.blueLight;
                   }}
                   onMouseLeave={(e) => {
-                    if (!dragOver) e.currentTarget.style.background = "#fff";
+                    if (!dragOver) e.currentTarget.style.background = T.card;
                   }}
                 >
                   <input
@@ -353,11 +353,11 @@ export function OnboardingWizard({ onComplete }) {
                     margin: "16px 0 12px",
                   }}
                 >
-                  <div style={{ flex: 1, height: 1, background: "#e5edf5" }} />
+                  <div style={{ flex: 1, height: 1, background: T.border }} />
                   <span style={{ fontSize: 11, color: T.hint, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                     Or paste
                   </span>
-                  <div style={{ flex: 1, height: 1, background: "#e5edf5" }} />
+                  <div style={{ flex: 1, height: 1, background: T.border }} />
                 </div>
 
                 <label htmlFor="cv-paste" style={{ display: "block", fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 6 }}>
@@ -377,8 +377,8 @@ export function OnboardingWizard({ onComplete }) {
                     width: "100%",
                     minHeight: 140,
                     height: 140,
-                    background: "#fff",
-                    border: `1px solid ${fieldErrors.cvText ? T.red : "#e5edf5"}`,
+                    background: T.card,
+                    border: `1px solid ${fieldErrors.cvText ? T.red : T.border}`,
                     boxShadow: fieldErrors.cvText ? `0 0 0 3px ${T.red}18` : "none",
                     borderRadius: 6,
                     padding: "10px 13px",
@@ -399,13 +399,13 @@ export function OnboardingWizard({ onComplete }) {
                   <div
                     style={{
                       marginTop: 14,
-                      border: "1px solid #e5edf5",
+                      border: `1px solid ${T.border}`,
                       borderRadius: 8,
                       overflow: "hidden",
-                      background: "#fff",
+                      background: T.card,
                     }}
                   >
-                    <div style={{ padding: "9px 14px", background: "#f6f9fc", borderBottom: "1px solid #e5edf5", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ padding: "9px 14px", background: T.surface, borderBottom: `1px solid ${T.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: "0.06em", textTransform: "uppercase" }}>Parse preview · {cvChars.toLocaleString()} chars · {cvLines} lines</span>
                       <span style={{ fontSize: 11, color: T.green, fontWeight: 700 }}>✓ Ready</span>
                     </div>
@@ -417,7 +417,7 @@ export function OnboardingWizard({ onComplete }) {
                         fontSize: 11.5,
                         lineHeight: 1.6,
                         color: T.text,
-                        background: "#fff",
+                        background: T.card,
                         whiteSpace: "pre-wrap",
                         wordBreak: "break-word",
                         maxHeight: 160,
@@ -432,11 +432,11 @@ export function OnboardingWizard({ onComplete }) {
                   <div
                     style={{
                       marginTop: 14,
-                      border: "1px dashed #e5edf5",
+                      border: `1px dashed ${T.border}`,
                       borderRadius: 8,
                       padding: 20,
                       textAlign: "center",
-                      background: "#f6f9fc",
+                      background: T.surface,
                     }}
                   >
                     <div style={{ fontSize: 11, color: T.muted, fontWeight: 600, letterSpacing: "0.04em" }}>No CV yet — drop a PDF or paste text above</div>
@@ -454,7 +454,7 @@ export function OnboardingWizard({ onComplete }) {
                 </p>
 
                 {previewRegistry.length === 0 ? (
-                  <div style={{ border: "1px dashed #e5edf5", borderRadius: 8, padding: 32, textAlign: "center", background: "#f6f9fc" }}>
+                  <div style={{ border: `1px dashed ${T.border}`, borderRadius: 8, padding: 32, textAlign: "center", background: T.surface }}>
                     <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.7 }}>🔒</div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: T.text, marginBottom: 4 }}>No fields to lock yet</div>
                     <div style={{ fontSize: 12, color: T.muted, marginBottom: 12 }}>Upload your CV in the previous step to preview locks.</div>
@@ -463,8 +463,8 @@ export function OnboardingWizard({ onComplete }) {
                       style={{
                         padding: "7px 14px",
                         borderRadius: 6,
-                        border: "1px solid #e5edf5",
-                        background: "#fff",
+                        border: `1px solid ${T.border}`,
+                        background: T.card,
                         color: T.blue,
                         fontSize: 12,
                         fontWeight: 600,
@@ -511,7 +511,7 @@ export function OnboardingWizard({ onComplete }) {
                         width: "100%",
                         height: 44,
                         borderRadius: 6,
-                        border: `1px solid ${fieldErrors.fullName ? T.red : "#e5edf5"}`,
+                        border: `1px solid ${fieldErrors.fullName ? T.red : T.border}`,
                         boxShadow: fieldErrors.fullName ? `0 0 0 3px ${T.red}18` : "none",
                         padding: "0 13px",
                         fontSize: 13,
@@ -519,7 +519,7 @@ export function OnboardingWizard({ onComplete }) {
                         color: T.text,
                         outline: "none",
                         boxSizing: "border-box",
-                        background: "#fff",
+                        background: T.card,
                       }}
                     />
                     {fieldErrors.fullName && touched.fullName && <div style={{ color: T.red, fontSize: 11, marginTop: 4, fontWeight: 500 }}>{fieldErrors.fullName}</div>}
@@ -542,14 +542,14 @@ export function OnboardingWizard({ onComplete }) {
                         width: "100%",
                         height: 44,
                         borderRadius: 6,
-                        border: `1px solid ${fieldErrors.email ? T.red : "#e5edf5"}`,
+                        border: `1px solid ${fieldErrors.email ? T.red : T.border}`,
                         padding: "0 13px",
                         fontSize: 13,
                         fontFamily: T.sans,
                         color: T.text,
                         outline: "none",
                         boxSizing: "border-box",
-                        background: "#fff",
+                        background: T.card,
                       }}
                     />
                     {fieldErrors.email && touched.email && <div style={{ color: T.red, fontSize: 11, marginTop: 4, fontWeight: 500 }}>{fieldErrors.email}</div>}
@@ -571,8 +571,8 @@ export function OnboardingWizard({ onComplete }) {
                       style={{
                         width: "100%",
                         minHeight: 132,
-                        background: "#fff",
-                        border: "1px solid #e5edf5",
+                        background: T.card,
+                        border: `1px solid ${T.border}`,
                         borderRadius: 6,
                         padding: "10px 12px",
                         fontSize: 13,
@@ -601,8 +601,8 @@ export function OnboardingWizard({ onComplete }) {
                       style={{
                         width: "100%",
                         minHeight: 132,
-                        background: "#fff",
-                        border: "1px solid #e5edf5",
+                        background: T.card,
+                        border: `1px solid ${T.border}`,
                         borderRadius: 6,
                         padding: "10px 12px",
                         fontSize: 13,
@@ -619,7 +619,7 @@ export function OnboardingWizard({ onComplete }) {
                 </div>
 
                 {/* RtW panel */}
-                <div style={{ background: "#f6f9fc", border: "1px solid #e5edf5", borderRadius: 8, padding: 14, marginBottom: 8 }}>
+                <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 8, padding: 14, marginBottom: 8 }}>
                   <label htmlFor="ob-rtw" style={{ display: "block", fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 6 }}>
                     🇬🇧 Right to work
                   </label>
@@ -630,8 +630,8 @@ export function OnboardingWizard({ onComplete }) {
                     onChange={(e) => setProfile({ ...profile, rightToWork: e.target.value })}
                     style={{
                       width: "100%",
-                      background: "#fff",
-                      border: "1px solid #e5edf5",
+                      background: T.card,
+                      border: `1px solid ${T.border}`,
                       borderRadius: 6,
                       padding: "10px 10px",
                       fontSize: 13,
@@ -661,8 +661,8 @@ export function OnboardingWizard({ onComplete }) {
                         onChange={(e) => setProfile({ ...profile, rightToWorkExpiry: e.target.value })}
                         style={{
                           width: "100%",
-                          background: "#fff",
-                          border: `1px solid ${fieldErrors.rightToWorkExpiry ? T.red : "#e5edf5"}`,
+                          background: T.card,
+                          border: `1px solid ${fieldErrors.rightToWorkExpiry ? T.red : T.border}`,
                           borderRadius: 6,
                           padding: "10px 10px",
                           fontSize: 13,
@@ -676,7 +676,7 @@ export function OnboardingWizard({ onComplete }) {
                       {fieldErrors.rightToWorkExpiry && <div style={{ color: T.red, fontSize: 11, marginTop: 4 }}>{fieldErrors.rightToWorkExpiry}</div>}
                     </div>
                   ) : (
-                    <div style={{ fontSize: 11, color: T.muted, background: "#fff", border: "1px solid #e5edf5", borderRadius: 6, padding: "8px 10px" }}>
+                    <div style={{ fontSize: 11, color: T.muted, background: T.card, border: `1px solid ${T.border}`, borderRadius: 6, padding: "8px 10px" }}>
                       {profile.rightToWork === "British Citizen" ? "No expiry needed — British Citizen." : "No expiry required for this status."}
                     </div>
                   )}
@@ -696,14 +696,14 @@ export function OnboardingWizard({ onComplete }) {
                           width: "100%",
                           height: 44,
                           borderRadius: 6,
-                          border: "1px solid #e5edf5",
+                          border: `1px solid ${T.border}`,
                           padding: "0 13px",
                           fontSize: 13,
                           fontFamily: T.sans,
                           color: T.text,
                           outline: "none",
                           boxSizing: "border-box",
-                          background: "#fff",
+                          background: T.card,
                         }}
                       />
                     </div>
@@ -720,14 +720,14 @@ export function OnboardingWizard({ onComplete }) {
                           width: "100%",
                           height: 44,
                           borderRadius: 6,
-                          border: "1px solid #e5edf5",
+                          border: `1px solid ${T.border}`,
                           padding: "0 13px",
                           fontSize: 13,
                           fontFamily: T.sans,
                           color: T.text,
                           outline: "none",
                           boxSizing: "border-box",
-                          background: "#fff",
+                          background: T.card,
                         }}
                       />
                     </div>
@@ -755,8 +755,8 @@ export function OnboardingWizard({ onComplete }) {
               justifyContent: "space-between",
               alignItems: "center",
               padding: "16px 28px",
-              borderTop: "1px solid #e5edf5",
-              background: "#f6f9fc",
+              borderTop: `1px solid ${T.border}`,
+              background: T.surface,
               gap: 12,
             }}
           >
@@ -767,9 +767,9 @@ export function OnboardingWizard({ onComplete }) {
                 height: 44,
                 padding: "0 18px",
                 borderRadius: 6,
-                border: `1px solid ${step === 1 ? "#e5edf5" : "#e5edf5"}`,
-                background: "#fff",
-                color: step === 1 ? "#94a3b8" : T.text,
+                border: `1px solid ${step === 1 ? T.border : T.border}`,
+                background: T.card,
+                color: step === 1 ? T.hint : T.text,
                 fontSize: 13,
                 fontWeight: 600,
                 fontFamily: T.sans,
@@ -786,25 +786,25 @@ export function OnboardingWizard({ onComplete }) {
                 height: 44,
                 padding: "0 22px",
                 borderRadius: 6,
-                background: "#533afd",
-                color: "#fff",
-                border: "1px solid #533afd",
+                background: T.blue,
+                color: T.card,
+                border: `1px solid ${T.blue}`,
                 fontSize: 14,
                 fontWeight: 600,
                 fontFamily: T.sans,
                 cursor: "pointer",
-                boxShadow: "0 1px 2px rgba(83,58,253,0.18)",
+                boxShadow: T.hoverShadow,
                 transition: "background 0.15s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#4434d4")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#533afd")}
+              onMouseEnter={(e) => (e.currentTarget.style.background = T.blueHover)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = T.blue)}
             >
               {step === 3 ? "Complete setup →" : "Continue →"}
             </button>
           </div>
         </div>
 
-        <p style={{ fontSize: 11, color: "#94a3b8", textAlign: "center", marginTop: 14 }}>GDPR • UK-hosted • D1 / R2 · Stripe Checkout UX — 30s to start</p>
+        <p style={{ fontSize: 11, color: T.hint, textAlign: "center", marginTop: 14 }}>GDPR • UK-hosted • D1 / R2 · Stripe Checkout UX — 30s to start</p>
       </div>
     </div>
   );

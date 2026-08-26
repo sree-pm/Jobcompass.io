@@ -28,7 +28,7 @@ function PillTabs({ tabs, active, onChange }) {
               borderRadius: 6,
               border: isActive ? `1px solid ${T.stripePrimary}` : `1px solid transparent`,
               background: isActive ? T.stripePrimary : T.stripeBg,
-              color: isActive ? "#fff" : T.textStrong,
+              color: isActive ? T.card : T.textStrong,
               fontSize: 12,
               fontWeight: isActive ? 700 : 500,
               cursor: "pointer",
@@ -58,7 +58,7 @@ function CopyBtn({ text, label, copiedKey, copyKey, onCopy }) {
         height: 28,
         fontSize: 11,
         background: isCopied ? T.green : T.stripeBg,
-        color: isCopied ? "#fff" : T.stripePrimary,
+        color: isCopied ? T.card : T.stripePrimary,
         border: `1px solid ${isCopied ? T.green : T.border}`,
       }}
     >

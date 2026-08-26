@@ -12,7 +12,7 @@ const LABEL_STYLE = {
   display: "block",
   fontSize: 12,
   fontWeight: 600,
-  color: "#273951",
+  color: T.label,
   marginBottom: 6,
   letterSpacing: 0,
   fontFamily: T.sans,
@@ -54,7 +54,7 @@ function SInput({ label, value, onChange, placeholder, disabled, type = "text" }
           ...(focused && !disabled
             ? {
                 borderColor: T.blue,
-                boxShadow: `0 0 0 3px rgba(83,58,253,0.15)`,
+                boxShadow: `0 0 0 3px ${T.focusRing}`,
               }
             : null),
         }}
@@ -88,7 +88,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(6,27,49,0.40)",
+        background: T.scrim,
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         zIndex: 999,
@@ -135,7 +135,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
           }}
         >
           <div style={{ fontSize: 13, fontWeight: 700, color: T.red, marginBottom: 4, fontFamily: T.sans }}>This is irreversible</div>
-          <div style={{ fontSize: 12, color: "#7f1d1d", lineHeight: 1.5, fontFamily: T.sans }}>
+          <div style={{ fontSize: 12, color: T.redDark, lineHeight: 1.5, fontFamily: T.sans }}>
             This will permanently delete <strong>{candidateEmail || "your account"}</strong>, all resumes, applications, tailored
             dossiers and credit history. This exercises your <strong>Right to Erasure (GDPR Art. 17)</strong> and cannot be undone.
           </div>
@@ -159,7 +159,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
           in the box below, tick the acknowledgement, then press Delete.
         </div>
 
-        <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#273951", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 6, fontFamily: T.sans }}>
+        <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: T.label, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 6, fontFamily: T.sans }}>
           Type DELETE to confirm
         </label>
         <input
@@ -185,7 +185,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
           }}
           onFocus={(e) => {
             e.currentTarget.style.borderColor = typed && typed !== "DELETE" ? T.redMid : T.blue;
-            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(83,58,253,0.15)";
+            e.currentTarget.style.boxShadow = `0 0 0 3px ${T.focusRing}`;
           }}
           onBlur={(e) => {
             e.currentTarget.style.borderColor = typed && typed !== "DELETE" ? T.redMid : T.border;
@@ -233,8 +233,8 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
             onClick={handleDelete}
             disabled={!canDelete}
             style={{
-              background: canDelete ? T.red : "#f1f5f9",
-              color: canDelete ? "#fff" : T.hint,
+              background: canDelete ? T.red : T.surfaceCool,
+              color: canDelete ? T.card : T.hint,
               border: `1px solid ${canDelete ? T.red : T.border}`,
               borderRadius: 6,
               padding: "0 18px",
@@ -477,7 +477,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
               </div>
             )}
 
-            {/* Buttons: Save primary #533afd + Reset ghost + hint 12px */}
+            {/* Buttons: Save primary T.blue + Reset ghost + hint 12px */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, flexWrap: "wrap" }}>
               <span style={{ fontSize: 12, color: T.hint, marginRight: "auto", fontFamily: T.sans }}>Auto-save debounced 800 ms · manual save also available</span>
               <button
@@ -504,8 +504,8 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
                 onClick={handleManualSave}
                 disabled={saveStatus === "saving" || !isDirty}
                 style={{
-                  background: !isDirty || saveStatus === "saving" ? "#e8eaf0" : T.blue,
-                  color: !isDirty || saveStatus === "saving" ? T.hint : "#fff",
+                  background: !isDirty || saveStatus === "saving" ? T.disabledBg : T.blue,
+                  color: !isDirty || saveStatus === "saving" ? T.hint : T.card,
                   border: `1px solid ${!isDirty || saveStatus === "saving" ? T.border : T.blue}`,
                   borderRadius: 6,
                   padding: "0 18px",
@@ -527,7 +527,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
 
         {/* RIGHT rail 320 */}
         <div style={{ flex: "0 0 320px", width: 320, display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-          {/* Compliance card (#f6f9fc, 8px) */}
+          {/* Compliance card (T.surface, 8px) */}
           <div
             style={{
               background: T.surface,
@@ -565,11 +565,11 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
             </div>
           </div>
 
-          {/* Danger zone card (white, 1px #fecaca, 8px, red header #df1b41) */}
+          {/* Danger zone card (white, 1px T.redBorder, 8px, red header T.red) */}
           <div
             style={{
               background: T.card,
-              border: "1px solid #fecaca",
+              border: `1px solid ${T.redBorder}`,
               borderRadius: 8,
               padding: 18,
             }}
@@ -585,7 +585,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
                 onClick={() => setShowDeleteModal(true)}
                 style={{
                   background: T.red,
-                  color: "#fff",
+                  color: T.card,
                   border: `1px solid ${T.red}`,
                   borderRadius: 6,
                   padding: "0 14px",

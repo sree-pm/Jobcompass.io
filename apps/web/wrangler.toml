@@ -7,4 +7,4 @@ directory = "./dist"
 not_found_handling = "single-page-application"
 
 [vars]
-VITE_API_URL = "https://agentic-cv-api.workers.dev"
+VITE_API_URL = "https://jobcompass-api.infonaut.workers.dev"

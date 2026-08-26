@@ -63,7 +63,7 @@ export function InterviewPrepModal({ job, onClose }) {
           </div>
 
           {/* 7-Day Follow-Up Email */}
-          <Card style={{ padding: 12, border: `1px solid ${T.blueMid}`, background: "#FFFBF8" }}>
+          <Card style={{ padding: 12, border: `1px solid ${T.blueMid}`, background: T.card }}>
             <Row justify="space-between" align="center" style={{ marginBottom: 6 }}>
               <div>
                 <strong style={{ fontSize: 12, color: T.text }}>📅 7-Day Post-Application Check-In Email</strong>

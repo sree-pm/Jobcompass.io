@@ -39,7 +39,7 @@ export function ToastProvider({ children }) {
               fontSize: 13,
               fontWeight: 600,
               fontFamily: T.sans,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              boxShadow: T.shadow,
               maxWidth: 380,
               animation: "slideIn 0.2s ease-out",
             }}>

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
+import { T } from "../common/Theme.js";
 import { tailorResumeApi, generatePdf } from "../lib/cloudflareApi.js";
 import { DiffView } from "./FieldLocks.jsx";
-
-const T = { bg: "#FAF9F5", card: "#FFFFFF", border: "#E5E2D9", text: "#1C1917", muted: "#78716C", blue: "#D97857", green: "#15803d", red: "#dc2626" };
 
 export function TailorPanel({ masterResumeId, candidateId, job, constraintsDoc, fieldLocks, onTailored }) {
   const [loading, setLoading] = useState(false);
@@ -44,24 +43,24 @@ export function TailorPanel({ masterResumeId, candidateId, job, constraintsDoc, 
         <button
           onClick={run}
           disabled={loading || !job?.jd && !job?.jobDescription}
-          style={{ padding: "8px 16px", borderRadius: 7, background: loading ? T.muted : T.blue, color: "#fff", border: "none", fontSize: 12, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer" }}
+          style={{ padding: "8px 16px", borderRadius: 7, background: loading ? T.muted : T.blue, color: T.card, border: "none", fontSize: 12, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer" }}
         >
           {loading ? "Tailoring…" : "Tailor for this role"}
         </button>
       </div>
 
-      {error && <div style={{ margin: 12, padding: "10px 12px", background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 7, color: T.red, fontSize: 12 }}>{error}</div>}
+      {error && <div style={{ margin: 12, padding: "10px 12px", background: T.redPale, border: `1px solid ${T.redBorder}`, borderRadius: 7, color: T.red, fontSize: 12 }}>{error}</div>}
 
       {result && (
         <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 12 }}>
           <DiffView operations={result.operations} verifier={result.verifier} />
           {result.warnings?.length > 0 && (
-            <div style={{ padding: "10px 12px", background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 7, fontSize: 11, color: "#92400e" }}>
+            <div style={{ padding: "10px 12px", background: T.amberPale, border: `1px solid ${T.amberMid}`, borderRadius: 7, fontSize: 11, color: T.amberText }}>
               <strong>Warnings:</strong> {result.warnings.join(" · ")}
             </div>
           )}
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={createPdf} style={{ padding: "7px 14px", borderRadius: 7, background: T.green, color: "#fff", border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Generate A4 PDF (R2)</button>
+            <button onClick={createPdf} style={{ padding: "7px 14px", borderRadius: 7, background: T.greenDark, color: T.card, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Generate A4 PDF (R2)</button>
             <span style={{ fontSize: 11, color: T.muted, alignSelf: "center" }}>Tailored ID: {result.tailoredResumeId?.slice(0, 8)}… · Confidence {result.verifier?.confidenceScore}%</span>
           </div>
         </div>

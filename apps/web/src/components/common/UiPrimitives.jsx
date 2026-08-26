@@ -40,40 +40,40 @@ export function Row({ children, gap = 10, align = "center", justify = "flex-star
 export function Btn({ onClick, children, variant = "primary", size = "md", disabled = false, style = {}, title }) {
   const V = {
     primary: {
-      background: T.stripePrimary || "#533afd",
-      color: "#fff",
-      border: `1px solid ${T.stripePrimary || "#533afd"}`,
+      background: T.blue,
+      color: T.card,
+      border: `1px solid ${T.blue}`,
       boxShadow: T.shadowStripe,
     },
     stripe: {
-      background: T.stripePrimary,
-      color: "#fff",
-      border: `1px solid ${T.stripePrimary}`,
+      background: T.blue,
+      color: T.card,
+      border: `1px solid ${T.blue}`,
       boxShadow: T.shadowStripe,
     },
     indigo: {
       background: T.indigo,
-      color: "#fff",
+      color: T.card,
       border: `1px solid ${T.indigo}`,
-      boxShadow: "0 1px 2px rgba(67,56,202,0.15)",
+      boxShadow: T.shadowSm,
     },
     ghost: {
       background: T.card,
-      color: T.textStrong || "#061b31",
+      color: T.text,
       border: `1px solid ${T.border}`,
     },
     outline: {
       background: "transparent",
-      color: T.textStrong || "#061b31",
+      color: T.text,
       border: `1px solid ${T.borderStrong}`,
     },
     subtle: {
-      background: T.stripeBg || "#f6f9fc",
-      color: T.stripePrimary,
+      background: T.surface,
+      color: T.blue,
       border: `1px solid ${T.border}`,
     },
-    success: { background: T.green, color: "#fff", border: `1px solid ${T.green}` },
-    danger: { background: T.red, color: "#fff", border: `1px solid ${T.red}` },
+    success: { background: T.green, color: T.card, border: `1px solid ${T.green}` },
+    danger: { background: T.red, color: T.card, border: `1px solid ${T.red}` },
   };
   const S = {
     xs: { padding: "3px 9px", fontSize: 11, borderRadius: 6, minHeight: 26 },
@@ -107,18 +107,18 @@ export function Btn({ onClick, children, variant = "primary", size = "md", disab
       onMouseEnter={e => {
         if (disabled) return;
         if (variant === "subtle") {
-          e.currentTarget.style.background = T.stripePrimary;
-          e.currentTarget.style.color = "#fff";
-          e.currentTarget.style.borderColor = T.stripePrimary;
+          e.currentTarget.style.background = T.blue;
+          e.currentTarget.style.color = T.card;
+          e.currentTarget.style.borderColor = T.blue;
         }
         if (variant === "ghost" || variant === "outline") {
-          e.currentTarget.style.borderColor = T.stripePrimary;
+          e.currentTarget.style.borderColor = T.blue;
         }
       }}
       onMouseLeave={e => {
         if (variant === "subtle") {
-          e.currentTarget.style.background = T.stripeBg;
-          e.currentTarget.style.color = T.stripePrimary;
+          e.currentTarget.style.background = T.surface;
+          e.currentTarget.style.color = T.blue;
           e.currentTarget.style.borderColor = T.border;
         }
         if (variant === "ghost" || variant === "outline") {
@@ -169,7 +169,7 @@ export function Field({ label, value, onChange, placeholder, multi, rows = 4, st
 }
 
 export function Tag({ label, color, bg }) {
-  const c = color || T.stripePrimary;
+  const c = color || T.blue;
   return (
     <span
       style={{
@@ -189,17 +189,17 @@ export function Tag({ label, color, bg }) {
 }
 
 export function ScoreBar({ label, score, target = 75, note }) {
-  const color = score >= target ? T.green : score >= target - 15 ? T.yellow : T.red;
+  const color = score >= target ? T.green : score >= target - 15 ? T.amberAccent : T.red;
   return (
     <div style={{ marginBottom: 14 }}>
       <Row justify="space-between" style={{ marginBottom: 6 }}>
         <div>
-          <span style={{ fontSize: 12, color: T.textStrong, fontWeight: 600 }}>{label}</span>
+          <span style={{ fontSize: 12, color: T.text, fontWeight: 600 }}>{label}</span>
           {note && <span style={{ fontSize: 11, color: T.muted, marginLeft: 6 }}>{note}</span>}
         </div>
         <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color }}>{score}</span>
       </Row>
-      <div style={{ background: T.stripeBg, borderRadius: 999, height: 6, overflow: "hidden", border: `1px solid ${T.border}` }}>
+      <div style={{ background: T.surface, borderRadius: 999, height: 6, overflow: "hidden", border: `1px solid ${T.border}` }}>
         <div style={{ background: color, width: `${Math.min(score, 100)}%`, height: "100%", borderRadius: 999, transition: "width 0.8s ease-out" }} />
       </div>
     </div>
@@ -212,7 +212,7 @@ export function Modal({ title, children, onClose, maxWidth = 520 }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(6,27,49,0.42)",
+        background: T.overlay,
         backdropFilter: "blur(3px)",
         zIndex: 999,
         display: "flex",
@@ -235,7 +235,7 @@ export function Modal({ title, children, onClose, maxWidth = 520 }) {
         }}
       >
         <Row justify="space-between" style={{ marginBottom: 18 }}>
-          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: T.textStrong }}>{title}</h3>
+          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: T.text }}>{title}</h3>
           <button
             onClick={onClose}
             style={{ background: "none", border: "none", cursor: "pointer", fontSize: 22, color: T.muted, lineHeight: 1 }}
@@ -261,7 +261,7 @@ export function Empty({ icon, title, sub }) {
 
 export function StorageMeter({ count, limit, warn, label, color }) {
   const pct = Math.min((count / limit) * 100, 100);
-  const barColor = count >= limit ? T.red : count >= warn ? T.yellow : color || T.green;
+  const barColor = count >= limit ? T.red : count >= warn ? T.amberAccent : color || T.green;
   return (
     <div style={{ flex: 1 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>

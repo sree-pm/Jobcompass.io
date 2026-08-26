@@ -173,7 +173,7 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
                 style={{
                   background: T.stripePrimary,
                   borderColor: T.stripePrimary,
-                  color: "#fff",
+                  color: T.card,
                   height: 36,
                   minHeight: 36,
                   borderRadius: 6,
@@ -372,7 +372,7 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
             )}
           </div>
 
-          {/* Sticky bottom actions — Generate PDF outline vs Apply primary #4338ca */}
+          {/* Sticky bottom actions — Generate PDF outline vs Apply primary T.indigoDeep */}
           {verifier && (
             <div
               style={{
