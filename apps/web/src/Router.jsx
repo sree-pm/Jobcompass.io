@@ -14,6 +14,7 @@ import Changelog from "./pages/Changelog.jsx";
 import Status from "./pages/Status.jsx";
 import { Privacy, Terms, Cookies, Gdpr, Refunds, About, Contact } from "./pages/Legal.jsx";
 import App from "./App.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import { LoginView } from "./components/auth/LoginView.jsx";
 
 // Wrapper to keep App's internal activeTab in sync with URL /app/* for deep linking
@@ -49,7 +50,7 @@ export default function Router() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/auth" element={<LoginView onLogin={(res)=>{ if(res.token) localStorage.setItem("agentic_cv_uk_token", res.token); window.location.href="/app"; }} />} />
       <Route path="/app/*" element={<AppRoute />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

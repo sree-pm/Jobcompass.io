@@ -2,12 +2,12 @@ import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 const ENTRIES=[
-  ["2026-08-27","Marketing site + DLQ/credit/Stripe/router/atomic fixes","JobCompass v2.3 — 15 public pages, HITL showcase, £0.10/app positioning."],
-  ["2026-08-26","Prod hardening","CORS allowlist + queue DLQ + retries + batch tuning `a88fdf9`."],
-  ["2026-08-26","Web rename","jobcompass-web `bfb579a`."],
-  ["2026-08-26","Design 100% tokens","174 hardcoded values → T.*, guard + CI `e850b50`."],
-  ["2026-08-26","Cloudflare Email","jobcompass.io PIN + receipt `555157f`."],
-  ["2026-08-26","8-agent pipeline","A1-A5 + Vectorize + cron `870daa4`."],
+  ["2026-08-27","Marketing site + reliability fixes","JobCompass v2.3 — 15 public pages, human-in-the-loop showcase, £0.10 per application."],
+  ["2026-08-26","Production hardening","CORS allowlist, queue dead-letter queue, retries and batch tuning."],
+  ["2026-08-26","Web","New jobcompass-web domain."],
+  ["2026-08-26","Design system","All styles now served from design tokens with CI guard."],
+  ["2026-08-26","Email","PIN codes and Stripe receipts via jobcompass.io."],
+  ["2026-08-26","8-agent pipeline","Shared job library, enrichment, classification, verification and matching."],
 ];
 export default function Changelog(){
   return (

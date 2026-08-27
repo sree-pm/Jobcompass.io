@@ -88,13 +88,15 @@ app.post("/checkout", async (c) => {
 
     if (!res.ok) {
       const errText = await res.text();
-      return c.json({ error: "Stripe error: " + errText }, 500);
+      console.error("Stripe error", errText.slice(0,200));
+      return c.json({ error: "Payment provider error — please retry" }, 500);
     }
 
     const session: any = await res.json();
     return c.json({ url: session.url, sessionId: session.id });
   } catch (err: any) {
-    return c.json({ error: "Failed to initialize checkout: " + err.message }, 500);
+    console.error("checkout failed", err?.message);
+    return c.json({ error: "Could not start checkout — please retry" }, 500);
   }
 });
 

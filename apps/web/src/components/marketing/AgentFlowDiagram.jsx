@@ -21,7 +21,7 @@ export function AgentFlowDiagram({ interactive = false, onInject }) {
   const [injected, setInjected] = useState(false);
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
+      <div className="flow-grid" style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
         {STAGES.map(s => (
           <div key={s.k} onMouseEnter={() => interactive && setActive(s.k)} onMouseLeave={() => setActive(null)}
             style={{ background: active === s.k ? T.blueLight : T.card, border: `1px solid ${active === s.k ? T.blueMid : T.border}`, borderRadius: 8, padding: "10px 8px", textAlign: "center", cursor: interactive ? "pointer" : "default", transition: "all 150ms", position: "relative" }}>

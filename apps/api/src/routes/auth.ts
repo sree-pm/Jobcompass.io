@@ -116,7 +116,7 @@ app.post("/request-code", async (c) => {
 
   const { email } = parsed.data;
   const kv = c.env.CACHE;
-  if (!kv) return c.json({ error: "KV CACHE binding missing — check wrangler.toml" }, 500);
+  if (!kv) { console.error("[Auth] CACHE missing"); return c.json({ error: "Service temporarily unavailable" }, 500); }
 
   // Rate limit: max 3 requests per email per 10 minutes — check BEFORE storing PIN
   const rateLimitKey = `auth:rate:${email.toLowerCase()}`;
@@ -137,11 +137,11 @@ app.post("/request-code", async (c) => {
   const env = c.env.ENVIRONMENT || "production";
   const emailResult = await sendPinEmail(email, pin, c.env as any);
   if (!emailResult.sent) {
-    console.error(`[Auth] PIN email failed for ${email}: ${emailResult.error}`);
-    // In production, EMAIL binding requires domain verification; surface error code for ops
+    const domain = email.split("@")[1] || "unknown";
+    console.error(`[Auth] PIN email failed for domain ${domain}: ${emailResult.error}`);
     if (env !== "development") {
-      await kv.delete(kvKey); // don't leave an unusable PIN around
-      return c.json({ error: "Could not send verification email. Please try again.", details: emailResult.error }, 500);
+      await kv.delete(kvKey);
+      return c.json({ error: "Could not send verification email. Please try again." }, 500);
     }
   }
 
@@ -160,7 +160,7 @@ app.post("/request-code", async (c) => {
   return c.json(response);
   } catch (e: any) {
     console.error("[Auth] request-code unhandled:", e?.message);
-    return c.json({ error: "request-code failed", details: String(e?.message || e) }, 500);
+    return c.json({ error: "Service temporarily unavailable — please retry" }, 500);
   }
 });
 

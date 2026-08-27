@@ -146,11 +146,10 @@ app.post("/:id/tailor", async (c) => {
       try { await addCredits(c.env.DB, row.candidate_id, 1, "refund", `Refund — tailor failed: ${e?.message?.slice(0,120) || "unknown"}`, applicationId ? `refund:${applicationId}` : undefined); } catch {}
       newBalance = balance; // report original balance after refund
     }
-    // If we failed before deduct, just surface the error without charging
-    const msg = e?.message || String(e);
-    // Preserve blocked-ops shape if it was a validation throw
-    if (msg.includes("blocked ops")) return c.json({ error: msg }, 422);
-    return c.json({ error: "Tailor failed: " + msg, refunded: deducted }, 500);
+    // Never leak provider URLs/keys — log internally, generic to user
+    console.error("tailor failed", (e?.message || String(e)).slice(0,300));
+    if (deducted) return c.json({ error: "Tailoring failed — your credit was refunded", refunded: true }, 500);
+    return c.json({ error: "Tailoring temporarily unavailable — please retry" }, 500);
   }
 
   // From here `tailorOut`, `patched`, `verifyOut`, `regWithLocks` are guaranteed set and user has been charged 1 credit
@@ -277,7 +276,8 @@ Rules:
 
     return c.json(parsed);
   } catch (e: any) {
-    return c.json({ error: "CV parsing failed: " + e.message }, 500);
+    console.error("parse-cv failed", e?.message);
+    return c.json({ error: "CV parsing temporarily unavailable" }, 500);
   }
 });
 

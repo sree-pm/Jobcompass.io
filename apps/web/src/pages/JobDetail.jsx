@@ -15,7 +15,7 @@ export default function JobDetail(){
         <div style={{ marginTop:12, display:"flex", gap:6, flexWrap:"wrap" }}>{[job.industry,job.seniority,job.contract_type,job.work_mode,job.salary_band,job.uk_region].filter(Boolean).map(x=> <span key={x} style={{ fontSize:11, background:T.surface, border:`1px solid ${T.border}`, padding:"4px 8px", borderRadius:999 }}>{x}</span>)}</div>
         <div style={{ marginTop:16, background:T.card, border:`1px solid ${T.border}`, borderRadius:10, padding:16, whiteSpace:"pre-wrap", fontSize:13, lineHeight:1.6 }}>{job.job_description||"No description yet."}</div>
         {job.source_url && <a href={job.source_url} target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:12, background:T.blue, color:T.onColor, padding:"10px 16px", borderRadius:8, textDecoration:"none", fontWeight:700 }}>Open source portal →</a>}
-        <div style={{ marginTop:16, fontSize:11, color:T.hint, fontFamily: T.mono }}>id {job.id} · first_seen {job.first_seen} · last_seen {job.last_seen} · embedding {job.embedding_id?"yes":"pending"}</div>
+        <div style={{ marginTop:16, fontSize:11, color:T.hint }}>Added {job.first_seen ? new Date(job.first_seen).toLocaleDateString("en-GB") : ""} · {job.uk_region || job.location} {job.job_verified ? "· Verified" : ""}</div>
       </section>
     </MarketingLayout>
   );

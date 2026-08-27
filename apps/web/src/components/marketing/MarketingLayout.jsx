@@ -16,6 +16,7 @@ export function MarketingLayout({ children }) {
   const isActive = (to) => loc.pathname === to || loc.pathname.startsWith(to + "/");
   return (
     <div style={{ minHeight: "100vh", background: T.bg, fontFamily: T.sans, color: T.text }}>
+      <a href="#main" style={{ position: "absolute", left: -9999, top: "auto", width: 1, height: 1, overflow: "hidden" }}>Skip to content</a>
       {/* Top bar */}
       <header style={{ position: "sticky", top: 0, zIndex: 50, backdropFilter: "blur(12px)", background: T.navBg, borderBottom: `1px solid ${T.border}`, height: T.navHeight, display: "flex", alignItems: "center" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
@@ -38,19 +39,19 @@ export function MarketingLayout({ children }) {
         </div>
       </header>
 
-      <main>{children}</main>
+      <main id="main">{children}</main>
 
       <footer style={{ borderTop: `1px solid ${T.border}`, background: T.surface, marginTop: 64 }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 24px 32px", display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: 32 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 24px 32px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 32 }}>
           <div>
-            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 8 }}>Job<span style={{ color: T.blue }}>Compass</span> <span style={{ fontSize: 10, background: T.surfaceCool, border: `1px solid ${T.border}`, padding: "2px 6px", borderRadius: 999 }}>INfonaut</span></div>
-            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>UK job search, done properly — agentic tailoring you can trust, not volume you regret. A4, GBP, British spelling, Companies House, D1/R2/Queue native.</p>
+            <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 8 }}>Job<span style={{ color: T.blue }}>Compass</span> <span style={{ fontSize: 10, background: T.surfaceCool, border: `1px solid ${T.border}`, padding: "2px 6px", borderRadius: 999 }}>Infonaut</span></div>
+            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>UK job search, done properly — agentic tailoring you can trust, not volume you regret.</p>
             <div style={{ marginTop: 12, fontSize: 11, color: T.hint }}>© {new Date().getFullYear()} Infonaut · jobcompass.io · Cloudflare Workers</div>
           </div>
           <div>
             <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 10 }}>Product</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12 }}>
-              {["/how-it-works","/pricing","/uk-advantage","/security","/jobs","/companies"].map(p=> <Link key={p} to={p} style={{ color: T.muted, textDecoration: "none" }}>{p.replace("/","").replace("-"," ")}</Link>)}
+              {[{to:"/how-it-works",label:"How it works"},{to:"/pricing",label:"Pricing"},{to:"/uk-advantage",label:"UK advantage"},{to:"/security",label:"Security"},{to:"/jobs",label:"Jobs"},{to:"/companies",label:"Companies"}].map(n=> <Link key={n.to} to={n.to} style={{ color: T.muted, textDecoration: "none" }} onMouseEnter={e=>e.currentTarget.style.color=T.blue} onMouseLeave={e=>e.currentTarget.style.color=T.muted}>{n.label}</Link>)}
             </div>
           </div>
           <div>

@@ -39,7 +39,7 @@ app.use("/*", async (c, next) => {
 // Auth middleware — skip health/init + public marketing SEO traps, accept either x-api-key OR JWT (verifyJwt)
 app.use("/*", async (c, next) => {
   const path = new URL(c.req.url).pathname;
-  const publicPaths = ["/health", "/api/health", "/init", "/billing/webhook", "/auth/request-code", "/auth/verify-code", "/jobs/library", "/jobs/matches"];
+  const publicPaths = ["/health", "/api/health", "/billing/webhook", "/auth/request-code", "/auth/verify-code", "/jobs/library", "/jobs/matches"];
   const isPublicGet = c.req.method === "GET" && (path === "/jobs" || path.startsWith("/jobs/") || path === "/companies" || path.startsWith("/companies/"));
   if (["OPTIONS"].includes(c.req.method) || publicPaths.includes(path) || isPublicGet) {
     await next();
@@ -108,13 +108,15 @@ app.use("/*", async (c, next) => {
 app.get("/health", (c) => c.json({ ok: true, service: "agentic-cv-api", version: "1.0.0" }));
 app.get("/api/health", (c) => c.json({ ok: true }));
 
-// init db (idempotent)
+// init db (idempotent) — protected: requires JWT or x-api-key, never public
 app.get("/init", async (c) => {
+  // Already past auth middleware (since removed from publicPaths), but double-gate for safety
   try {
     await initDb(c.env.DB);
     return c.json({ ok: true });
   } catch (e: any) {
-    return c.json({ ok: false, error: String(e?.message || e) }, 500);
+    console.error("init failed", e?.message);
+    return c.json({ ok: false, error: "Initialisation failed" }, 500);
   }
 });
 
@@ -210,7 +212,7 @@ app.get("/companies", async (c) => {
     const { results } = await c.env.DB.prepare(sql).bind(...binds).all();
     const companies = (results as any[]).map(r => ({ ...r, sic_codes: r.sic_codes ? (()=>{ try{return JSON.parse(r.sic_codes);}catch{return r.sic_codes;}})() : [] }));
     return c.json({ companies, count: companies.length });
-  } catch (e: any) { return c.json({ error: "companies query failed: " + e.message }, 500); }
+  } catch (e: any) { console.error("companies query failed", e?.message); return c.json({ error: "Failed to load companies" }, 500); }
 });
 app.get("/companies/:id", async (c) => {
   const id = c.req.param("id");
@@ -218,7 +220,7 @@ app.get("/companies/:id", async (c) => {
     const row: any = await c.env.DB.prepare("SELECT * FROM companies WHERE id = ? OR name = ?").bind(id, id).first();
     if (!row) return c.json({ error: "company not found" }, 404);
     return c.json(row);
-  } catch (e: any) { return c.json({ error: "company fetch failed: " + e.message }, 500); }
+  } catch (e: any) { console.error("company fetch failed", e?.message); return c.json({ error: "Failed to load company" }, 500); }
 });
 
 // MCP endpoint (stub for Claude / MCP clients) — exposes tools list

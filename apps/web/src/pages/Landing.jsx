@@ -8,7 +8,7 @@ export default function Landing() {
   return (
     <MarketingLayout>
       {/* Hero */}
-      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "56px 24px 32px", display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 32, alignItems: "center" }}>
+      <section className="hero-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "56px 24px 32px", display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 32, alignItems: "center" }}>
         <div>
           <div style={{ display: "inline-flex", gap: 6, alignItems: "center", background: T.blueLight, border: `1px solid ${T.blueMid}`, color: T.blue, fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", padding: "5px 10px", borderRadius: 999 }}>🇬🇧 UK-FIRST · A4 · GBP · Companies House</div>
           <h1 style={{ fontSize: 44, fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.05, margin: "16px 0 12px", color: T.text }}>
@@ -48,7 +48,7 @@ export default function Landing() {
       </section>
 
       {/* Pillars */}
-      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+      <section className="pillars-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
         {[
           { title: "No hallucination, provably", desc: "Two-pass: tailor (DeepSeek) → verifier (Claude Haiku) + hard guards. Diff + errors/warnings + correctiveOps shown; sign-off gate before dispatch.", badge: "HITL ✓" },
           { title: "UK-first, not ported", desc: "A4, GBP, British spelling, Equality Act (photo/DOB/NI blocked), Companies House trust 80/20.", badge: "🇬🇧" },

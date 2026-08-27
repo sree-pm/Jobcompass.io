@@ -41,9 +41,7 @@ app.get("/library", async (c) => {
     ).bind(...binds, limit).all();
     const jobs = (results as any[]).map(j => ({ ...j, tags: j.tags ? JSON.parse(j.tags) : [] }));
     return c.json({ jobs, count: jobs.length });
-  } catch (e: any) {
-    return c.json({ error: "library query failed: " + e.message }, 500);
-  }
+  } catch (e: any) { console.error("library query failed", e?.message); return c.json({ error: "Failed to load jobs" }, 500); }
 });
 
 // GET /jobs/matches?candidateId=xxx — personalised matches (A5)
@@ -53,9 +51,7 @@ app.get("/matches", async (c) => {
   try {
     const out = await matchJobsForCandidate(c.env.DB, candidateId, c.env as any);
     return c.json(out);
-  } catch (e: any) {
-    return c.json({ error: "matching failed: " + e.message }, 500);
-  }
+  } catch (e: any) { console.error("matching failed", e?.message); return c.json({ error: "Failed to load matches" }, 500); }
 });
 
 // POST /jobs/refresh — run the platform pipeline on demand
@@ -63,9 +59,7 @@ app.post("/refresh", async (c) => {
   try {
     const summary = await runPlatformPipeline(c.env as any);
     return c.json(summary);
-  } catch (e: any) {
-    return c.json({ error: "pipeline failed: " + e.message }, 500);
-  }
+  } catch (e: any) { console.error("pipeline failed", e?.message); return c.json({ error: "Refresh failed" }, 500); }
 });
 
 // GET /jobs — alias to library for marketing (public, unauth)
@@ -90,7 +84,7 @@ app.get("/", async (c) => {
     const { results } = await c.env.DB.prepare(`SELECT id, company_name, title, location, salary, source, source_url, industry, seniority, contract_type, work_mode, salary_band, uk_region, tags, hiring_confidence, job_verified, first_seen FROM jobs ${where} ORDER BY (hiring_confidence IS NULL) ASC, hiring_confidence DESC, first_seen DESC LIMIT ?`).bind(...binds, limit).all();
     const jobs = (results as any[]).map(j => ({ ...j, tags: j.tags ? JSON.parse(j.tags) : [] }));
     return c.json({ jobs, count: jobs.length });
-  } catch (e: any) { return c.json({ error: "library query failed: " + e.message }, 500); }
+  } catch (e: any) { console.error("jobs alias failed", e?.message); return c.json({ error: "Failed to load jobs" }, 500); }
 });
 
 // GET /jobs/:id — single job detail (public, SEO) — last, after literals
@@ -101,7 +95,7 @@ app.get("/:id", async (c) => {
     if (!row) return c.json({ error: "job not found" }, 404);
     if (row.tags) try { row.tags = JSON.parse(row.tags); } catch {}
     return c.json(row);
-  } catch (e: any) { return c.json({ error: "job fetch failed: " + e.message }, 500); }
+  } catch (e: any) { console.error("job fetch failed", e?.message); return c.json({ error: "Failed to load job" }, 500); }
 });
 
 export default app;
