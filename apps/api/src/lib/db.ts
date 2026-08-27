@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS credit_transactions (
 );
 
 CREATE INDEX IF NOT EXISTS idx_credit_transactions_candidate ON credit_transactions(candidate_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_credit_transactions_reference ON credit_transactions(reference_id) WHERE reference_id IS NOT NULL;
 
 -- ══ JobCompass v2: global job library + company enrichment (platform agents A1–A5) ══
 -- Shared library: enriched once, used by every user.

@@ -158,7 +158,20 @@ app.post("/webhook", async (c) => {
     const packId = session?.metadata?.pack_id || "pack_custom";
 
     if (candidateId && credits > 0) {
-      await addCredits(c.env.DB, candidateId, credits, "purchase", `Stripe Purchase: ${packId} (+${credits} credits)`, session.id);
+      // Idempotency: Stripe may redeliver same session.id — guard on reference_id unique index
+      try {
+        const existing: any = await c.env.DB.prepare("SELECT id FROM credit_transactions WHERE reference_id = ? LIMIT 1").bind(session.id).first();
+        if (existing) {
+          console.log(`webhook idempotent hit for session ${session.id} — already credited`);
+        } else {
+          await addCredits(c.env.DB, candidateId, credits, "purchase", `Stripe Purchase: ${packId} (+${credits} credits)`, session.id);
+        }
+      } catch (e: any) {
+        // If unique index violation races, treat as idempotent success
+        if (/UNIQUE|reference_id/i.test(String(e?.message || ""))) {
+          console.log(`webhook idempotent race for ${session.id}`);
+        } else throw e;
+      }
       // Send receipt email (non-blocking — never fail the webhook over email)
       try {
         const cand: any = await c.env.DB.prepare("SELECT email, full_name FROM candidates WHERE id = ?").bind(candidateId).first();

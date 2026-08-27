@@ -9,6 +9,46 @@ import { runPlatformPipeline } from "../../../../packages/worker/src/pipeline.js
 
 const app = new Hono<{ Bindings: Env }>();
 
+// GET /jobs — alias to /jobs/library for marketing (public, unauth) — keeps Jobs.jsx simple
+app.get("/", async (c) => {
+  // Reuse library handler — delegate by constructing same query handling
+  const q = (c.req.query("q") || "").trim();
+  const industry = c.req.query("industry");
+  const region = c.req.query("region");
+  const workMode = c.req.query("work_mode");
+  const seniority = c.req.query("seniority");
+  const minConfidence = Number(c.req.query("min_confidence") || 0);
+  const limit = Math.min(Number(c.req.query("limit") || 50), 200);
+  const clauses: string[] = [];
+  const binds: any[] = [];
+  if (industry) { clauses.push("industry = ?"); binds.push(industry); }
+  if (region) { clauses.push("uk_region = ?"); binds.push(region); }
+  if (workMode) { clauses.push("work_mode = ?"); binds.push(workMode); }
+  if (seniority) { clauses.push("seniority = ?"); binds.push(seniority); }
+  if (minConfidence > 0) { clauses.push("(hiring_confidence >= ? OR hiring_confidence IS NULL)"); binds.push(minConfidence); }
+  if (q) { clauses.push("(title LIKE ? OR company_name LIKE ?)"); binds.push(`%${q}%`, `%${q}%`); }
+  const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+  try {
+    const { results } = await c.env.DB.prepare(`SELECT id, company_name, title, location, salary, source, source_url, industry, seniority, contract_type, work_mode, salary_band, uk_region, tags, hiring_confidence, job_verified, first_seen FROM jobs ${where} ORDER BY (hiring_confidence IS NULL) ASC, hiring_confidence DESC, first_seen DESC LIMIT ?`).bind(...binds, limit).all();
+    const jobs = (results as any[]).map(j => ({ ...j, tags: j.tags ? JSON.parse(j.tags) : [] }));
+    return c.json({ jobs, count: jobs.length });
+  } catch (e: any) { return c.json({ error: "library query failed: " + e.message }, 500); }
+});
+
+// GET /jobs/:id — single job detail (public, SEO)
+app.get("/:id", async (c) => {
+  const id = c.req.param("id");
+  // Avoid clash with /library and /matches — they are handled above (Hono matches literal before param)
+  if (id === "library" || id === "matches" || id === "refresh") return c.json({ error: "not found" }, 404);
+  try {
+    const row: any = await c.env.DB.prepare("SELECT * FROM jobs WHERE id = ?").bind(id).first();
+    if (!row) return c.json({ error: "job not found" }, 404);
+    if (row.tags) try { row.tags = JSON.parse(row.tags); } catch {}
+    if (row.sic_codes) try { row.sic_codes = JSON.parse(row.sic_codes); } catch {}
+    return c.json(row);
+  } catch (e: any) { return c.json({ error: "job fetch failed: " + e.message }, 500); }
+});
+
 // GET /jobs/library?industry=&region=&work_mode=&seniority=&q=&min_confidence=60&limit=50
 app.get("/library", async (c) => {
   const q = (c.req.query("q") || "").trim();

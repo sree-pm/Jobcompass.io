@@ -36,10 +36,12 @@ app.use("/*", async (c, next) => {
   })(c, next);
 });
 
-// Auth middleware — skip health/init, accept either x-api-key OR JWT (verifyJwt)
+// Auth middleware — skip health/init + public marketing SEO traps, accept either x-api-key OR JWT (verifyJwt)
 app.use("/*", async (c, next) => {
   const path = new URL(c.req.url).pathname;
-  if (["OPTIONS"].includes(c.req.method) || ["/health", "/api/health", "/init", "/billing/webhook", "/auth/request-code", "/auth/verify-code"].includes(path)) {
+  const publicPaths = ["/health", "/api/health", "/init", "/billing/webhook", "/auth/request-code", "/auth/verify-code", "/jobs/library", "/jobs/matches"];
+  const isPublicGet = c.req.method === "GET" && (path === "/jobs" || path.startsWith("/jobs/") || path === "/companies" || path.startsWith("/companies/"));
+  if (["OPTIONS"].includes(c.req.method) || publicPaths.includes(path) || isPublicGet) {
     await next();
     return;
   }
@@ -196,6 +198,29 @@ app.route("/billing", billing);
 app.route("/auth", auth);
 app.route("/jobs", jobsLibrary);
 
+// Companies — public marketing list (shares companies table, enriched once globally)
+app.get("/companies", async (c) => {
+  const limit = Math.min(Number(c.req.query("limit") || 50), 200);
+  const q = (c.req.query("q") || "").trim();
+  try {
+    const sql = q
+      ? "SELECT id, name, company_number, status, sic_codes, industry, website, trust_score, enriched_at, registered_office FROM companies WHERE name LIKE ? ORDER BY trust_score DESC, name ASC LIMIT ?"
+      : "SELECT id, name, company_number, status, sic_codes, industry, website, trust_score, enriched_at, registered_office FROM companies ORDER BY trust_score DESC, name ASC LIMIT ?";
+    const binds: any[] = q ? [`%${q}%`, limit] : [limit];
+    const { results } = await c.env.DB.prepare(sql).bind(...binds).all();
+    const companies = (results as any[]).map(r => ({ ...r, sic_codes: r.sic_codes ? (()=>{ try{return JSON.parse(r.sic_codes);}catch{return r.sic_codes;}})() : [] }));
+    return c.json({ companies, count: companies.length });
+  } catch (e: any) { return c.json({ error: "companies query failed: " + e.message }, 500); }
+});
+app.get("/companies/:id", async (c) => {
+  const id = c.req.param("id");
+  try {
+    const row: any = await c.env.DB.prepare("SELECT * FROM companies WHERE id = ? OR name = ?").bind(id, id).first();
+    if (!row) return c.json({ error: "company not found" }, 404);
+    return c.json(row);
+  } catch (e: any) { return c.json({ error: "company fetch failed: " + e.message }, 500); }
+});
+
 // MCP endpoint (stub for Claude / MCP clients) — exposes tools list
 app.post("/mcp", async (c) => {
   const body: any = await c.req.json().catch(() => ({}));
@@ -243,15 +268,17 @@ export async function scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionC
 }
 
 // Queue consumer — fetches jobs from Adzuna/Reed/Apify and inserts applications
+// DLQ semantics: only ack on success; retry on transient error so max_retries + DLQ actually fire (wrangler.toml:38)
 export async function queue(batch: MessageBatch<any>, env: Env, ctx: ExecutionContext) {
   for (const msg of batch.messages) {
     const { candidateId, query, location, salaryMin } = msg.body;
     try {
       await ingestForCandidate(candidateId, query, location, salaryMin, env);
+      msg.ack();
     } catch (e: any) {
-      console.error("queue error", e);
+      console.error("queue error", e?.message || e);
+      try { msg.retry(); } catch { /* fallback: let batch throw would also retry */ }
     }
-    msg.ack();
   }
 }
 

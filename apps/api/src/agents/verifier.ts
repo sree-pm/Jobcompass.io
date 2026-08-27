@@ -1,4 +1,4 @@
-import { chatComplete, extractJson, type AIProviderConfig } from "../../../../packages/ai/src/index.js";
+import { routeChat, extractJson, type AIRouterEnv } from "../../../../packages/ai/src/index.js";
 import { buildFieldRegistry } from "../../../../packages/schema/fieldRegistry.js";
 
 export type VerifyInput = {
@@ -48,7 +48,7 @@ Return JSON:
 Confidence: 100 = perfect DID-backed, 70 capped if constraintsDoc missing, deduct 10 per hallucination, 5 per metric missing.
 `;
 
-export async function verifyTailoredCv(input: VerifyInput, ai: AIProviderConfig): Promise<VerifyOutput> {
+export async function verifyTailoredCv(input: VerifyInput, env: AIRouterEnv): Promise<VerifyOutput> {
   const before = JSON.stringify(input.originalResume).slice(0, 8000);
   const after = JSON.stringify(input.patchedResume).slice(0, 8000);
   const ops = JSON.stringify(input.operations).slice(0, 4000);
@@ -75,12 +75,14 @@ ${after}
 
 Audit and return JSON.`;
 
-  const raw = await chatComplete(
+  // Route via multi-provider router: Claude 3.5 Haiku primary (verifier) → legacy → openai → workersai fallback, through AI_GATEWAY if set
+  const raw = await routeChat(
+    "verifier",
     [
       { role: "system", content: VERIFIER_SYSTEM },
       { role: "user", content: userMsg },
     ],
-    ai,
+    env,
     { maxTokens: 2500, temperature: 0.15, jsonMode: true }
   );
 

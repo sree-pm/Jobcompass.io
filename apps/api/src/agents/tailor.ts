@@ -1,4 +1,4 @@
-import { chatComplete, extractJson, type AIProviderConfig } from "../../../../packages/ai/src/index.js";
+import { routeChat, extractJson, type AIRouterEnv } from "../../../../packages/ai/src/index.js";
 import { buildFieldRegistry } from "../../../../packages/schema/fieldRegistry.js";
 
 export type TailorInput = {
@@ -49,7 +49,7 @@ Output schema:
   "warnings": []
 }`;
 
-export async function tailorResume(input: TailorInput, ai: AIProviderConfig): Promise<TailorOutput> {
+export async function tailorResume(input: TailorInput, env: AIRouterEnv): Promise<TailorOutput> {
   const registry = buildFieldRegistry(input.resume);
   const editable = registry.filter((f: any) => f.editable);
 
@@ -77,12 +77,14 @@ ${registry.filter((f: any) => !f.editable).map((f: any) => `- ${f.path}`).join("
 
 Task: Produce JSON Patch operations to tailor the CV for this JD. Respect DID/DID NOT. Add £ metrics where DID has numbers. Return JSON with operations + warnings.`;
 
-  const raw = await chatComplete(
+  // Route via multi-provider router: DeepSeek V3 primary (tailor) → legacy → openai → workersai fallback, through AI_GATEWAY if set
+  const raw = await routeChat(
+    "tailor",
     [
       { role: "system", content: TAILOR_SYSTEM },
       { role: "user", content: userMsg },
     ],
-    ai,
+    env,
     { maxTokens: 3000, temperature: 0.25, jsonMode: true }
   );
 

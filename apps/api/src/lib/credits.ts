@@ -67,7 +67,7 @@ export async function deductCredits(
 }
 
 /**
- * Add credits (purchases or refunds).
+ * Add credits (purchases or refunds) — atomic via balance = balance + ? and idempotent on reference_id.
  */
 export async function addCredits(
   db: D1Database,
@@ -77,19 +77,42 @@ export async function addCredits(
   description: string,
   referenceId?: string
 ): Promise<{ success: boolean; newBalance: number }> {
-  const current = await getCreditBalance(db, candidateId);
-  const newBalance = current + amount;
+  // Ensure row exists (trial credits) without racing
+  await getCreditBalance(db, candidateId);
+
+  // Idempotency: if reference_id already exists, return current balance without double-crediting
+  if (referenceId) {
+    const existing: any = await db.prepare("SELECT id FROM credit_transactions WHERE reference_id = ? LIMIT 1").bind(referenceId).first();
+    if (existing) {
+      const cur: any = await db.prepare("SELECT balance FROM credit_balances WHERE candidate_id = ?").bind(candidateId).first();
+      return { success: true, newBalance: cur?.balance ?? 0 };
+    }
+  }
+
   const txId = crypto.randomUUID();
 
-  await db.prepare("UPDATE credit_balances SET balance = ?, updated_at = datetime('now') WHERE candidate_id = ?")
-    .bind(newBalance, candidateId)
+  // Atomic increment — avoids read-modify-write race (cf. deductCredits:46)
+  await db.prepare("INSERT INTO credit_balances (candidate_id, balance, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(candidate_id) DO UPDATE SET balance = balance + ?, updated_at = datetime('now')")
+    .bind(candidateId, amount, amount)
     .run();
 
-  await db.prepare("INSERT INTO credit_transactions (id, candidate_id, amount, type, description, reference_id) VALUES (?, ?, ?, ?, ?, ?)")
-    .bind(txId, candidateId, amount, type, description, referenceId || null)
-    .run();
+  // Insert transaction — unique partial index on reference_id will block double-insert under race
+  try {
+    await db.prepare("INSERT INTO credit_transactions (id, candidate_id, amount, type, description, reference_id) VALUES (?, ?, ?, ?, ?, ?)")
+      .bind(txId, candidateId, amount, type, description, referenceId || null)
+      .run();
+  } catch (e: any) {
+    // Race: another concurrent add with same reference_id won — revert the atomic increment we just did
+    if (referenceId && /UNIQUE|reference_id/i.test(String(e?.message || ""))) {
+      await db.prepare("UPDATE credit_balances SET balance = balance - ?, updated_at = datetime('now') WHERE candidate_id = ?").bind(amount, candidateId).run();
+      const cur: any = await db.prepare("SELECT balance FROM credit_balances WHERE candidate_id = ?").bind(candidateId).first();
+      return { success: true, newBalance: cur?.balance ?? 0 };
+    }
+    throw e;
+  }
 
-  return { success: true, newBalance };
+  const updated: any = await db.prepare("SELECT balance FROM credit_balances WHERE candidate_id = ?").bind(candidateId).first();
+  return { success: true, newBalance: updated?.balance ?? 0 };
 }
 
 /**

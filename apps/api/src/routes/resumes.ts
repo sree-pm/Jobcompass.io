@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { applyPatch } from "fast-json-patch";
 import { buildFieldRegistry, validatePatchOperations, applyUserLocks } from "../../../../packages/schema/fieldRegistry.js";
-import { getAIConfig, chatComplete } from "../../../../packages/ai/src/index.js";
+import { routeChat } from "../../../../packages/ai/src/index.js";
 import { tailorResume } from "../agents/tailor.js";
 import { verifyTailoredCv, quickVerify } from "../agents/verifier.js";
 import { CreateResumeSchema, PatchRequestSchema, TailorRequestSchema, FieldLocksSchema } from "../lib/validation.js";
@@ -99,34 +99,61 @@ app.post("/:id/tailor", async (c) => {
   if (balance < 1) {
     return c.json({ error: "Insufficient credits. Please top up.", requiredCredits: 1, currentBalance: balance }, 402);
   }
-  await deductCredits(c.env.DB, row.candidate_id, 1, `Tailored dossier for ${company || "Role"}`, applicationId);
-  const newBalance = balance - 1;
 
   const data = JSON.parse(row.data);
   const registry = buildFieldRegistry(data);
 
-  const ai = getAIConfig(c.env as any);
   let constraints = constraintsDoc;
   if (!constraints) {
     const cd: any = await c.env.DB.prepare("SELECT content FROM constraints_docs WHERE candidate_id = ? ORDER BY updated_at DESC LIMIT 1").bind(row.candidate_id).first();
     constraints = cd?.content || "";
   }
 
-  // 1) Tailor
-  const tailorOut = await tailorResume({ resume: data, jobDescription, constraintsDoc: constraints || "", fieldLocks, targetRole }, ai);
+  // Deduct only after pre-deduct validation would succeed — but we must run tailor first to know if ops are blocked.
+  // So: deduct after tailor validation, with full refund branch on any post-deduct failure.
+  let deducted = false;
+  let newBalance = balance;
+  let tailorOut: any = null;
+  let patched: any = null;
+  let verifyOut: any = null;
+  let regWithLocks: any = null;
 
-  // validate ops against registry
-  const regWithLocks = fieldLocks ? applyUserLocks(registry, fieldLocks) : registry;
-  const errors = validatePatchOperations(tailorOut.operations as any, regWithLocks);
-  if (errors.length) {
-    return c.json({ error: "tailor produced blocked ops", details: errors, tailorWarnings: tailorOut.warnings }, 422);
+  try {
+    // 1) Tailor (uses multi-provider router internally — see agents/tailor.ts)
+    tailorOut = await tailorResume({ resume: data, jobDescription, constraintsDoc: constraints || "", fieldLocks, targetRole }, c.env as any);
+
+    // validate ops against registry BEFORE charging
+    regWithLocks = fieldLocks ? applyUserLocks(registry, fieldLocks) : registry;
+    const errors = validatePatchOperations(tailorOut.operations as any, regWithLocks);
+    if (errors.length) {
+      // No charge — blocked ops never cost the user
+      return c.json({ error: "tailor produced blocked ops", details: errors, tailorWarnings: tailorOut.warnings }, 422);
+    }
+
+    // Now charge — ops are clean
+    await deductCredits(c.env.DB, row.candidate_id, 1, `Tailored dossier for ${company || "Role"}`, applicationId);
+    deducted = true;
+    newBalance = balance - 1;
+
+    // apply to create patched version
+    patched = applyPatch(JSON.parse(JSON.stringify(data)), tailorOut.operations as any, true, false).newDocument as any;
+
+    // 2) Verifier (second agent, different prompt) — also via router
+    verifyOut = await verifyTailoredCv({ originalResume: data, patchedResume: patched, operations: tailorOut.operations, jobDescription, constraintsDoc: constraints || "" }, c.env as any);
+  } catch (e: any) {
+    // Refund if we already deducted but then failed (applyPatch throw, verifier throw, AI provider failure after deduct, etc.)
+    if (deducted) {
+      try { await addCredits(c.env.DB, row.candidate_id, 1, "refund", `Refund — tailor failed: ${e?.message?.slice(0,120) || "unknown"}`, applicationId ? `refund:${applicationId}` : undefined); } catch {}
+      newBalance = balance; // report original balance after refund
+    }
+    // If we failed before deduct, just surface the error without charging
+    const msg = e?.message || String(e);
+    // Preserve blocked-ops shape if it was a validation throw
+    if (msg.includes("blocked ops")) return c.json({ error: msg }, 422);
+    return c.json({ error: "Tailor failed: " + msg, refunded: deducted }, 500);
   }
 
-  // apply to create patched version
-  const patched = applyPatch(JSON.parse(JSON.stringify(data)), tailorOut.operations as any, true, false).newDocument as any;
-
-  // 2) Verifier (second agent, different prompt)
-  const verifyOut = await verifyTailoredCv({ originalResume: data, patchedResume: patched, operations: tailorOut.operations, jobDescription, constraintsDoc: constraints || "" }, ai);
+  // From here `tailorOut`, `patched`, `verifyOut`, `regWithLocks` are guaranteed set and user has been charged 1 credit
 
   // if verifier has corrective ops and passed=false, apply correctives (auto-fix) if no errors
   let finalResume = patched;
@@ -212,7 +239,6 @@ app.post("/parse-cv", async (c) => {
   }
 
   try {
-    const ai = getAIConfig(c.env as any);
     const prompt = `Parse this UK CV text into structured JSON. Extract exactly this schema:
 {
   "basics": { "name": "", "email": "", "phone": "", "location": "", "rightToWork": "" },
@@ -229,10 +255,10 @@ Rules:
 - Keep £ and % metrics as-is.
 - If a field is not found in the CV, use empty string or empty array.
 `;
-    const result = await chatComplete([
+    const result = await routeChat("extract", [
       { role: "system", content: prompt },
       { role: "user", content: `<cv_text>${cvText.slice(0, 8000)}</cv_text>\n\nCandidate name: ${candidateProfile.fullName || ""}, email: ${candidateProfile.email || ""}` },
-    ], ai, { maxTokens: 3000, temperature: 0.1 });
+    ], c.env as any, { maxTokens: 3000, temperature: 0.1 });
 
     // Parse AI response
     let parsed;
