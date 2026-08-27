@@ -109,12 +109,14 @@ export async function verifyJwt(token: string, secret: string): Promise<Record<s
 
 // POST /auth/request-code — send a 6-digit PIN to the user's email
 app.post("/request-code", async (c) => {
+  try {
   const b = await c.req.json();
   const parsed = RequestCodeSchema.safeParse(b);
   if (!parsed.success) return c.json({ error: "Valid email required", issues: parsed.error.issues }, 400);
 
   const { email } = parsed.data;
   const kv = c.env.CACHE;
+  if (!kv) return c.json({ error: "KV CACHE binding missing — check wrangler.toml" }, 500);
 
   // Rate limit: max 3 requests per email per 10 minutes — check BEFORE storing PIN
   const rateLimitKey = `auth:rate:${email.toLowerCase()}`;
@@ -136,10 +138,10 @@ app.post("/request-code", async (c) => {
   const emailResult = await sendPinEmail(email, pin, c.env as any);
   if (!emailResult.sent) {
     console.error(`[Auth] PIN email failed for ${email}: ${emailResult.error}`);
-    // Dev fallback: surface the code so local testing still works
+    // In production, EMAIL binding requires domain verification; surface error code for ops
     if (env !== "development") {
       await kv.delete(kvKey); // don't leave an unusable PIN around
-      return c.json({ error: "Could not send verification email. Please try again." }, 500);
+      return c.json({ error: "Could not send verification email. Please try again.", details: emailResult.error }, 500);
     }
   }
 
@@ -156,6 +158,10 @@ app.post("/request-code", async (c) => {
   }
 
   return c.json(response);
+  } catch (e: any) {
+    console.error("[Auth] request-code unhandled:", e?.message);
+    return c.json({ error: "request-code failed", details: String(e?.message || e) }, 500);
+  }
 });
 
 // POST /auth/verify-code — verify PIN and return JWT
