@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "motion/react";
 import { T } from "../components/common/Theme.js";
 import { AgentFlowDiagram } from "../components/marketing/AgentFlowDiagram";
 import styles from "./Hero.module.css";
