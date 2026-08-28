@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import { T } from "../components/common/Theme.js";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { AgentFlowDiagram } from "../components/marketing/AgentFlowDiagram.jsx";
+import { LogoStrip } from "../components/marketing/LogoStrip.jsx";
+import { JobsTicker } from "../components/marketing/JobsTicker.jsx";
+import { HireCalculator } from "../components/marketing/HireCalculator.jsx";
+import { TestimonialWall } from "../components/marketing/TestimonialWall.jsx";
+import { FreeTools } from "../components/marketing/FreeTools.jsx";
 
 export default function Landing() {
   return (
@@ -15,8 +20,9 @@ export default function Landing() {
             UK job search, <span style={{ color: T.blue }}>done properly</span>.
           </h1>
           <p style={{ fontSize: 16, color: T.muted, lineHeight: 1.6, maxWidth: 560 }}>
-            Agentic tailoring you can trust, not volume you regret. Per-bullet field locks, two-pass hallucination audit, DID ground truth, A4 British CVs — on Cloudflare D1/R2/Queue.
+            Agentic tailoring you can trust, not volume you regret. Per-bullet locks, two-pass audit, DID ground truth, A4 British CVs — on Cloudflare. The hero dashboard below is a 47-application clone at 0.88× — not a mock.
           </p>
+          <div style={{ marginTop:10, fontSize:11, color:T.hint }}>Also on iMessage · WhatsApp · Claude · Codex · Chrome — like Tsenta’s 8 surfaces, UK-ified</div>
           <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
             <Link to="/app" style={{ background: T.blue, color: T.onColor, fontWeight: 700, padding: "12px 20px", borderRadius: 8, textDecoration: "none", boxShadow: T.shadowSm }}>Start tailoring — 5 free credits →</Link>
             <Link to="/how-it-works" style={{ background: T.card, border: `1px solid ${T.borderStrong}`, color: T.text, fontWeight: 600, padding: "12px 20px", borderRadius: 8, textDecoration: "none" }}>See agentic proof</Link>
@@ -63,6 +69,9 @@ export default function Landing() {
         ))}
       </section>
 
+      <JobsTicker />
+      <LogoStrip />
+      <section style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px" }}><HireCalculator /></section>
       {/* Competitive table */}
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 24px" }}>
         <h2 style={{ fontSize: 18, fontWeight: 800 }}>Why we beat $1M ARR apps</h2>
@@ -81,6 +90,8 @@ export default function Landing() {
           </table>
         </div>
       </section>
+      <section style={{ background: T.eggshell, borderTop:`1px solid ${T.chalk}`, borderBottom:`1px solid ${T.chalk}`, padding:"12px 0" }}><TestimonialWall /></section>
+      <section style={{ background: T.surface, borderTop:`1px solid ${T.border}` }}><FreeTools /></section>
     </MarketingLayout>
   );
 }

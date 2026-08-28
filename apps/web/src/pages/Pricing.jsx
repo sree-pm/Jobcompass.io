@@ -14,7 +14,8 @@ export default function Pricing() {
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px", textAlign:"center" }}>
         <h1 style={{ fontSize: 32, fontWeight: 800 }}>Simple, GBP — credits never expire</h1>
-        <p style={{ color: T.muted }}>1 credit = 1 tailored dossier (tailor+verifier+cover letter+screening). Sonara $80/mo, Huntr $40, JobScan $49/mo subscription — we charge per outcome.</p>
+        <p style={{ color: T.muted }}>1 credit = 1 tailored dossier. <b style={{ color:T.text }}>£0.10/app, credits never expire</b> — Sonara $80/mo, Huntr $40/mo subscription. Use in 1 day or 12 months → effectively £0.33/day over 30 days, and you keep them.</p>
+        <p style={{ fontSize:12, color:T.hint, marginTop:6 }}>LoopCV €9.99 → ~€3.33/day · JobCopilot $28 → $0.93/day · JobCompass £10 = 100 apps → £0.33/day over 30 days (and you keep them)</p>
         <div className="pricing-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap: 16, marginTop: 28, textAlign:"left" }}>
           {PACKS.map(p=> (
             <div key={p.id} style={{ background: T.card, border:`1px solid ${T.border}`, borderRadius:12, padding:20, boxShadow: T.shadowSm }}>

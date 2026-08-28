@@ -6,8 +6,15 @@
 // ─────────────────────────────────────────────────────────────────────
 
 export const T = {
+  // ── Premium editorial — Tsenta obsidian/eggshell + Stripe luxury (mono-repo canonical)
+  eggshell: "#FFFBF5",      // Tsenta canvas (eggshell)
+  obsidian: "#0A0A0A",      // Tsenta obsidian / #15362B dark teal (primary pill, dark bands)
+  obsidianSoft: "#15362B",
+  gravel: "#6B6B6B",        // Tsenta secondary
+  slate: "#6B7280",
+  chalk: "#E8E6E0",         // Tsenta border
   // ── Surfaces ──────────────────────────────────────────────────────
-  bg: "#ffffff",           // page canvas
+  bg: "#FFFBF5",           // page canvas — eggshell (premium editorial)
   surface: "#f6f9fc",      // section / inset background (Stripe)
   surfaceAlt: "#f8fafc",   // alternate inset (slate-50)
   surfaceCool: "#f1f5f9",  // stronger inset / kbd / divider bg (slate-100)
@@ -64,6 +71,12 @@ export const T = {
   redMid: "#fecdd3",       // danger border
   redPale: "#fef2f2",      // subtle danger bg
   redBorder: "#fecaca",    // danger zone border
+    // ── Obsidian band (Jobright/Tsenta dark calculator) ─────────────────
+  bandBg: "#0A0A0A",
+  bandCard: "#111111",
+  lime: "#D4FF32",          // Jobright lime accent
+  limeDim: "#B8FF9A",
+  mint: "#D6FFE0",          // Jobright mint
   // ── Overlay ───────────────────────────────────────────────────────
   overlay: "rgba(6,27,49,0.45)",     // modal backdrop
   overlaySoft: "rgba(6,27,49,0.32)",

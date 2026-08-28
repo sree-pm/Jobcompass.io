@@ -1,0 +1,17 @@
+# JobCompass — UK job search, done properly
+> Agentic CV tailoring — A4 GBP British spelling, per-bullet field locks, two-pass hallucination audit (DeepSeek + Claude Haiku), DID ground truth, Companies House trust 80/20, Cloudflare D1/R2/Queue/Vectorize. Credits never expire £0.10/app.
+
+## What it does
+- Registry → tailor → validate → quickVerify → patched → verifier → corrective → persist → matcher → HITL → PDF → apply
+- No hallucination: field locks per exp.0.bullet.2, confidence cap 70 without DID, atomic credits
+
+## Pages
+- / — hero + pipeline + calculator
+- /how-it-works — 12 stages
+- /pricing — Starter £10/100 Active £25/250 Power £50/500
+- /uk-advantage, /security, /jobs, /companies, /docs, /blog, /status
+
+## API
+- POST /auth/request-code, /auth/verify-code (PIN SHA-256 KV TTL600)
+- POST /resumes/:id/tailor (routeChat tailor DeepSeek)
+- GET /jobs, /jobs/library, /companies (public)
