@@ -6,16 +6,48 @@
 // ─────────────────────────────────────────────────────────────────────
 
 export const T = {
-  // ── Premium editorial — Tsenta obsidian/eggshell + Stripe luxury (mono-repo canonical)
-  eggshell: "#FFFBF5",      // Tsenta canvas (eggshell)
-  obsidian: "#0A0A0A",      // Tsenta obsidian / #15362B dark teal (primary pill, dark bands)
+  // ── Artifact 1:1 — Jobcompass-V2-Uk.html :root tokens (mono-repo canonical)
+  ink: "#0A0A0D",            // --ink
+  cream: "#FCFBF8",          // --cream (body bg)
+  cream2: "#FFFBF5",         // --cream2
+  creamBorder: "#E9E6E1",    // --creamBorder
+  lavender: "#A5A6FF",       // --lavender
+  lavenderAA: "#7A7CFF",     // --lavenderAA
+  lavenderHover: "#6F71FF",
+  mutedArtifact: "#8A8885",  // --muted (artifact)
+  success: "#0F6D5A",        // --success
+  successBg: "#E6F4F1",      // --successBg
+  // translucent artifact tokens (header/grid/shadow — live in Theme.js so TSX never writes rgba() literals)
+  creamTrans: "rgba(252,251,248,0.85)",
+  ink80: "rgba(10,10,13,0.80)",
+  ink70: "rgba(10,10,13,0.70)",
+  ink60: "rgba(10,10,13,0.60)",
+  gridLine: "rgba(10,10,13,0.03)",
+  shadowToast: "rgba(0,0,0,0.30)",
+  shadowHeader: "rgba(0,0,0,0.12)",
+  whiteOverlay06: "rgba(255,255,255,0.06)",
+  white10: "rgba(255,255,255,0.10)",
+  white08: "rgba(255,255,255,0.08)",
+  white06: "rgba(255,255,255,0.06)",
+  white04: "rgba(255,255,255,0.04)",
+  white40: "rgba(255,255,255,0.40)",
+  white50: "rgba(255,255,255,0.50)",
+  white60: "rgba(255,255,255,0.60)",
+  // legacy aliases for migrated code (keep)
+  eggshell: "#FFFBF5",
+  obsidian: "#0A0A0D",
+  inkCard: "#121214",
+  dangerBg: "#FFE8E8",
+  dangerText: "#8B1A1A",
   obsidianSoft: "#15362B",
-  gravel: "#6B6B6B",        // Tsenta secondary
+  gravel: "#8A8885",
   slate: "#6B7280",
-  chalk: "#E8E6E0",         // Tsenta border
-  // ── Surfaces ──────────────────────────────────────────────────────
-  bg: "#FFFBF5",           // page canvas — eggshell (premium editorial)
+  chalk: "#E9E6E1",
+  bg: "#FCFBF8",           // --cream
+  // Stripe surfaces kept
   surface: "#f6f9fc",      // section / inset background (Stripe)
+  surfaceAlt: "#FFFBF5",
+  surfaceCool: "#F4F4F5",
   surfaceAlt: "#f8fafc",   // alternate inset (slate-50)
   surfaceCool: "#f1f5f9",  // stronger inset / kbd / divider bg (slate-100)
   card: "#ffffff",         // card background
@@ -153,7 +185,6 @@ T.sansTabs = T.sans;
 T.tabInactive = T.muted;
 T.heading = T.text;
 T.slate = T.muted;
-T.ink = T.text;
 T.inter = T.sans;
 T.yellow = T.amber;
 T.yellowLight = T.amberLight;

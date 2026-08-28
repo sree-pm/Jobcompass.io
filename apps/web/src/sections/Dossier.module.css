@@ -1,0 +1,25 @@
+.wrap { max-width: 100vw; overflow: hidden; padding: 64px 0; border-top: 1px solid; border-bottom: 1px solid; }
+.inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; align-items: start; }
+@media(max-width: 960px){ .inner{ grid-template-columns: 1fr; } }
+.left { }
+@media(min-width: 961px){ .left{ position: sticky; top: 96px; } }
+.h2 { margin-top: 12px; font-size: 32px; line-height: 0.95; }
+.liveCard { margin-top: 24px; border-radius: 16px; border: 1px solid #E9E6E1; background: white; padding: 16px; }
+.liveRow { margin-top: 8px; display: flex; align-items: center; gap: 8px; }
+.liveNum { width: 32px; height: 32px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+.flowNav { margin-top: 16px; display: none; }
+@media(min-width: 961px){ .flowNav{ display: block; } }
+.flowList { display: flex; flex-direction: column; gap: 4px; }
+.flowBtn { text-align: left; display: flex; align-items: center; gap: 8px; border-radius: 999px; padding: 8px 12px; font-size: 12px; cursor: pointer; transition: all .15s; }
+.right { position: relative; }
+.line { position: absolute; left: 15px; top: 0; bottom: 0; width: 1px; display: none; }
+@media(min-width: 768px){ .line{ display: block; } }
+.cards { display: flex; flex-direction: column; gap: 16px; }
+.card { position: relative; border-radius: 16px; border: 1px solid; padding: 24px; background: white; transition: all .15s; }
+.branch { position: absolute; left: 0; top: 32px; width: 31px; height: 1px; display: none; }
+@media(min-width: 768px){ .branch{ display: block; } }
+.dot { position: absolute; left: 8px; top: 28px; width: 16px; height: 16px; border-radius: 999px; border: 2px solid; background: white; display: none; align-items: center; justify-content: center; }
+@media(min-width: 768px){ .dot{ display: flex; } }
+.cardHead { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+.statusDot { width: 8px; height: 8px; border-radius: 999px; }
+.cardTitle { margin-top: 12px; font-size: 22px; line-height: 1; }
