@@ -29,14 +29,20 @@ export function Cta() {
         {toast && <div className={styles.toast} style={{ background: T.ink, color: T.onColor }}>{toast}</div>}
         <div className={styles.grid}>
           {[
-            ["Auth", "POST /auth/request-code RequestCodeSchema email -> CACHE auth:rate:3/600s -> generatePin crypto.getRandomValues -> hashPin SHA-256 hex KV auth:pin:600s -> EMAIL.send noreply@jobcompass.io"],
-            ["Onboarding", "OnboardingWizard.jsx -> PUT /candidates/:id -> POST /resumes/parse-cv routeChat extract 3000tok -> POST /resumes is_master=1 -> PUT constraints did_list/did_not_list"],
-            ["Data", "candidates -> resumes(is_master) -> field_locks unique -> constraints_docs unique -> applications tailored_pdf_key -> jobs source_url unique hiring_confidence embedding_id -> companies name unique trust_score"],
-            ["Env", "Env lib/types.ts:3 · JWT_SECRET API_KEY STRIPE DEEPSEEK ANTHROPIC OPENAI ACCOUNT_ID AI_GATEWAY COMPANIES_HOUSE BRAVE ADZUNA REED APIFY BOARDS LEVER ASHBY"],
-          ].map(([a, b]) => (
-            <div key={a} className={styles.card} style={{ borderColor: T.white10, background: T.white04 }}>
-              <div className="mono" style={{ fontSize: 10, color: T.white40 }}>{a}</div>
-              <div style={{ marginTop: 8, fontSize: 11, lineHeight: 1.4, color: T.white60 }}>{b}</div>
+            { k: "Auth", icon: "⛨", tag: "5 credits", desc: "POST /auth/request-code RequestCodeSchema email -> CACHE auth:rate:3/600s -> generatePin crypto.getRandomValues -> hashPin SHA-256 hex KV auth:pin:600s -> EMAIL.send noreply@jobcompass.io" },
+            { k: "Onboarding", icon: "◎", tag: "is_master", desc: "OnboardingWizard.jsx -> PUT /candidates/:id -> POST /resumes/parse-cv routeChat extract 3000tok -> POST /resumes is_master=1 -> PUT constraints did_list/did_not_list" },
+            { k: "Data", icon: "▦", tag: "D1", desc: "candidates -> resumes(is_master) -> field_locks unique -> constraints_docs unique -> applications tailored_pdf_key -> jobs source_url unique hiring_confidence embedding_id -> companies name unique trust_score" },
+            { k: "Env", icon: "⬢", tag: "TYPES:3", desc: "Env lib/types.ts:3 · JWT_SECRET API_KEY STRIPE DEEPSEEK ANTHROPIC OPENAI ACCOUNT_ID AI_GATEWAY COMPANIES_HOUSE BRAVE ADZUNA REED APIFY BOARDS LEVER ASHBY" },
+          ].map((c) => (
+            <div key={c.k} className={styles.card} style={{ borderColor: T.white10, background: T.white06 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span aria-hidden style={{ width: 28, height: 28, borderRadius: 999, background: T.white10, border: `1px solid ${T.white10}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>{c.icon}</span>
+                  <span className="mono" style={{ fontSize: 10, color: T.white40 }}>{c.k}</span>
+                </div>
+                <span className="mono" style={{ fontSize: 9, letterSpacing: "0.08em", padding: "4px 8px", borderRadius: 999, border: `1px solid ${T.white10}`, background: T.white06, color: T.white60, whiteSpace: "nowrap" }}>{c.tag}</span>
+              </div>
+              <div style={{ marginTop: 10, fontSize: 11, lineHeight: 1.5, color: T.white60 }}>{c.desc}</div>
             </div>
           ))}
         </div>

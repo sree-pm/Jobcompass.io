@@ -2,12 +2,12 @@
 .inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
 .h2 { margin-top: 12px; font-size: 32px; line-height: 0.9; max-width: 14ch; }
 @media(min-width: 768px){ .h2{ font-size: 44px; } }
-.grid { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
 @media(max-width: 960px){ .grid{ grid-template-columns: 1fr; } }
-.cardLight, .cardDark { border-radius: 20px; border: 1px solid #E9E6E1; padding: 24px; }
+.cardLight, .cardDark { border-radius: 20px; border: 1px solid #E9E6E1; padding: 24px; display: flex; flex-direction: column; justify-content: center; }
 .cardLight{ background: white; }
 .cardDark{ border: 1px solid; }
 .cardTitle { display: flex; align-items: center; gap: 8px; }
-.monoList { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 11px; line-height: 1.5; }
+.monoList { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 11px; line-height: 1.5; flex: 1; }
 .pills { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
 .dlq { margin-top: 20px; border-radius: 12px; border: 1px solid; padding: 12px; display: flex; align-items: center; gap: 8px; }

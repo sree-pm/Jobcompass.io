@@ -25,12 +25,14 @@ export function Guards() {
         <div className={styles.grid}>
           {guards.map(([a, b]) => (
             <div key={a} className={styles.card} style={{ borderColor: T.white10, background: T.white04 }}>
-              <span style={{ color: T.success, flexShrink: 0, marginTop: 2 }}>✓</span>
+              <span className={styles.iconWrap} style={{ background: T.white10, color: T.success, border: `1px solid ${T.white10}` }} aria-hidden>
+                ⛨
+              </span>
               <div>
-                <div className="mono" style={{ fontSize: 11, lineHeight: 1.3 }}>
+                <div className="mono" style={{ fontSize: 11, lineHeight: 1.3, color: T.onColor }}>
                   {a}
                 </div>
-                <div style={{ marginTop: 4, fontSize: 12, lineHeight: 1.4, color: T.white50 }}>{b}</div>
+                <div style={{ marginTop: 6, fontSize: 12, lineHeight: 1.45, color: T.white50 }}>{b}</div>
               </div>
             </div>
           ))}

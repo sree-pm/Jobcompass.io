@@ -31,7 +31,7 @@ export function Jobs() {
               GET /jobs?limit=30 · publicPaths isPublicGet /jobs /companies · index.ts:40 · Jobs.jsx auto-fit 280px · trust_score order
             </p>
           </div>
-          <a href="#companies" className={styles.viewBtn}>
+          <a href="#companies" className={styles.viewBtn} style={{ borderColor: T.creamBorder, background: T.onColor, color: T.ink }}>
             View companies <span>→</span>
           </a>
         </div>
@@ -45,7 +45,7 @@ export function Jobs() {
                     {u.company} · {u.loc} · {u.type}
                   </div>
                 </div>
-                <span className="mono" style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.successBg, color: T.success }}>
+                <span className={`mono ${styles.trustBadge}`} style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.successBg, color: T.success }}>
                   {u.trust}/100
                 </span>
               </div>

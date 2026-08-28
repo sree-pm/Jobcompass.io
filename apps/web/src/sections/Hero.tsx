@@ -32,7 +32,7 @@ export function Hero() {
             </a>
           </div>
           <div className={styles.badges}>
-            {["Companies House verified", "BRAVE API", "Adzuna + Reed + Apify", "GDPR"].map((b) => (
+            {["No hallucination \u00B7 provably", "British spelling", "Companies House verified"].map((b) => (
               <span key={b} className={styles.badge}>
                 {b}
               </span>
@@ -45,7 +45,7 @@ export function Hero() {
             <span className={styles.chip}>R2</span>
             <span className={styles.chip}>KV</span>
             <span className={styles.chip}>Vectorize</span>
-            <span className={`${styles.hideMd} mono`}>Vite React 19 · Theme.js single token</span>
+            <span className={`${styles.hideMd} mono`}>Vite React 19 \u00B7 Theme.js single token</span>
           </div>
         </div>
         <div className={styles.rightWrap}>
@@ -54,17 +54,17 @@ export function Hero() {
             <div className={styles.cardSheen} aria-hidden />
             <div className={styles.cardHead}>
               <span className="mono" style={{ color: T.white50, fontSize: 10, letterSpacing: "0.14em" }}>
-                APPLICATION RECEIPT 03 · UK VERIFIED
+                APPLICATION RECEIPT 03 \u00B7 UK VERIFIED
               </span>
               <span className={styles.liveDot} style={{ background: T.success }} />
             </div>
             <div className={styles.cardBody}>
               <div className={styles.cardMain}>
-                <div className="serif" style={{ color: "white", fontSize: 22, lineHeight: 1.1 }}>
+                <div className="serif" style={{ color: T.onColor, fontSize: 22, lineHeight: 1.1 }}>
                   Sales Executive @ Tesco
                 </div>
                 <div className="mono" style={{ color: T.white50, fontSize: 10, marginTop: 4 }}>
-                  Manchester · £35k · Greenhouse · 0.3s found
+                  Manchester \u00B7 £35k \u00B7 Greenhouse \u00B7 0.3s found
                 </div>
                 <div className={styles.proofGrid}>
                   {[
@@ -74,7 +74,7 @@ export function Hero() {
                     ["Screenshot proof", "Trust 80/100"],
                   ].map(([a, b]) => (
                     <div key={a} className={styles.proofCell} style={{ borderColor: T.white08, background: T.white04 }}>
-                      <div style={{ color: "white", fontSize: 12, fontWeight: 500 }}>{a}</div>
+                      <div style={{ color: T.onColor, fontSize: 12, fontWeight: 500 }}>{a}</div>
                       <div className="mono" style={{ color: T.white40, fontSize: 9, marginTop: 4 }}>
                         {b}
                       </div>
@@ -88,15 +88,15 @@ export function Hero() {
                     </span>
                   ))}
                 </div>
-                <div className={styles.status} style={{ background: T.success, color: "white" }}>
-                  <span className="mono">Status · Applied · Receipt #03</span>
+                <div className={styles.status} style={{ background: T.success, color: T.onColor }}>
+                  <span className="mono">Status \u00B7 Applied \u00B7 Receipt #03</span>
                   <span>✓</span>
                 </div>
               </div>
               <div className={styles.dialWrap}>
                 <div className={styles.dial} style={{ background: `conic-gradient(from 0deg, ${T.lavenderAA} 0deg, ${T.lavenderAA} 331deg, ${T.success} 331deg, ${T.success} 360deg)` }}>
                   <div className={styles.dialInner} style={{ background: T.inkCard }}>
-                    <span className="serif" style={{ color: "white", fontSize: 28, lineHeight: 1 }}>
+                    <span className="serif" style={{ color: T.onColor, fontSize: 28, lineHeight: 1 }}>
                       92%
                     </span>
                     <span className="mono" style={{ color: T.white50, fontSize: 8, marginTop: 4 }}>
@@ -111,10 +111,10 @@ export function Hero() {
             </div>
             <div className={styles.cardFoot} style={{ borderColor: T.white10 }}>
               <span className="mono" style={{ color: T.white40, fontSize: 9 }}>
-                jobcompass-api · D1 · R2 jobcompass-pdfs · 51f76b8d
+                jobcompass-api \u00B7 D1 \u00B7 R2 jobcompass-pdfs \u00B7 51f76b8d
               </span>
               <span className="mono" style={{ color: T.white40, fontSize: 9 }}>
-                UK · GDPR
+                UK \u00B7 GDPR
               </span>
             </div>
           </div>

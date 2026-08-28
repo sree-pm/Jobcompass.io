@@ -70,37 +70,52 @@ export function Dossier() {
         <div className={styles.right}>
           <div className={styles.line} style={{ background: T.creamBorder }} />
           <div className={styles.cards}>
-            {Sr.map((u, idx) => (
-              <div
-                key={u.n}
-                onMouseEnter={() => setActive(idx)}
-                className={styles.card}
-                style={
-                  idx === active
-                    ? { borderColor: T.ink, background: "white", boxShadow: `0 8px 32px ${T.shadowHeader}` }
-                    : { borderColor: T.creamBorder, background: "white" }
-                }
-              >
-                <div className={styles.branch} style={{ background: T.creamBorder }} />
-                <div className={styles.dot} style={{ borderColor: idx === active ? T.ink : T.creamBorder, background: "white" }}>
-                  <div style={{ width: 6, height: 6, borderRadius: 999, background: idx === active ? T.ink : T.creamBorder }} />
+            {Sr.map((u, idx) => {
+              const isActive = idx === active;
+              return (
+                <div
+                  key={u.n}
+                  onClick={() => setActive(idx)}
+                  onMouseEnter={() => setActive(idx)}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isActive}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActive(idx);
+                    }
+                  }}
+                  className={`${styles.card} ${isActive ? styles.cardExpanded : styles.cardCollapsed}`}
+                  style={
+                    isActive
+                      ? { borderColor: T.ink, background: "white", boxShadow: `0 8px 32px ${T.shadowHeader}` }
+                      : { borderColor: T.creamBorder, background: "white" }
+                  }
+                >
+                  <div className={styles.branch} style={{ background: T.creamBorder }} />
+                  <div className={styles.dot} style={{ borderColor: isActive ? T.ink : T.creamBorder, background: "white" }}>
+                    <div style={{ width: 6, height: 6, borderRadius: 999, background: isActive ? T.ink : T.creamBorder }} />
+                  </div>
+                  <div className={styles.cardHead}>
+                    <span className="mono" style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}` }}>
+                      {u.n} · {u.label}
+                    </span>
+                    <span className="mono" style={{ fontSize: 9, color: T.mutedArtifact }}>
+                      {u.file}
+                    </span>
+                    <span className={styles.statusDot} style={{ background: idx <= active ? T.success : T.creamBorder }} />
+                  </div>
+                  <h3 className={`serif ${styles.cardTitle}`}>{u.title}</h3>
+                  <div className={`${styles.cardBody} ${isActive ? styles.cardBodyOpen : styles.cardBodyClosed}`} aria-hidden={!isActive}>
+                    <p style={{ marginTop: 8, fontSize: 13, lineHeight: 1.6, color: T.ink70 }}>{u.desc}</p>
+                    <div className="mono" style={{ marginTop: 12, fontSize: 10, padding: "6px 10px", borderRadius: 999, background: T.ink, color: T.white60, display: "inline-flex", maxWidth: "100%", overflow: "hidden" }}>
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.code}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.cardHead}>
-                  <span className="mono" style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}` }}>
-                    {u.n} · {u.label}
-                  </span>
-                  <span className="mono" style={{ fontSize: 9, color: T.mutedArtifact }}>
-                    {u.file}
-                  </span>
-                  <span className={styles.statusDot} style={{ background: idx <= active ? T.success : T.creamBorder }} />
-                </div>
-                <h3 className={`serif ${styles.cardTitle}`}>{u.title}</h3>
-                <p style={{ marginTop: 8, fontSize: 13, lineHeight: 1.6, color: T.ink70 }}>{u.desc}</p>
-                <div className="mono" style={{ marginTop: 12, fontSize: 10, padding: "6px 10px", borderRadius: 999, background: T.ink, color: T.white60, display: "inline-flex", maxWidth: "100%", overflow: "hidden" }}>
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.code}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

@@ -6,4 +6,4 @@
 .grid { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 @media(max-width: 768px){ .grid{ grid-template-columns: 1fr; } }
 .card { border-radius: 16px; border: 1px solid; padding: 24px; }
-.cardTitle { margin-top: 8px; font-size: 20px; line-height: 0.95; }
+.cardTitle { margin-top: 0; font-size: 20px; line-height: 0.95; }

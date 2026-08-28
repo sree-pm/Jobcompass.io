@@ -50,8 +50,8 @@ export function Pricing() {
                     Buy {p.credits}
                   </button>
                 )}
-                <div className="mono" style={{ fontSize: 9, marginTop: 12, opacity: 0.5, textAlign: "center" }}>
-                  £0.33/day · you keep them
+                <div className={`mono ${styles.perDay}`}>
+                  £0.33/day • you keep them • never expire
                 </div>
               </div>
             ))}

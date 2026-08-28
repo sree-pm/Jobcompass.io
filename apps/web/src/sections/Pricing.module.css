@@ -1,17 +1,18 @@
-.wrap { padding: 64px 0; max-width: 100vw; overflow: hidden; position: relative; }
+.wrap { padding: 64px 0 48px; max-width: 100vw; overflow: hidden; position: relative; }
 .inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: start; }
 @media(max-width: 960px){ .inner{ grid-template-columns: 1fr; } }
 .h2 { margin-top: 12px; font-size: 32px; line-height: 0.9; }
 @media(min-width: 768px){ .h2{ font-size: 48px; } }
-.packs { margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.packs { margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 @media(max-width: 640px){ .packs{ grid-template-columns: 1fr; } }
-.pack { border-radius: 20px; border: 1px solid; padding: 20px; }
+.pack { border-radius: 20px; border: 1px solid; padding: 24px; display: flex; flex-direction: column; }
 .price { margin-top: 8px; font-size: 32px; line-height: 1; }
 .ctaDark, .ctaGhost { margin-top: 16px; width: 100%; height: 44px; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
 .ctaGhost { border: 1px solid rgba(255,255,255,0.15); background: transparent; color: white; }
-.vs { margin-top: 24px; border-radius: 12px; border: 1px solid; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
-.billing { border-radius: 24px; padding: 24px; }
-.billingList { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.perDay { margin-top: 12px; font-size: 10px; text-align: center; letter-spacing: 0.02em; line-height: 1.4; opacity: 0.6; }
+.vs { margin-top: 20px; border-radius: 12px; border: 1px solid; padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.billing { border-radius: 24px; padding: 24px; display: flex; flex-direction: column; }
+.billingList { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 .billingRow { display: flex; gap: 12px; align-items: start; }
-.startCta { margin-top: 32px; width: 100%; border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; text-align: left; cursor: pointer; }
+.startCta { margin-top: 24px; width: 100%; border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; text-align: left; cursor: pointer; }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 999px; font-size: 13px; z-index: 300; max-width: 92vw; }

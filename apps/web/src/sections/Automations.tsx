@@ -9,12 +9,12 @@ export function Automations() {
         </div>
         <h2 className={`serif ${styles.h2}`}>Cron, Queue, Vectorize. No black box.</h2>
         <div className={styles.grid}>
-          <div className={styles.cardLight}>
+          <div className={styles.cardLight} style={{ background: T.onColor, borderColor: T.creamBorder }}>
             <div className={styles.cardTitle}>
-              <span>◷</span>
-              <span className="mono" style={{ fontSize: 11 }}>Platform 06:00 GMT · index.ts:240 scheduled BATCH 50</span>
+              <span style={{ color: T.ink }}>◷</span>
+              <span className="mono" style={{ fontSize: 11, color: T.ink, fontWeight: 600, letterSpacing: "0.04em" }}>Platform · Daily at 06:00 GMT</span>
             </div>
-            <div className={`mono ${styles.monoList}`}>
+            <div className={`mono ${styles.monoList}`} style={{ color: T.ink60 }}>
               <div>→ GREENHOUSE_BOARDS, LEVER_COMPANIES, ASHBY_ORGS Promise.allSettled</div>
               <div>→ normaliseUrl:102 dedupe source_url -&gt; INSERT jobs</div>
               <div>→ enrichCompany:16 COMPANIES_HOUSE_API_KEY 600/5min company-enricher.ts:43 sic-industry-map trust 80 active 20 + BRAVE_API_KEY website</div>
@@ -24,16 +24,19 @@ export function Automations() {
             </div>
             <div className={styles.pills}>
               {["D1", "Vectorize 384 cosine", "R2", "BRAVE"].map((p) => (
-                <span key={p} className="mono" style={{ fontSize: 9, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}` }}>
+                <span key={p} className="mono" style={{ fontSize: 9, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}`, color: T.ink }}>
                   {p}
                 </span>
               ))}
+            </div>
+            <div className="mono" style={{ marginTop: 16, fontSize: 9, color: T.mutedArtifact, letterSpacing: "0.02em" }}>
+              index.ts:240 · scheduled · BATCH 50 · cron 06:00 GMT
             </div>
           </div>
           <div className={styles.cardDark} style={{ background: T.ink, color: T.onColor, borderColor: T.white10 }}>
             <div className={styles.cardTitle}>
               <span style={{ color: T.lavender }}>▣</span>
-              <span className="mono" style={{ fontSize: 11, color: T.white60 }}>Per-candidate · index.ts:254 + Queue jobcompass-ingest-queue + DLQ 0435012c</span>
+              <span className="mono" style={{ fontSize: 11, color: T.onColor, fontWeight: 600, letterSpacing: "0.04em" }}>Per-candidate · On demand</span>
             </div>
             <div className={`mono ${styles.monoList}`} style={{ color: T.white60 }}>
               <div>→ Cron loops candidates target_role -&gt; INGEST_QUEUE.send candidateId,query,location max_batch_size 10 timeout 5 retries 2 DLQ wrangler.toml:38</div>
@@ -44,7 +47,10 @@ export function Automations() {
             </div>
             <div className={styles.dlq} style={{ background: T.white10, borderColor: T.white10 }}>
               <span style={{ color: T.lavender }}>◈</span>
-              <span className="mono" style={{ fontSize: 10 }}>Queue + DLQ ack only success · retry else DLQ · idempotent reference_id</span>
+              <span className="mono" style={{ fontSize: 10, color: T.white60 }}>Queue + DLQ ack only success · retry else DLQ · idempotent reference_id</span>
+            </div>
+            <div className="mono" style={{ marginTop: 16, fontSize: 9, color: T.white40, letterSpacing: "0.02em" }}>
+              index.ts:254 · Queue jobcompass-ingest-queue · DLQ 0435012c · wrangler.toml:38
             </div>
           </div>
         </div>

@@ -5,19 +5,9 @@ import { T } from "../common/Theme.js";
 export function MarketingLayout({ children }: { children: React.ReactNode }) {
   const loc = useLocation();
   const [open, setOpen] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
   const [toast, setToast] = React.useState<string | null>(null);
   const magnetRef = React.useRef<HTMLAnchorElement>(null);
 
-  React.useEffect(() => {
-    const onScroll = () => {
-      const h = document.documentElement;
-      const p = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
-      setProgress(p);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
   React.useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(null), 2600);
@@ -53,10 +43,6 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
         .mono { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; }
         .grid-pattern { background-image: linear-gradient(${T.gridLine} 1px, transparent 1px), linear-gradient(90deg, ${T.gridLine} 1px, transparent 1px); background-size: 32px 32px; }
       `}</style>
-
-      <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 2, zIndex: 200, pointerEvents: "none" }}>
-        <div style={{ height: "100%", background: T.lavenderAA, transition: "width 100ms", width: `${progress * 100}%` }} />
-      </div>
 
       {toast && (
         <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 300, maxWidth: "92vw" }}>
@@ -153,6 +139,9 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
               <Link to="/cookies" style={{ color: T.muted, textDecoration: "none" }}>Cookies</Link>
               <Link to="/gdpr" style={{ color: T.muted, textDecoration: "none" }}>GDPR</Link>
               <Link to="/refunds" style={{ color: T.muted, textDecoration: "none" }}>Refunds</Link>
+            </div>
+            <div className="mono" style={{ marginTop: 14, fontSize: 10, color: T.hint, lineHeight: 1.6, letterSpacing: "0.06em", textTransform: "none" }}>
+              Company No. 00000000 · VAT GB000
             </div>
           </div>
         </div>
