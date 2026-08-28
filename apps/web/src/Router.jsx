@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
-import Landing from "./pages/Landing.jsx";
+import Landing from "./pages/Landing";
 import HowItWorks from "./pages/HowItWorks.jsx";
 import Pricing from "./pages/Pricing.jsx";
 import UkAdvantage from "./pages/UkAdvantage.jsx";

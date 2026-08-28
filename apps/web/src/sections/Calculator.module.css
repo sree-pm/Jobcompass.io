@@ -1,0 +1,16 @@
+.wrap { background: #0A0A0A; color: white; border-radius: 16px; padding: 24px; max-width: 1100px; margin: 0 auto; }
+.kicker { font-size: 11px; letter-spacing: 0.08em; color: #D4FF32; font-weight: 800; text-align: center; }
+.title { font-size: 22px; font-weight: 800; margin: 6px 0 0; text-align: center; }
+.controls { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; margin-top: 12px; }
+.label { font-size: 12px; color: #94a3b8; }
+.value { color: #D4FF32; font-weight: 800; }
+.hint { font-size: 11px; color: #64748d; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 12; }
+.card { border-radius: 12px; padding: 14px; text-align: center; }
+.cardMuted { background: #0A0A0A; border: 1px solid #e5edf5; }
+.cardAccent { background: #111111; border: 1px solid #D4FF32; }
+.cardLabel { font-size: 11px; color: #64748d; }
+.cardValue { font-size: 22px; font-weight: 800; }
+.foot { text-align: center; margin-top: 12px; font-size: 12px; color: #94a3b8; }
+.foot2 { text-align: center; margin-top: 8px; font-size: 11px; color: #64748d; }
+.accent { color: #D4FF32; }

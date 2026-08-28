@@ -1,0 +1,12 @@
+.wall { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.heading { font-size: 18px; font-weight: 800; text-align: center; }
+.sub { text-align: center; color: #64748d; font-size: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 12; margin-top: 16; }
+.card { background: #ffffff; border: 1px solid #e5edf5; border-radius: 12px; padding: 14px; }
+.featured { background: #0A0A0A; color: white; border-color: #e5edf5; }
+.stars { font-size: 11px; color: #64748d; }
+.starsFeatured { font-size: 11px; color: #D4FF32; }
+.name { font-size: 13px; font-weight: 700; margin-top: 6px; }
+.role { font-size: 11px; color: #64748d; }
+.roleFeatured { font-size: 11px; color: #94a3b8; }
+.quote { font-size: 12px; margin-top: 8px; line-height: 1.5; }
