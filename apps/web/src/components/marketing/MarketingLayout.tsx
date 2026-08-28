@@ -57,8 +57,6 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
           <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
             <Link to="/" style={{ display: "flex", alignItems: "baseline", gap: 12, textDecoration: "none", color: T.ink }}>
               <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1 }}>JobCompass</span>
-              <span className="mono" style={{ fontSize: 10, color: T.mutedArtifact, display: "none" } as any}><span className="hidden md:inline" style={{ display: "inline" }}>PROOF & PACE</span></span>
-              <span style={{ fontSize: 10, color: T.mutedArtifact, letterSpacing: "0.12em", textTransform: "uppercase" }} className="hidden md:inline">PROOF & PACE</span>
             </Link>
             <nav style={{ display: "none", gap: 24, alignItems: "center" }} className="lg:flex">
               {[
