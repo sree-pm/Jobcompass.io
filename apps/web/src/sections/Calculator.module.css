@@ -1,4 +1,4 @@
-.wrap { background: #0A0A0A; color: white; border-radius: 16px; padding: 24px; max-width: 1100px; margin: 0 auto; }
+﻿.wrap { background: #0A0A0A; color: white; border-radius: 16px; padding: 24px; max-width: 1100px; margin: 0 auto; }
 .kicker { font-size: 11px; letter-spacing: 0.08em; color: #D4FF32; font-weight: 800; text-align: center; }
 .title { font-size: 22px; font-weight: 800; margin: 6px 0 0; text-align: center; }
 .controls { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; margin-top: 12px; }
@@ -14,3 +14,5 @@
 .foot { text-align: center; margin-top: 12px; font-size: 12px; color: #94a3b8; }
 .foot2 { text-align: center; margin-top: 8px; font-size: 11px; color: #64748d; }
 .accent { color: #D4FF32; }
+
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:0.01ms !important; animation-duration:0.01ms !important; scroll-behavior:auto !important; } }

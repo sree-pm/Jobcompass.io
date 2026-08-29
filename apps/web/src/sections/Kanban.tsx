@@ -23,50 +23,85 @@ const initialCards = [
 export function Kanban() {
   const [cards, setCards] = React.useState(initialCards);
   const [dragId, setDragId] = React.useState<string | null>(null);
+  const [dragOver, setDragOver] = React.useState<string | null>(null);
+  const moveCard = (cardId: string, dir: number) => {
+    setCards((prev) =>
+      prev.map((c) => {
+        if (c.id !== cardId) return c;
+        const i = Qm.findIndex((q) => q.id === c.col);
+        const next = Qm[Math.min(Qm.length - 1, Math.max(0, i + dir))];
+        return next.id === c.col ? c : { ...c, col: next.id };
+      })
+    );
+  };
   return (
     <section id="how" className={styles.wrap} style={{ background: T.ink, color: T.onColor }}>
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
-            <div className="mono" style={{ fontSize: 10, color: T.white40 }}>
+            <div className="mono" style={{ fontSize: 10, color: T.white60 }}>
               PIPELINE KANBAN · SAVED-&gt;OFFER
             </div>
             <h2 className={`serif ${styles.h2}`}>Drag. Review. Dispatch.</h2>
           </div>
-          <div className="mono" style={{ fontSize: 10, color: T.white50, maxWidth: "40ch" }}>
+          <div className="mono" style={{ fontSize: 10, color: T.white60, maxWidth: "40ch" }}>
             280px cols · PipelineKanban.jsx · JobCard drag updateApplication · HitlReviewStation tailorResumeApi · HitlReviewStation.jsx:34
           </div>
         </div>
-        <div className={styles.scroller}>
+        <div className={styles.scroller} role="region" aria-label="Application pipeline">
           <div className={styles.row}>
             {Qm.map((col) => (
               <div
                 key={col.id}
-                onDragOver={(e) => e.preventDefault()}
+                role="group"
+                aria-label={col.label}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(col.id);
+                }}
+                onDragLeave={() => setDragOver((prev) => (prev === col.id ? null : prev))}
                 onDrop={(e) => {
                   e.preventDefault();
+                  setDragOver(null);
                   if (dragId) setCards((prev) => prev.map((c) => (c.id === dragId ? { ...c, col: col.id } : c)));
+                  setDragId(null);
                 }}
                 className={styles.column}
-                style={{ background: T.white04, borderColor: T.white10 }}
+                style={{ background: T.white08, borderColor: dragOver === col.id ? T.lavenderAA : T.white20 }}
               >
                 <div className={styles.colHead}>
                   <span className="mono" style={{ fontSize: 11 }}>
                     {col.label}
                   </span>
-                  <span className="mono" style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: T.white10 }}>
+                  <span aria-live="polite" className="mono" style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: T.white10 }}>
                     {cards.filter((c) => c.col === col.id).length}
                   </span>
                 </div>
-                <div className={styles.colBody}>
+                <div className={styles.colBody} role="list">
                   {cards
                     .filter((c) => c.col === col.id)
                     .map((c) => (
                       <div
                         key={c.id}
+                        role="listitem"
+                        tabIndex={0}
                         draggable
+                        aria-label={`${c.role} at ${c.company}, ${col.label}`}
                         onDragStart={() => setDragId(c.id)}
-                        onDragEnd={() => setDragId(null)}
+                        onDragEnd={() => {
+                          setDragId(null);
+                          setDragOver(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowRight") {
+                            e.preventDefault();
+                            moveCard(c.id, 1);
+                          }
+                          if (e.key === "ArrowLeft") {
+                            e.preventDefault();
+                            moveCard(c.id, -1);
+                          }
+                        }}
                         className={styles.card}
                         style={{ background: T.card, borderColor: T.creamBorder }}
                       >
@@ -76,22 +111,14 @@ export function Kanban() {
                             {c.score}%
                           </span>
                         </div>
-                        <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact, marginTop: 4 }}>
+                        <div className="mono" style={{ fontSize: 10, color: T.mutedStrong, marginTop: 4 }}>
                           {c.company} · {c.loc} · {c.salary}
-                        </div>
-                        <div className={styles.cardPills}>
-                          <span className="mono" style={{ fontSize: 8, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}` }}>
-                            optimise
-                          </span>
-                          <span className="mono" style={{ fontSize: 8, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}` }}>
-                            35k
-                          </span>
                         </div>
                       </div>
                     ))}
                   {cards.filter((c) => c.col === col.id).length === 0 && (
-                    <div className={styles.empty} style={{ borderColor: T.white10, color: T.white40 }}>
-                      Drop to move · updateApplication
+                    <div className={styles.empty} style={{ borderColor: T.white10, color: T.white60 }}>
+                      No applications here yet
                     </div>
                   )}
                 </div>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { T } from "../components/common/Theme.js";
 import styles from "./Jobs.module.css";
 
@@ -23,29 +24,29 @@ export function Jobs() {
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
-            <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact }}>
-              JOBS LIBRARY · MARKETING SEO TRAP · PUBLIC UNAUTH
+            <div className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
+              LIVE UK JOB BOARD
             </div>
             <h2 className={`serif ${styles.h2}`}>30 live UK roles, all functions.</h2>
-            <p className="mono" style={{ marginTop: 12, fontSize: 10, color: T.mutedArtifact }}>
-              GET /jobs?limit=30 · publicPaths isPublicGet /jobs /companies · index.ts:40 · Jobs.jsx auto-fit 280px · trust_score order
+            <p className="mono" style={{ marginTop: 12, fontSize: 10, color: T.mutedStrong }}>
+              Roles refreshed daily at 06:00 GMT, verified before you see them.
             </p>
           </div>
           <a href="#companies" className={styles.viewBtn} style={{ borderColor: T.creamBorder, background: T.onColor, color: T.ink }}>
-            View companies <span>→</span>
+            View companies <span aria-hidden="true">→</span>
           </a>
         </div>
-        <div className={styles.grid}>
+        <div className={styles.grid} role="list">
           {Wm.map((u) => (
-            <div key={u.role + u.company} className={styles.card}>
+            <div key={u.role + u.company} className={styles.card} role="listitem">
               <div className={styles.cardHead}>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.2 }}>{u.role}</div>
-                  <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact, marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
+                  <h3 style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.2, margin: 0 }}>{u.role}</h3>
+                  <div className="mono" style={{ fontSize: 10, color: T.mutedStrong, marginTop: 4, display: "flex", gap: 4, alignItems: "center" }}>
                     {u.company} · {u.loc} · {u.type}
                   </div>
                 </div>
-                <span className={`mono ${styles.trustBadge}`} style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.successBg, color: T.success }}>
+                <span className={`mono ${styles.trustBadge}`} aria-label={`Trust score ${u.trust} of 100`} style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.successBg, color: T.success }}>
                   {u.trust}/100
                 </span>
               </div>
@@ -63,12 +64,12 @@ export function Jobs() {
               </div>
               <div className={styles.divider} style={{ background: T.creamBorder }} />
               <div className={styles.cardFoot}>
-                <span className="mono" style={{ fontSize: 9, color: T.mutedArtifact }}>
+                <span className="mono" style={{ fontSize: 9, color: T.mutedStrong }}>
                   human date · {today}
                 </span>
-                <span className="mono" style={{ fontSize: 9, color: T.ink, display: "flex", gap: 4, alignItems: "center" }}>
-                  Apply <span>→</span>
-                </span>
+                <Link to="/jobs" className="mono" style={{ fontSize: 9, color: T.ink, display: "flex", gap: 4, alignItems: "center", textDecoration: "none", minHeight: 44 }}>
+                  Apply <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
           ))}

@@ -1,4 +1,4 @@
-.wall { max-width: 1100px; margin: 0 auto; padding: 24px; }
+﻿.wall { max-width: 1100px; margin: 0 auto; padding: 24px; }
 .heading { font-size: 18px; font-weight: 800; text-align: center; }
 .sub { text-align: center; color: #64748d; font-size: 12px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 12; margin-top: 16; }
@@ -10,3 +10,5 @@
 .role { font-size: 11px; color: #64748d; }
 .roleFeatured { font-size: 11px; color: #94a3b8; }
 .quote { font-size: 12px; margin-top: 8px; line-height: 1.5; }
+
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:0.01ms !important; animation-duration:0.01ms !important; scroll-behavior:auto !important; } }

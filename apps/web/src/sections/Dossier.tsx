@@ -3,18 +3,18 @@ import { T } from "../components/common/Theme.js";
 import styles from "./Dossier.module.css";
 
 const Sr = [
-  { n: "01", label: "registry", title: "Field Registry", file: "fieldRegistry.js:29", desc: "Editable set from schema. exp.0.bullet.j requiresMetric, basics/education/picture uk_forbidden.", code: "isPathEditable(path) // true/false" },
-  { n: "02", label: "tailor", title: "Tailor", file: "agents/tailor.ts:24", desc: "DeepSeek V3 \u00b7 routeChat('tailor') temp 0.25 3000tok jsonMode \u00b7 \u00a3/% + verb \u00b7 British optimise \u00b7 sanitise 92 \u00b7 cap 30", code: "TAILOR_SYSTEM \u2192 patch[]" },
-  { n: "03", label: "validate", title: "Validate Patch", file: "fieldRegistry.js:160", desc: "isPathEditable + checkBritishSpelling \\b + photo/DOB/NI + banned 'team player' \u2192 422", code: "validatePatchOperations() => 422" },
-  { n: "04", label: "quickVerify", title: "Quick Verify", file: "agents/verifier.ts:127", desc: "Deterministic no AI. Locks, metrics, date overlap, UK compliance.", code: "quickVerify(patch) deterministic" },
-  { n: "05", label: "patched", title: "Patched Clone", file: "routes/resumes.ts:76", desc: "fast-json-patch applyPatch clone strict. No mutation of master.", code: "applyPatch(master, ops)" },
-  { n: "06", label: "verifier", title: "Verifier", file: "agents/verifier.ts:26", desc: "Claude Haiku routeChat('verifier') 0.15 2500 10 checks + hard diff locked + confidence cap 70 if constraintsDoc<50", code: "confidenceCap = 70 // low constraints" },
-  { n: "07", label: "corrective", title: "Corrective Loop", file: "resumes.ts:158", desc: "\u226410 re-validate. Auto-fix British spelling, metric injection, verb upgrade.", code: "while(fail && tries<10) fix()" },
-  { n: "08", label: "persist", title: "Persist + Credits", file: "lib/credits.ts:72", desc: "getCreditBalance 402 if <1 else deductCredits after validate \u00b7 addCredits(refund) atomic balance=balance+? \u00b7 reference_id UNIQUE idempotent", code: "WHERE balance>=? \u2192 balance+?" },
-  { n: "09", label: "matcher", title: "Matcher Score", file: "lib/matcher.ts:21", desc: "ats 50 + exp 30 + constraints 20 \u00b7 cap 70. ATS Calibri 10pt A4 16/18mm.", code: "score = 0.5*ats+0.3*exp+0.2*const" },
-  { n: "10", label: "HITL", title: "HITL Review Station", file: "HitlReviewStation.jsx:278", desc: "Diff + verifier issues error/warning/info + ScoreBar + Fix + checkbox gate ApplyDispatchDrawer", code: "checkbox 'I have reviewed' \u2192 enable" },
-  { n: "11", label: "PDF", title: "PDF Render", file: "lib/pdf.ts:27", desc: "renderCvHtml A4 16/18mm Calibri 10pt BROWSER puppeteer \u2192 R2 pdfs/{app}/{ts} tailored_pdf_key POST /applications/:id/pdf", code: "BROWSER \u2192 R2 pdfs/..." },
-  { n: "12", label: "apply", title: "Apply Dispatch", file: "PUT /applications/:id", desc: "status applied + sourceUrl external submit, no auto-apply. Receipt saved.", code: "status='applied' // human submits" },
+  { n: "01", label: "registry", title: "Field Registry", file: "Your CV, field by field", desc: "Every bullet in your CV is a lockable field. Identity, education and photo stay locked.", code: "Lock every bullet" },
+  { n: "02", label: "tailor", title: "Tailor", file: "Drafts with proof", desc: "One model drafts the edits — every bullet needs a verb, an outcome and a £ or % figure.", code: "Verb + outcome + £" },
+  { n: "03", label: "validate", title: "Validate Patch", file: "Safety gate", desc: "Locked fields, British spelling and banned phrases are checked. Blocked edits never reach your CV.", code: "Nothing slips through" },
+  { n: "04", label: "quickVerify", title: "Quick Verify", file: "Instant scan", desc: "A fast no-AI scan catches protected details and locked fields before anything is applied.", code: "Instant pre-check" },
+  { n: "05", label: "patched", title: "Patched Clone", file: "Safe copy", desc: "Edits apply to a cloned CV — your master stays untouched.", code: "Master stays intact" },
+  { n: "06", label: "verifier", title: "Verifier", file: "Independent audit", desc: "A second, different model audits the result — confidence is capped at 70 without your ground truth.", code: "Second opinion, always" },
+  { n: "07", label: "corrective", title: "Corrective Loop", file: "Self-repair", desc: "Up to 10 auto-fixes are re-validated, then applied. Nothing unlocks.", code: "Auto-fix, re-checked" },
+  { n: "08", label: "persist", title: "Persist + Credits", file: "Fair billing", desc: "One credit is deducted only after checks pass. Failed runs are refunded automatically.", code: "Charge only on success" },
+  { n: "09", label: "matcher", title: "Matcher Score", file: "Your score", desc: "Your match score blends ATS, experience and your constraints — capped at 70 without evidence.", code: "Honest match score" },
+  { n: "10", label: "HITL", title: "HITL Review Station", file: "Your sign-off", desc: "You see the diff, the issues and the score. Nothing dispatches until you tick 'I have reviewed'.", code: "Your approval gates send" },
+  { n: "11", label: "PDF", title: "PDF Render", file: "Final document", desc: "A print-perfect A4 with 16/18mm margins. Stored to your private library.", code: "Print-ready A4" },
+  { n: "12", label: "apply", title: "Apply Dispatch", file: "The send", desc: "You click the employer's site and submit. We mark it applied — no auto-submit, ever.", code: "You stay in control" },
 ];
 
 export function Dossier() {
@@ -23,31 +23,15 @@ export function Dossier() {
     <section id="dossier" className={styles.wrap} style={{ background: T.cream2, borderTop: `1px solid ${T.creamBorder}`, borderBottom: `1px solid ${T.creamBorder}` }}>
       <div className={styles.inner}>
         <div className={styles.left}>
-          <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact }}>
+          <div className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
             12-STAGE DOSSIER · REGISTRY→APPLY
           </div>
           <h2 className={`serif ${styles.h2}`}>Evidence chain, not black box.</h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: T.ink60, maxWidth: "32ch" }}>
             From docs/AGENT_FLOW.md — every application is a 12-step evidence chain with British spelling guard, field locks, Claude Haiku verifier, and atomic credits.
           </p>
-          <div className={styles.liveCard}>
-            <div className="mono" style={{ fontSize: 10 }}>
-              Live step
-            </div>
-            <div className={styles.liveRow}>
-              <div className={styles.liveNum} style={{ background: T.ink, color: T.onColor }}>
-                {Sr[active].n}
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 500 }}>{Sr[active].title}</div>
-                <div className="mono" style={{ fontSize: 9, color: T.mutedArtifact }}>
-                  {Sr[active].file}
-                </div>
-              </div>
-            </div>
-          </div>
           <div className={styles.flowNav}>
-            <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact, marginBottom: 8 }}>
+            <div className="mono" style={{ fontSize: 10, color: T.mutedStrong, marginBottom: 8 }}>
               FLOW
             </div>
             <div className={styles.flowList}>
@@ -55,6 +39,7 @@ export function Dossier() {
                 <button
                   key={u.n}
                   onClick={() => setActive(idx)}
+                  aria-current={idx === active ? "step" : undefined}
                   className={styles.flowBtn}
                   style={idx === active ? { background: T.ink, color: T.onColor } : { background: "white", border: `1px solid ${T.creamBorder}`, color: T.ink70 }}
                 >
@@ -76,10 +61,11 @@ export function Dossier() {
                 <div
                   key={u.n}
                   onClick={() => setActive(idx)}
-                  onMouseEnter={() => setActive(idx)}
+                  onFocus={() => setActive(idx)}
                   role="button"
                   tabIndex={0}
                   aria-expanded={isActive}
+                  aria-controls={`stage-body-${u.n}`}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
@@ -101,13 +87,18 @@ export function Dossier() {
                     <span className="mono" style={{ fontSize: 10, padding: "4px 8px", borderRadius: 999, background: T.surfaceCool, border: `1px solid ${T.creamBorder}` }}>
                       {u.n} · {u.label}
                     </span>
-                    <span className="mono" style={{ fontSize: 9, color: T.mutedArtifact }}>
+                    <span className="mono" style={{ fontSize: 9, color: T.mutedStrong }}>
                       {u.file}
                     </span>
-                    <span className={styles.statusDot} style={{ background: idx <= active ? T.success : T.creamBorder }} />
+                    <span
+                      className={styles.statusDot}
+                      role="img"
+                      aria-label={idx < active ? "Completed" : idx === active ? "Current" : "Pending"}
+                      style={idx < active ? { background: T.success } : { background: "white", border: `2px solid ${T.creamBorder}` }}
+                    />
                   </div>
                   <h3 className={`serif ${styles.cardTitle}`}>{u.title}</h3>
-                  <div className={`${styles.cardBody} ${isActive ? styles.cardBodyOpen : styles.cardBodyClosed}`} aria-hidden={!isActive}>
+                  <div id={`stage-body-${u.n}`} className={`${styles.cardBody} ${isActive ? styles.cardBodyOpen : styles.cardBodyClosed}`} aria-hidden={!isActive}>
                     <p style={{ marginTop: 8, fontSize: 13, lineHeight: 1.6, color: T.ink70 }}>{u.desc}</p>
                     <div className="mono" style={{ marginTop: 12, fontSize: 10, padding: "6px 10px", borderRadius: 999, background: T.ink, color: T.white60, display: "inline-flex", maxWidth: "100%", overflow: "hidden" }}>
                       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.code}</span>

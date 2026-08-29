@@ -1,28 +1,25 @@
-.hero { position: relative; overflow: hidden; max-width: 100vw; }
+.hero { position: relative; overflow: hidden; max-width: 100%; }
 .bgGlow { position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: min(900px, 100vw); height: 600px; border-radius: 999px; background: radial-gradient(400px at center, rgba(122,124,255,0.15), transparent 70%); pointer-events: none; }
 .gridPattern { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(10,10,13,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(10,10,13,0.03) 1px, transparent 1px); background-size: 32px 32px; }
 .inner { position: relative; max-width: 1280px; margin: 0 auto; padding: 56px 20px 56px; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: start; }
-@media(max-width: 960px){ .inner{ grid-template-columns: 1fr; } }
+@media(max-width: 1024px){ .inner{ grid-template-columns: 1fr; } }
+@media(max-width: 768px){ .inner{ padding: 32px 20px; gap: 24px; } }
 .left { min-width: 0; }
-.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #E9E6E1; border-radius: 999px; padding: 8px 12px; background: white; }
+.eyebrow { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #E9E6E1; border-radius: 999px; padding: 8px 12px; background: white; }
 .dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; animation: pulse 2s infinite; }
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
-.h1 { margin-top: 24px; font-size: clamp(32px, 5vw, 72px); line-height: 0.9; letter-spacing: -0.04em; max-width: 18ch; }
+.h1 { margin-top: 24px; font-size: clamp(28px, 8vw, 72px); line-height: 0.9; letter-spacing: -0.04em; max-width: 18ch; }
 .italic { font-style: italic; }
-.sub { margin-top: 24px; font-size: 18px; line-height: 1.6; max-width: 52ch; }
+.sub { margin-top: 24px; font-size: clamp(16px, 1.2vw + 14px, 18px); line-height: 1.6; max-width: 52ch; }
 .actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
 .primary, .secondary { height: 46px; padding: 0 28px; border-radius: 999px; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
 .secondary { background: white; border: 1px solid #E9E6E1; color: #0A0A0D; }
 .badges { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px; }
 .badge { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; border: 1px solid #E9E6E1; background: white; color: #8A8885; }
-.stackChips { margin-top: 40px; border: 1px solid #E9E6E1; background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 10px; overflow: hidden; }
-.chip { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 8px; border-radius: 999px; background: #F4F4F5; border: 1px solid #E9E6E1; }
-.hideMd { margin-left: auto; }
-@media(max-width: 768px){ .hideMd{ display:none; } }
 .rightWrap { position: relative; }
-@media(min-width: 961px){ .rightWrap{ position: sticky; top: 96px; } }
-.card { position: relative; border-radius: 24px; padding: 28px; min-height: 520px; overflow: hidden; }
-@media(min-width: 768px){ .card{ padding: 32px; } }
+@media(min-width: 1024px){ .rightWrap{ position: sticky; top: 96px; } }
+.card { position: relative; border-radius: 24px; padding: 28px; min-height: auto; overflow: hidden; }
+@media(min-width: 768px){ .card{ padding: 32px; min-height: 480px; } }
 .cardGlow { position: absolute; top: -80px; right: -80px; width: 300px; height: 300px; border-radius: 999px; background: radial-gradient(200px at center, rgba(122,124,255,0.25), transparent); opacity: .7; pointer-events: none; }
 .cardSheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.06) 10%, transparent 20%); }
 .cardHead { display: flex; align-items: center; justify-content: space-between; }
@@ -37,7 +34,14 @@
 .dialWrap { flex-shrink: 0; }
 .dial { width: 92px; height: 92px; border-radius: 999px; padding: 3px; }
 .dialInner { width: 100%; height: 100%; border-radius: 999px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.dialWrap .mono { margin-top: 12px; text-align: center; }
 .cardFoot { margin-top: 32px; border-top: 1px solid; padding-top: 16px; display: flex; align-items: center; justify-content: space-between; }
-.floatedBadges { position: absolute; right: -24px; top: 28%; display: none; flex-direction: column; gap: 8px; }
-@media(min-width: 960px){ .floatedBadges{ display:flex; } }
+.floatedBadges { position: absolute; right: 12px; top: 28%; display: none; flex-direction: column; gap: 8px; }
+@media(min-width: 1200px){ .floatedBadges{ display:flex; } }
 .floated { border-radius: 999px; background: white; border: 1px solid #E9E6E1; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 6px 12px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+@media(max-width: 768px){
+  .cardBody{ flex-direction: column; }
+  .dialWrap{ display: flex; align-items: center; gap: 16px; }
+  .dialWrap .mono{ margin-top: 0; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:0.01ms !important; animation-duration:0.01ms !important } }

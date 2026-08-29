@@ -2,45 +2,45 @@ import { T } from "../components/common/Theme.js";
 import styles from "./Locks.module.css";
 export function Locks() {
   const rows = [
-    { path: "exp.0.bullet.j", editable: true, note: "requiresMetric", ok: true },
-    { path: "basics.summary", editable: true, note: "British optimise", ok: true },
-    { path: "basics.name", editable: false, note: "uk_forbidden unlock", ok: false },
-    { path: "basics.picture", editable: false, note: "UK no photo", ok: false },
-    { path: "education.0", editable: false, note: "Identity locked", ok: false },
+    { path: "Experience bullets", editable: true, note: "Requires a metric", ok: true },
+    { path: "Professional summary", editable: true, note: "British spelling enforced", ok: true },
+    { path: "Your name", editable: false, note: "Locked for UK compliance", ok: false },
+    { path: "Photo", editable: false, note: "No photo — UK standard", ok: false },
+    { path: "Education", editable: false, note: "Identity locked", ok: false },
   ];
   return (
     <section className={styles.wrap} style={{ background: T.cream, borderTop: `1px solid ${T.creamBorder}`, borderBottom: `1px solid ${T.creamBorder}` }}>
       <div className={styles.inner}>
         <div>
-          <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact }}>
+          <div className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
             MASTER CV + FIELD LOCKS
           </div>
           <h2 className={`serif ${styles.h2}`}>Identity locked. Metrics required.</h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: T.ink60 }}>
-            FieldLocks.jsx · PUT /resumes/:id/locks · candidate_id+field_id unique · applyUserLocks never unlocks identity. ConstraintsBuilder did_list/did_not_list.
+            Lock any bullet you never want touched. Identity, education and photo fields can never be unlocked — enforced on every run.
           </p>
           <div className={styles.registry}>
             <div className={styles.registryHead}>
               <span className="mono" style={{ fontSize: 10 }}>
-                fieldRegistry.js:29
+                YOUR CV · FIELD REGISTRY
               </span>
               <span className="mono" style={{ fontSize: 10, color: T.success, display: "flex", alignItems: "center", gap: 4 }}>
-                ✓ LOCKS ACTIVE
+                <span aria-hidden="true">✓</span> LOCKS ACTIVE
               </span>
             </div>
             <div>
               {rows.map((r) => (
                 <div key={r.path} className={styles.row}>
                   <div className={styles.rowLeft}>
-                    <span className={styles.icon} style={r.ok ? { background: T.successBg, color: T.success } : { background: T.dangerBg, color: T.dangerText }}>
+                    <span className={styles.icon} aria-hidden="true" style={r.ok ? { background: T.successBg, color: T.success } : { background: T.dangerBg, color: T.dangerText }}>
                       {r.ok ? "✓" : "✕"}
                     </span>
                     <span className="mono" style={{ fontSize: 11 }}>
                       {r.path}
                     </span>
                   </div>
-                  <span className="mono" style={{ fontSize: 10, color: T.mutedArtifact }}>
-                    {r.editable ? "editable:true" : "editable:false"} · {r.note}
+                  <span className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
+                    {r.editable ? "Editable" : "Locked"} · {r.note}
                   </span>
                 </div>
               ))}
@@ -49,7 +49,7 @@ export function Locks() {
         </div>
         <div className={styles.rightCard}>
           <div className="mono" style={{ fontSize: 10 }}>
-            ConstraintsBuilder.jsx · PUT /candidates/:id/constraints
+            YOUR RULES · DID / DID NOT
           </div>
           <div className={styles.twoCol}>
             <div className={styles.did} style={{ background: T.ink, color: T.onColor }}>
@@ -63,7 +63,7 @@ export function Locks() {
               </ul>
             </div>
             <div className={styles.didNot} style={{ background: T.surfaceCool, borderColor: T.creamBorder }}>
-              <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact }}>
+              <div className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
                 DID NOT LIST
               </div>
               <ul className={styles.listMuted}>
@@ -74,9 +74,9 @@ export function Locks() {
             </div>
           </div>
           <div className={styles.guard} style={{ background: T.successBg, borderColor: T.success }}>
-            <span style={{ color: T.success }}>✓</span>
+            <span aria-hidden="true" style={{ color: T.success }}>✓</span>
             <span style={{ fontSize: 12, lineHeight: 1.5 }}>
-              <b>UK Guard:</b> checkBritishSpelling \b optimise/organisation · photo/DOB/NI blocked → 422 · sanitise 92 · applyUserLocks never unlocks identity.
+              <b>UK Guard:</b> British spelling enforced. Photo, date of birth and NI number are blocked. Locked fields are re-checked after every edit.
             </span>
           </div>
         </div>

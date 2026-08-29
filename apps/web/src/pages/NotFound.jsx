@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 export default function NotFound(){
-  React.useEffect(()=>{ document.title="404 — JobCompass"; },[]);
+  React.useEffect(()=>{
+    document.title="404 — JobCompass";
+    let meta=document.querySelector('meta[name="robots"]');
+    if(!meta){ meta=document.createElement("meta"); document.head.appendChild(meta); }
+    meta.setAttribute("name","robots"); meta.setAttribute("content","noindex");
+  },[]);
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 800, margin:"0 auto", padding:"80px 24px", textAlign:"center" }}>

@@ -1,7 +1,12 @@
-.wrap { max-width: 100vw; overflow: hidden; }
+.wrap { max-width: 100%; overflow: hidden; }
 .inner { max-width: 1280px; margin: 0 auto; padding: 64px 20px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
 @media(min-width: 768px){ .inner{ gap: 64px; } }
 @media(max-width: 768px){ .inner{ grid-template-columns: 1fr; padding: 64px 20px; align-items: center; } }
 .h2 { font-size: clamp(28px, 4vw, 42px); line-height: 0.95; max-width: 22ch; }
+@media(max-width: 768px){ .h2{ line-height: 1.05; } }
 .right { font-size: 14px; line-height: 1.6; max-width: 42ch; }
 .pills { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pains { display: grid; gap: 16px; font-size: 13px; }
+@media(max-width: 768px){ .pains{ grid-template-columns: 1fr; gap: 16px; } }
+@media(min-width: 769px){ .pains{ grid-template-columns: repeat(3, 1fr); } }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:0.01ms !important; animation-duration:0.01ms !important } }

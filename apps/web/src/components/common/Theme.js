@@ -14,7 +14,8 @@ export const T = {
   lavender: "#A5A6FF",       // --lavender
   lavenderAA: "#7A7CFF",     // --lavenderAA
   lavenderHover: "#6F71FF",
-  mutedArtifact: "#8A8885",  // --muted (artifact)
+  mutedArtifact: "#8A8885",  // --muted (artifact, decorative only)
+  mutedStrong: "#6F6D6A",    // readable muted — 4.5:1 on cream/white
   success: "#0F6D5A",        // --success
   successBg: "#E6F4F1",      // --successBg
   // translucent artifact tokens (header/grid/shadow — live in Theme.js so TSX never writes rgba() literals)
@@ -30,6 +31,8 @@ export const T = {
   white08: "rgba(255,255,255,0.08)",
   white06: "rgba(255,255,255,0.06)",
   white04: "rgba(255,255,255,0.04)",
+  white20: "rgba(255,255,255,0.20)",
+  white25: "rgba(255,255,255,0.25)",
   white40: "rgba(255,255,255,0.40)",
   white50: "rgba(255,255,255,0.50)",
   white60: "rgba(255,255,255,0.60)",
@@ -127,7 +130,7 @@ export const T = {
   radiusXl: 16,
   radiusPill: 999,
   // ── Layout — 8px grid ─────────────────────────────────────────────
-  navHeight: 56,
+  navHeight: 64,
   grid: 8,
   // ── Type stacks ───────────────────────────────────────────────────
   sans: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -168,7 +171,7 @@ export const PACK_BADGE = {
   "Maximum Volume": { bg: T.indigoLight, color: T.indigoDeep, border: T.indigoMid },
 };
 
-export const NAV_HEIGHT = 56;
+export const NAV_HEIGHT = 64;
 
 // ── Compat aliases — older components reference these names ─────────
 // These map onto real tokens above. Prefer the canonical names in new code.

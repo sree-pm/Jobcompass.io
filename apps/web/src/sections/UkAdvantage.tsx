@@ -3,7 +3,7 @@ import styles from "./UkAdvantage.module.css";
 export function UkAdvantage() {
   const cards = [
     { title: "Companies House Verified", body: "We verify every employer at Companies House — no shell companies, no fakes." },
-    { title: "British Spelling & Format", body: "Optimised, colour, centre — British spelling enforced + A4 16/18mm Calibri 10pt, no photo/DOB." },
+    { title: "British Spelling & Format", body: "Optimise, colour, centre — British spelling enforced + A4 16/18mm, no photo or DOB." },
     { title: "UK Region + Salary Band", body: "Location-aware search with UK regions and salary bands that make sense here." },
   ];
   return (
@@ -11,18 +11,18 @@ export function UkAdvantage() {
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
-            <div className="mono" style={{ fontSize: 10, color: T.white40 }}>
+            <div className="mono" style={{ fontSize: 10, color: T.white60 }}>
               UK ADVANTAGE · ALL ROLES
             </div>
             <h2 className={`serif ${styles.h2}`}>Built for UK hiring, not US wishlists.</h2>
           </div>
-          <div className="mono" style={{ fontSize: 10, color: T.white40, maxWidth: "36ch" }}>
+          <div className="mono" style={{ fontSize: 10, color: T.white60, maxWidth: "36ch" }}>
             Verified employers, British CV standards, and search tuned to how the UK actually hires.
           </div>
         </div>
         <div className={styles.grid}>
           {cards.map((c) => (
-            <div key={c.title} className={styles.card} style={{ borderColor: T.white10, background: T.white04 }}>
+            <div key={c.title} className={styles.card} style={{ borderColor: T.white20, background: T.white04 }}>
               <div className={`serif ${styles.cardTitle}`}>{c.title}</div>
               <p style={{ marginTop: 12, fontSize: 13, lineHeight: 1.6, color: T.white60 }}>{c.body}</p>
             </div>

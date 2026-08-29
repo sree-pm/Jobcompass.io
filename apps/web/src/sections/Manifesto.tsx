@@ -5,7 +5,7 @@ export function Manifesto() {
     <section className={styles.wrap} style={{ background: T.cream, borderTop: `1px solid ${T.creamBorder}`, borderBottom: `1px solid ${T.creamBorder}` }}>
       <div className={styles.inner}>
         <div>
-          <p className="mono" style={{ fontSize: 10, color: T.mutedArtifact, marginBottom: 12 }}>
+          <p className="mono" style={{ fontSize: 10, color: T.mutedStrong, marginBottom: 12 }}>
             YOU'VE DONE THE HARD PART
           </p>
           <h2 className={`serif ${styles.h2}`}>
@@ -25,14 +25,14 @@ export function Manifesto() {
         </div>
       </div>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 20px 32px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, fontSize: 13 }}>
-          <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 12 }}>
+        <div className={styles.pains}>
+          <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 16 }}>
             <strong>The £400k bullet you couldn't claim.</strong> You shipped it. Your CV still says "helped with".
           </div>
-          <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 12 }}>
+          <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 16 }}>
             <strong>The dissolved LTD you almost joined.</strong> Trust 80/100 would have warned you.
           </div>
-          <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 12 }}>
+          <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 16 }}>
             <strong>The photo/DOB you shouldn't have sent.</strong> Blocked in the UK — but your tool didn't know.
           </div>
         </div>

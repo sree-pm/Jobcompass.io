@@ -10,6 +10,7 @@ const PACKS = [
 ];
 
 export default function Pricing() {
+  React.useEffect(()=>{ document.title="Pricing — JobCompass"; },[]);
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px", textAlign:"center" }}>
@@ -34,7 +35,7 @@ export default function Pricing() {
           <div style={{ fontSize:12, color:T.muted, marginTop:8, lineHeight:1.6 }}>
             <p><b>5 trial credits</b> on signup. No card required.</p>
             <p><b>Refund:</b> if a tailor is blocked or fails after we deduct, you are refunded automatically.</p>
-            <p><b>Idempotency:</b> Stripe retries never double-credit — each payment is stored once.</p>
+            <p><b>Safe payments:</b> a payment can only ever be recorded once — Stripe retries never double-credit you.</p>
             <p><b>Why not subscription:</b> Teal ~£7/week, Huntr ~£32/month — we charge per outcome and credits never expire.</p>
           </div>
         </details>

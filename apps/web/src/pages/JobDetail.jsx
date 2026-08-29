@@ -5,6 +5,7 @@ import { T } from "../components/common/Theme.js";
 export default function JobDetail(){
   const { id }=useParams(); const [job,setJob]=useState(null);
   useEffect(()=>{ fetch(`${import.meta.env.VITE_API_URL||"http://localhost:8789"}/jobs/${id}`).then(r=>r.json()).then(setJob).catch(()=>{}); },[id]);
+  useEffect(()=>{ if(job&&job.title) document.title=`${job.title} — JobCompass`; },[job]);
   if(!job) return <MarketingLayout><div style={{ maxWidth:900, margin:"0 auto", padding:"40px 24px" }}>Loading job {id}…</div></MarketingLayout>;
   return (
     <MarketingLayout>

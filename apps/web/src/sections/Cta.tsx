@@ -16,25 +16,25 @@ export function Cta() {
           You've done the hard part — the shifts, the proof. We fix what's costing you interviews: a receipt that proves every bullet, British, A4, Companies House trusted.
         </p>
         <div className={styles.actions}>
-          <button onClick={() => { setToast("5-credit trial ready — check your email: PIN → JWT"); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className={styles.primary} style={{ background: T.onColor, color: T.ink }}>
-            Start free — 5 credits <span>→</span>
+          <button onClick={() => { setToast("Check your email for your 5-credit sign-in code"); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className={styles.primary} style={{ background: T.onColor, color: T.ink }}>
+            Start free — 5 credits <span aria-hidden="true">→</span>
           </button>
-          <span className="mono" style={{ fontSize: 11, color: T.white40, alignSelf: "center" }}>
+          <span className="mono" style={{ fontSize: 11, color: T.white60, alignSelf: "center" }}>
             On the House — first 5, no card.
           </span>
         </div>
-        <div className="mono" style={{ marginTop: 16, fontSize: 10, color: T.white40 }}>
+        <div className="mono" style={{ marginTop: 16, fontSize: 10, color: T.white60 }}>
           £0.10/job · you keep them · never expire
         </div>
-        {toast && <div className={styles.toast} style={{ background: T.ink, color: T.onColor }}>{toast}</div>}
+        {toast && <div className={styles.toast} role="status" aria-live="polite" style={{ background: T.ink, color: T.onColor }}>{toast}</div>}
         <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, textAlign: "left", maxWidth: 640, marginInline: "auto" }}>
           <div style={{ background: T.white04, border: `1px solid ${T.white10}`, borderRadius: 16, padding: 16 }}>
-            <div className="mono" style={{ fontSize: 10, color: T.white40 }}>FOUNDER — PRODUCT</div>
+            <div className="mono" style={{ fontSize: 10, color: T.white60 }}>FOUNDER — PRODUCT</div>
             <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600 }}>Sales & Funnels</div>
             <div style={{ fontSize: 12, color: T.white60 }}>Owns the leak diagnosis → offer → copy.</div>
           </div>
           <div style={{ background: T.white04, border: `1px solid ${T.white10}`, borderRadius: 16, padding: 16 }}>
-            <div className="mono" style={{ fontSize: 10, color: T.white40 }}>FOUNDER — DESIGN</div>
+            <div className="mono" style={{ fontSize: 10, color: T.white60 }}>FOUNDER — DESIGN</div>
             <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600 }}>Conversion Design</div>
             <div style={{ fontSize: 12, color: T.white60 }}>Owns the trust layer — one token system.</div>
           </div>
@@ -47,13 +47,13 @@ export function Cta() {
             <p><strong>Hired help before?</strong> They designed. We diagnosed first.</p>
             <p><strong>My time?</strong> One email, one approve.</p>
             <p><strong>Have a CV?</strong> We keep it — we just add proof.</p>
-            <p><strong>What do I own?</strong> Every A4 PDF in your R2 — forever.</p>
-            <p><strong>What happens on start?</strong> PIN → Jet → tailor → verify → receipt.</p>
+            <p><strong>What do I own?</strong> Every A4 PDF in your private library — forever.</p>
+            <p><strong>What happens on start?</strong> One email code, then we tailor, verify and send your first receipt.</p>
           </div>
         </details>
-        <div className={styles.foot} style={{ borderColor: T.white10, color: T.white40 }}>
+        <div className={styles.foot} style={{ borderColor: T.white10, color: T.white60 }}>
           <span>Ready to stop leaving interviews on the page? You've done the hard part.</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>Start free — 5 credits <span>→</span></span>
+          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>Start free — 5 credits <span aria-hidden="true">→</span></span>
         </div>
       </div>
     </section>

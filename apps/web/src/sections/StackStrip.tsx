@@ -7,7 +7,7 @@ export function StackStrip() {
         <p style={{ maxWidth: 640, fontSize: 14, lineHeight: 1.5, color: T.ink70 }}>
           One dossier carries your whole hire. Every post, every email, every referral funnels to one A4. A weak post costs you views. A weak dossier costs you the business you should have.
         </p>
-        <span className="mono" style={{ fontSize: 11, color: T.mutedArtifact, marginLeft: "auto" }}>
+        <span className="mono" style={{ fontSize: 11, color: T.mutedStrong, marginLeft: "auto" }}>
           One page. One receipt. All traffic →
         </span>
       </div>

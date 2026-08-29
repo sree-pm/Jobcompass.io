@@ -1,9 +1,11 @@
-.wrap { padding: 64px 0; max-width: 100vw; overflow: hidden; }
+.wrap { padding: 64px 0; max-width: 100%; overflow: hidden; }
 .inner { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
 .head { display: flex; flex-wrap: wrap; gap: 24px; align-items: start; justify-content: space-between; }
 .h2 { margin-top: 12px; font-size: 32px; line-height: 0.9; }
 @media(min-width: 768px){ .h2{ font-size: 44px; } }
 .grid { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 @media(max-width: 768px){ .grid{ grid-template-columns: 1fr; } }
+@media(min-width: 769px) and (max-width: 1024px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
 .card { border-radius: 16px; border: 1px solid; padding: 24px; }
 .cardTitle { margin-top: 0; font-size: 20px; line-height: 0.95; }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ transition-duration:0.01ms !important; animation-duration:0.01ms !important } }

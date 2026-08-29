@@ -2,6 +2,7 @@ import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 export default function UkAdvantage(){
+  React.useEffect(()=>{ document.title="UK advantage — JobCompass"; },[]);
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin:"0 auto", padding:"40px 24px" }}>
@@ -14,7 +15,7 @@ export default function UkAdvantage(){
             ["British spelling", "Optimise, organisation, prioritise — word-boundary checked. US spelling is flagged per bullet before you see it."],
             ["Equality Act", "Photo, date of birth, marital status and NI number are blocked. Locked fields are re-checked after the AI edits."],
             ["Companies House", "Every employer is looked up at Companies House. Active companies score 80, dissolved 20, with SIC → industry mapping."],
-            ["SIC → industry", "SIC codes map to Technology, Finance, Healthcare and more. Free tier, 600 requests per 5 minutes."],
+            ["SIC → industry", "Official SIC codes map every employer to Technology, Finance, Healthcare and more, so roles land in the right industry for you."],
             ["Banned phrases", "Team player and hard worker are removed. Cover letters are 300–340 words, understated, mentioning the company twice."],
             ["Right to work", "Right-to-work and notice period are part of your ground truth. Without them confidence is capped at 70."],
             ].map(([t,d])=> (
