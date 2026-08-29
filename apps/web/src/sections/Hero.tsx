@@ -18,34 +18,33 @@ export function Hero() {
             <span className="mono">£0.10/job applied · PAYG credits · never expire</span>
           </div>
           <h1 className={`${styles.h1} serif`}>
-            Your UK career agent that <span className={styles.italic}>proves</span> every application.
+            You've got the CV. <br />
+            <span style={{ color: T.lavenderAA }}>We build the receipt</span> <br />
+            <span className={styles.italic}>that collects</span> interviews.
           </h1>
           <p className={styles.sub} style={{ color: T.ink70 }}>
-            Applications not wishlists. Receipts not promises. British spelling optimised, Companies House verified, ATS-optimised Calibri 10pt A4. For all roles — Sales, Data, Engineering, Marketing, Finance — across UK.
+            You've done the hard part — the skills, the shifts, the £400k migration. A done-for-you UK apply system from the team behind 12-stage proof. For UK jobseekers, not US templates.
           </p>
           <div className={styles.actions}>
             <a href="#start" onClick={onPricing} className={styles.primary} style={{ background: T.ink, color: T.onColor }}>
-              Start free — 5 credits trial <span>→</span>
+              Start free — 5 credits
             </a>
-            <a href="#dossier" className={styles.secondary}>
-              See 12-stage dossier <span>→</span>
-            </a>
+            <span className="mono" style={{ fontSize: 11, color: T.mutedArtifact, alignSelf: "center" }}>
+              Your proof in 7 minutes.
+            </span>
           </div>
+          <p className="mono" style={{ marginTop: 8, fontSize: 10, color: T.mutedArtifact }}>
+            Trusted by early Infonaut teams — 30 live UK roles verified.
+          </p>
           <div className={styles.badges}>
-            {["No hallucination \u00B7 provably", "British spelling", "Companies House verified"].map((b) => (
+            {["One PIN · one approve · we handle the rest"].map((b) => (
               <span key={b} className={styles.badge}>
                 {b}
               </span>
             ))}
           </div>
           <div className={styles.stackChips}>
-            <span className="mono">Web</span> <span>→</span>
-            <span className="mono">API Hono Worker</span> <span>→</span>
-            <span className={styles.chip}>D1</span>
-            <span className={styles.chip}>R2</span>
-            <span className={styles.chip}>KV</span>
-            <span className={styles.chip}>Vectorize</span>
-            <span className={`${styles.hideMd} mono`}>Vite React 19 \u00B7 Theme.js single token</span>
+            <span style={{ fontSize: 11, color: T.mutedArtifact }}>Strategy first, design never first.</span>
           </div>
         </div>
         <div className={styles.rightWrap}>

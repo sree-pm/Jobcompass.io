@@ -9,46 +9,51 @@ export function Cta() {
       <div className={styles.glow} aria-hidden />
       <div className={styles.inner}>
         <div className="mono" style={{ fontSize: 10, padding: "6px 12px", borderRadius: 999, border: `1px solid ${T.white10}`, background: T.white06, display: "inline-flex" }}>
-          BOARD-READY RECEIPT · 90-DAY TRACKING · PROOF FIRST
+          WHO'S BEHIND JOBCOMPASS
         </div>
-        <h2 className={`serif ${styles.h2}`}>Start your UK apply OS. Proof, not promises.</h2>
+        <h2 className={`serif ${styles.h2}`}>Two humans. One system that collects.</h2>
         <p style={{ marginTop: 16, fontSize: 15, lineHeight: 1.6, color: T.white60, maxWidth: "48ch", marginInline: "auto" }}>
-          For all roles — Sales, Data, Engineering, Marketing, Finance — across UK. British spelling optimised, Companies House verified, ATS Calibri 10pt A4 16/18mm. 5 credits trial, never expire, £0.10 per application, £0.33/day.
+          You've done the hard part — the shifts, the proof. We fix what's costing you interviews: a receipt that proves every bullet, British, A4, Companies House trusted.
         </p>
         <div className={styles.actions}>
-          <button onClick={() => { setToast("5-credit trial ready — check your email flow: POST /auth/request-code → PIN → JWT"); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className={styles.primary} style={{ background: T.onColor, color: T.ink }}>
+          <button onClick={() => { setToast("5-credit trial ready — check your email: PIN → JWT"); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }} className={styles.primary} style={{ background: T.onColor, color: T.ink }}>
             Start free — 5 credits <span>→</span>
           </button>
-          <button onClick={() => setToast("Demo booked — 30 mins GMT · Calendar invite sent · agentic_cv_uk_token")} className={styles.secondary} style={{ borderColor: T.white10, background: T.white06, color: T.onColor }}>
-            Book Demo — 30 mins <span className="mono" style={{ fontSize: 10, opacity: 0.6 }}>GMT</span>
-          </button>
+          <span className="mono" style={{ fontSize: 11, color: T.white40, alignSelf: "center" }}>
+            On the House — first 5, no card.
+          </span>
         </div>
         <div className="mono" style={{ marginTop: 16, fontSize: 10, color: T.white40 }}>
-          £0.33/day · you keep them · never expire · Companies House · GDPR · Stripe · UK flag
+          £0.10/job · you keep them · never expire
         </div>
         {toast && <div className={styles.toast} style={{ background: T.ink, color: T.onColor }}>{toast}</div>}
-        <div className={styles.grid}>
-          {[
-            { k: "Auth", icon: "⛨", tag: "5 credits", desc: "POST /auth/request-code RequestCodeSchema email -> CACHE auth:rate:3/600s -> generatePin crypto.getRandomValues -> hashPin SHA-256 hex KV auth:pin:600s -> EMAIL.send noreply@jobcompass.io" },
-            { k: "Onboarding", icon: "◎", tag: "is_master", desc: "OnboardingWizard.jsx -> PUT /candidates/:id -> POST /resumes/parse-cv routeChat extract 3000tok -> POST /resumes is_master=1 -> PUT constraints did_list/did_not_list" },
-            { k: "Data", icon: "▦", tag: "D1", desc: "candidates -> resumes(is_master) -> field_locks unique -> constraints_docs unique -> applications tailored_pdf_key -> jobs source_url unique hiring_confidence embedding_id -> companies name unique trust_score" },
-            { k: "Env", icon: "⬢", tag: "TYPES:3", desc: "Env lib/types.ts:3 · JWT_SECRET API_KEY STRIPE DEEPSEEK ANTHROPIC OPENAI ACCOUNT_ID AI_GATEWAY COMPANIES_HOUSE BRAVE ADZUNA REED APIFY BOARDS LEVER ASHBY" },
-          ].map((c) => (
-            <div key={c.k} className={styles.card} style={{ borderColor: T.white10, background: T.white06 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span aria-hidden style={{ width: 28, height: 28, borderRadius: 999, background: T.white10, border: `1px solid ${T.white10}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 16, lineHeight: 1, flexShrink: 0 }}>{c.icon}</span>
-                  <span className="mono" style={{ fontSize: 10, color: T.white40 }}>{c.k}</span>
-                </div>
-                <span className="mono" style={{ fontSize: 9, letterSpacing: "0.08em", padding: "4px 8px", borderRadius: 999, border: `1px solid ${T.white10}`, background: T.white06, color: T.white60, whiteSpace: "nowrap" }}>{c.tag}</span>
-              </div>
-              <div style={{ marginTop: 10, fontSize: 11, lineHeight: 1.5, color: T.white60 }}>{c.desc}</div>
-            </div>
-          ))}
+        <div style={{ marginTop: 32, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, textAlign: "left", maxWidth: 640, marginInline: "auto" }}>
+          <div style={{ background: T.white04, border: `1px solid ${T.white10}`, borderRadius: 16, padding: 16 }}>
+            <div className="mono" style={{ fontSize: 10, color: T.white40 }}>FOUNDER — PRODUCT</div>
+            <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600 }}>Sales & Funnels</div>
+            <div style={{ fontSize: 12, color: T.white60 }}>Owns the leak diagnosis → offer → copy.</div>
+          </div>
+          <div style={{ background: T.white04, border: `1px solid ${T.white10}`, borderRadius: 16, padding: 16 }}>
+            <div className="mono" style={{ fontSize: 10, color: T.white40 }}>FOUNDER — DESIGN</div>
+            <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600 }}>Conversion Design</div>
+            <div style={{ fontSize: 12, color: T.white60 }}>Owns the trust layer — one token system.</div>
+          </div>
         </div>
+        <details style={{ marginTop: 24, maxWidth: 640, marginInline: "auto", textAlign: "left" }}>
+          <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 600 }}>7 questions, zero fluff</summary>
+          <div style={{ marginTop: 12, fontSize: 12, lineHeight: 1.6, color: T.white60 }}>
+            <p><strong>How much?</strong> £10/100 — £0.10/app, never expire.</p>
+            <p><strong>How long?</strong> Your first receipt in 7 minutes.</p>
+            <p><strong>Hired help before?</strong> They designed. We diagnosed first.</p>
+            <p><strong>My time?</strong> One email, one approve.</p>
+            <p><strong>Have a CV?</strong> We keep it — we just add proof.</p>
+            <p><strong>What do I own?</strong> Every A4 PDF in your R2 — forever.</p>
+            <p><strong>What happens on start?</strong> PIN → Jet → tailor → verify → receipt.</p>
+          </div>
+        </details>
         <div className={styles.foot} style={{ borderColor: T.white10, color: T.white40 }}>
-          <span>JobCompass · PROOF & PACE · 2025 · UK Apply OS · jobcompass.io · health 200 · jobs 200 public · auth request-code 200</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ width: 6, height: 6, borderRadius: 999, background: T.success, display: "inline-block" }} /> All systems · 06:00 GMT ingest live</span>
+          <span>Ready to stop leaving interviews on the page? You've done the hard part.</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>Start free — 5 credits <span>→</span></span>
         </div>
       </div>
     </section>

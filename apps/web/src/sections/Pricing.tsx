@@ -29,7 +29,7 @@ export function Pricing() {
             £0.33/day <span style={{ color: T.white40 }}>(and you keep them)</span>
           </h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: T.white60, maxWidth: "44ch" }}>
-            Atomic deduct WHERE balance≥? · balance=balance+? · reference_id UNIQUE idempotent · race revert · Stripe Checkout gbp client_reference_id webhook HMAC v1 300s · sendReceiptEmail non-blocking · BuyCreditsModal sandbox if !STRIPE_SECRET_KEY dev.
+            You do the shifts. We structure the proof. Atomic credits, pay only when it ships — and your page finally collects what your content earned.
           </p>
           <div className={styles.packs}>
             {packs.map((p) => (
