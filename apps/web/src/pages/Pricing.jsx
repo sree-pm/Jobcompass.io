@@ -2,6 +2,7 @@ import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T, PACK_BADGE } from "../components/common/Theme.js";
 import { Link } from "react-router-dom";
+import { usePageMeta } from "../lib/usePageMeta.js";
 
 const PACKS = [
   { id:"pack_starter", name:"Starter", credits:100, price:"£10", badge: PACK_BADGE.Starter, blurb:"Try the full pipeline. Recommended first purchase." },
@@ -10,6 +11,7 @@ const PACKS = [
 ];
 
 export default function Pricing() {
+  usePageMeta("Pricing — £0.10 per application, never expire — JobCompass", "Starter £10, Active £25, Power £50 — pay-as-you-go credits with no subscription and no expiry.", "/pricing");
   React.useEffect(()=>{ document.title="Pricing — JobCompass"; },[]);
   return (
     <MarketingLayout>

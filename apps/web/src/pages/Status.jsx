@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 export default function Status(){
-  const [health,setHealth]=useState(null); const [runs,setRuns]=useState([]); const [runsError,setRunsError]=useState(false);
-  useEffect(()=>{ document.title="Status — JobCompass"; },[]);
+  usePageMeta("Status — JobCompass", "Live JobCompass system status — API health and recent job feed ingest runs.", "/status");
   useEffect(()=>{
     fetch(`${import.meta.env.VITE_API_URL||"http://localhost:8789"}/health`).then(r=>r.json()).then(setHealth).catch(()=> setHealth({ok:false}));
     fetch(`${import.meta.env.VITE_API_URL||"http://localhost:8789"}/ingest/runs?limit=5`).then(r=>r.json()).then(d=> setRuns(d.runs||d||[])).catch(()=> setRunsError(true));

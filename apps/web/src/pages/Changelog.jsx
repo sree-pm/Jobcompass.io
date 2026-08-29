@@ -1,6 +1,7 @@
 import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 const ENTRIES=[
   ["2026-08-27","Marketing site + reliability fixes","JobCompass v2.3 — 15 public pages, human-in-the-loop showcase, £0.10 per application."],
   ["2026-08-26","Production hardening","CORS allowlist, queue dead-letter queue, retries and batch tuning."],
@@ -10,6 +11,7 @@ const ENTRIES=[
   ["2026-08-26","8-agent pipeline","Shared job library, enrichment, classification, verification and matching."],
 ];
 export default function Changelog(){
+  usePageMeta("Changelog — JobCompass", "Every JobCompass release — marketing site, pipeline, billing and design system changes, newest first.", "/changelog");
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin:"0 auto", padding:"40px 24px" }}>

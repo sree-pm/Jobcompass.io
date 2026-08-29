@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 export default function Companies(){
+  usePageMeta("UK companies, Companies House verified — JobCompass", "Every employer looked up at Companies House once and shared — trust scores, SIC industry codes and registered offices.", "/companies");
   const [rows,setRows]=useState([]); const [loading,setLoading]=useState(true); const [error,setError]=useState(false);
   useEffect(()=>{ fetch(`${import.meta.env.VITE_API_URL||"http://localhost:8789"}/companies?limit=50`).then(r=>r.json()).then(d=>{ setRows(d.companies||d||[]); setLoading(false); }).catch(()=>{ setError(true); setLoading(false); }); },[]);
   return (

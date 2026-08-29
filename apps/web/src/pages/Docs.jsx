@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 const CAPS=[
   { title:"Agent Flow", desc:"The 12-stage evidence chain behind every application." },
   { title:"UK CV Spec", desc:"A4, GBP, British spelling, Equality Act rules." },
@@ -17,7 +18,7 @@ const STEPS=[
   "Download the A4 PDF and apply",
 ];
 export default function Docs(){
-  useEffect(()=>{ document.title="Docs — JobCompass"; },[]);
+  usePageMeta("Docs — JobCompass", "The 12-stage agent flow, UK CV spec, design system and data model behind every JobCompass application.", "/docs");
   const Card=({title,desc})=> <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:10, padding:14 }}><div style={{ fontWeight:700, fontSize:13 }}>{title}</div><div style={{ fontSize:12, color:T.muted, marginTop:6, lineHeight:1.5 }}>{desc}</div></div>;
   return (
     <MarketingLayout>

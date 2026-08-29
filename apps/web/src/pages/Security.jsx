@@ -1,7 +1,9 @@
 import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 export default function Security(){
+  usePageMeta("Security — JobCompass", "Field locks, a two-pass AI verifier, confidence caps and UK/EU-region Cloudflare hosting — how JobCompass protects your CV.", "/security");
   React.useEffect(()=>{ document.title="Security — JobCompass"; },[]);
   return (
     <MarketingLayout>

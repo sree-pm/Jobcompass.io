@@ -1,7 +1,9 @@
 import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 export default function UkAdvantage(){
+  usePageMeta("UK advantage — JobCompass", "A4 not Letter, GBP only, British spelling enforced and Equality Act compliance — UK correctness at the registry level, not an afterthought.", "/uk-advantage");
   React.useEffect(()=>{ document.title="UK advantage — JobCompass"; },[]);
   return (
     <MarketingLayout>

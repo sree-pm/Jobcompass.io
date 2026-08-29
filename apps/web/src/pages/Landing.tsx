@@ -12,8 +12,14 @@ import { Automations } from "../sections/Automations";
 import { Guards } from "../sections/Guards";
 import { Frontend } from "../sections/Frontend";
 import { Cta } from "../sections/Cta";
+import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function Landing() {
+  usePageMeta(
+    "UK job search, done properly — JobCompass",
+    "UK-first agentic CV tailoring — A4 GBP British spelling, per-bullet field locks, two-pass hallucination audit, DID ground truth, Companies House trust. £10/100 credits, never expire. Not volume — trust.",
+    "/"
+  );
   return (
     <MarketingLayout>
       <Hero />

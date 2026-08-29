@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 import * as api from "../lib/cloudflareApi.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function Jobs(){
+  usePageMeta("30 live UK roles — JobCompass", "Verified UK job board refreshed daily at 06:00 GMT — enriched via Companies House, classified by industry and region, scored for hiring confidence.", "/jobs");
   const [jobs,setJobs]=useState([]); const [q,setQ]=useState(""); const [loading,setLoading]=useState(true);
   useEffect(()=>{ fetch(`${import.meta.env.VITE_API_URL||"http://localhost:8789"}/jobs?limit=30&q=${encodeURIComponent(q)}`,{headers:{}}).then(r=>r.json()).then(d=>{setJobs(d.jobs||d||[]); setLoading(false);}).catch(async()=>{
     // fallback via api helper if public route needs auth

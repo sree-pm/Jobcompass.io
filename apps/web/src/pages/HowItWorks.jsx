@@ -2,8 +2,10 @@ import React from "react";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { AgentFlowDiagram } from "../components/marketing/AgentFlowDiagram.jsx";
 import { T } from "../components/common/Theme.js";
+import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function HowItWorks() {
+  usePageMeta("How it works — JobCompass", "12 stages of evidence: registry, tailor, validate, verify, corrective, persist, match, review, PDF and apply — every edit checked, logged and reversible.", "/how-it-works");
   React.useEffect(()=>{ document.title="How it works — JobCompass"; },[]);
   return (
     <MarketingLayout>
