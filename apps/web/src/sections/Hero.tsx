@@ -13,7 +13,8 @@ export function Hero() {
       <div className={styles.gridPattern} aria-hidden style={{ opacity: 0.03 }} />
       <div className={styles.inner}>
         <div className={styles.left}>
-          <div className={styles.eyebrow}>
+          <div className="mono" style={{ fontSize: 10, color: T.mutedArtifact, letterSpacing: "0.08em", textTransform: "uppercase" }}>£0.10/job applied · PAYG credits · never expire</div>
+          <div className={styles.eyebrow} style={{ marginTop: 10 }}>
             <span className={styles.dot} style={{ background: T.success }} />
             <span className="mono">NO SPAM · PROOF FIRST · RECEIPT-READY · UK JOBS · 06:00 GMT INGEST</span>
           </div>

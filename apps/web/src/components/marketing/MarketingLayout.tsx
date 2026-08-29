@@ -75,9 +75,8 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Link to="/auth" style={{ display: "none", height: 44, padding: "0 20px", borderRadius: 999, border: `1px solid ${T.creamBorder}`, background: "white", fontSize: 13, fontWeight: 500, alignItems: "center", textDecoration: "none", color: T.ink }} className="md:inline-flex">Log in</Link>
-            <a ref={magnetRef} onMouseMove={onMagnetMove} onMouseLeave={onMagnetLeave} onClick={goPricing} href="#start" style={{ position: "relative", display: "inline-flex", height: 44, padding: "0 24px", borderRadius: 999, background: T.ink, color: "white", fontSize: 13, fontWeight: 500, alignItems: "center", gap: 8, textDecoration: "none", boxShadow: `0 8px 32px ${T.shadowHeader}`, transition: "transform 0.3s" }}>
+            <a ref={magnetRef} onMouseMove={onMagnetMove} onMouseLeave={onMagnetLeave} onClick={goPricing} href="#start" style={{ display: "inline-flex", height: 44, padding: "0 24px", borderRadius: 999, background: T.ink, color: "white", fontSize: 13, fontWeight: 500, alignItems: "center", gap: 8, textDecoration: "none", boxShadow: `0 8px 32px ${T.shadowHeader}`, transition: "transform 0.3s" }}>
               <span>Start free — 5 credits</span> <span>→</span>
-              <span style={{ position: "absolute", bottom: -20, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontSize: 9, color: T.mutedArtifact, letterSpacing: "0.08em", textTransform: "uppercase" }}>£0.33/day • you keep them • never expire</span>
             </a>
             <button onClick={() => setOpen(!open)} style={{ width: 44, height: 44, borderRadius: 999, border: `1px solid ${T.creamBorder}`, background: "white", display: "flex", alignItems: "center", justifyContent: "center" }} className="lg:hidden">
               {open ? "✕" : "☰"}
