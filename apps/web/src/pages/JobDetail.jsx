@@ -12,7 +12,7 @@ export default function JobDetail(){
       <section style={{ maxWidth: 900, margin:"0 auto", padding:"40px 24px" }}>
         <Link to="/jobs" style={{ fontSize:12, color:T.blue, textDecoration:"none" }}>← Back to jobs</Link>
         <h1 style={{ fontSize:24, fontWeight:800, marginTop:8 }}>{job.title} at {job.company_name}</h1>
-        <div style={{ fontSize:12, color:T.muted }}>{job.location} · {job.salary||"Pay on application"} · Found on {job.source} {job.hiring_confidence!=null&&`· employer check ${job.hiring_confidence}/100`} {job.job_verified? "· Checked":""}</div>
+        <div style={{ fontSize:12, color:T.muted }}>{job.location} · {job.salary||"Pay on application"} · {job.source} {job.hiring_confidence!=null&&`· employer check: ${job.hiring_confidence} out of 100`} {job.job_verified? "· Checked":""}</div>
         <div style={{ marginTop:12, display:"flex", gap:6, flexWrap:"wrap" }}>{[job.industry,job.seniority,job.contract_type,job.work_mode,job.salary_band,job.uk_region].filter(Boolean).map(x=> <span key={x} style={{ fontSize:11, background:T.surface, border:`1px solid ${T.border}`, padding:"4px 8px", borderRadius:999 }}>{x}</span>)}</div>
         <div style={{ marginTop:16, background:T.card, border:`1px solid ${T.border}`, borderRadius:10, padding:16, whiteSpace:"pre-wrap", fontSize:13, lineHeight:1.6 }}>{job.job_description||"The employer hasn't sent the full description yet."}</div>
         {job.source_url && <a href={job.source_url} target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:12, background:T.blue, color:T.onColor, padding:"10px 16px", borderRadius:8, textDecoration:"none", fontWeight:700 }}>Open the job advert</a>}

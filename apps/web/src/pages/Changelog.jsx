@@ -8,7 +8,7 @@ const ENTRIES=[
   ["2026-08-26","Web","New jobcompass-web domain."],
   ["2026-08-26","One design","Every page now shares the same styles. No exceptions."],
   ["2026-08-26","Email","Sign-in codes and Stripe receipts now come from jobcompass.io."],
-  ["2026-08-26","8 steps behind the scenes","One shared job library — every employer checked, sorted and scored for you."],
+  ["2026-08-26","8 things we changed","One shared job library — every employer checked, sorted and scored for you."],
 ];
 export default function Changelog(){
   usePageMeta("Changelog — JobCompass", "Every JobCompass release — what changed and when, newest first.", "/changelog");

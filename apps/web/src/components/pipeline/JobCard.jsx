@@ -277,8 +277,8 @@ export const JobCard = React.memo(function JobCard({ job, isSelected, onClick, d
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           {tone ? (
             <span
-              aria-label={`Confidence ${tone.label}`}
-              title={`Confidence ${tone.label}`}
+              aria-label={`Match quality: ${tone.label}`}
+              title={`Match quality: ${tone.label}`}
               style={{
                 fontSize: 10,
                 fontWeight: 510,

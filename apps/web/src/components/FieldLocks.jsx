@@ -600,7 +600,7 @@ export function DiffView({ original, patched, operations, verifier }) {
         </span>
         {verifier && (
           <span style={{ fontSize: 12, color: verifier.passed ? T.green : T.red, fontWeight: 700, fontFamily: T.sans }}>
-            Verifier: {verifier.passed ? "✓ Passed" : "✗ Issues"} · Confidence {verifier.confidenceScore}%
+            Verifier: {verifier.passed ? "Good to go" : "Needs your eyes"}
           </span>
         )}
       </div>

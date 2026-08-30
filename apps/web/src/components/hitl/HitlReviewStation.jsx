@@ -277,7 +277,7 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
 
             {verifier ? (
               <>
-                <ScoreBar label="Confidence Score" score={verifier.confidenceScore ?? 0} target={75} note={verifier.confidenceScore >= 75 ? "DID-verified" : "Review needed"} />
+                <ScoreBar label="How well it fits" score={verifier.confidenceScore ?? 0} target={75} note={verifier.confidenceScore >= 75 ? "Looks good" : "Check it"} />
 
                 <div style={{ fontSize: 12, marginBottom: 14 }}>
                   <strong style={{ color: T.textStrong }}>Status: </strong>

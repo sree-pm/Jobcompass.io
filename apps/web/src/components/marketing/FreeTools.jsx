@@ -3,8 +3,8 @@ import { T } from "../common/Theme.js";
 const TOOLS=[
   ["ATS Keywords Checker","Paste JD + CV — see 2× coverage before paying"],
   ["Salary Band £k","Extract £ bands from JD text — £25k–£40k mapping"],
-  ["Cover Letter 300w","British understatement, company twice, 300–340w preview"],
-  ["Right-to-work Quiz","3 questions — tells confidence cap 70 reason"],
+  ["Cover Letter sample","British style, name the company, keep it short"],
+  ["Right-to-work Quiz","3 questions — tells you if you need a visa"],
   ["A4 Print Simulator","A4 16/18mm Calibri 10pt — see clip vs US Letter"],
 ];
 export function FreeTools(){
