@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { T } from "../common/Theme.js";
 
@@ -60,7 +60,7 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
   };
   const goPricing = (e?: React.MouseEvent) => {
     e?.preventDefault();
-    setToast("Check your email for your 5-credit sign-in code");
+    setToast("Check your email for your sign-in code — your first 10 jobs are on us");
     const el = document.getElementById("pricing");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     else window.location.href = "/#pricing";
@@ -111,10 +111,10 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Link to="/auth" style={{ display: "none", height: 44, padding: "0 20px", borderRadius: 999, border: `1px solid ${T.creamBorder}`, background: "white", fontSize: 13, fontWeight: 500, alignItems: "center", textDecoration: "none", color: T.ink }} className="md:inline-flex">Log in</Link>
             <a ref={magnetRef} className="mdShow" onMouseMove={onMagnetMove} onMouseLeave={onMagnetLeave} onClick={goPricing} href="#start" style={{ height: 44, padding: "0 24px", borderRadius: 999, background: T.ink, color: T.onColor, fontSize: 13, fontWeight: 500, alignItems: "center", gap: 8, textDecoration: "none", boxShadow: `0 8px 32px ${T.shadowHeader}`, transition: "transform 0.3s" }}>
-              <span>Start free — 5 credits</span> <span aria-hidden="true">→</span>
+              <span>Start free — your first 10 jobs are on us</span> <span aria-hidden="true">â†’</span>
             </a>
             <button onClick={() => setOpen(!open)} aria-label="Toggle menu" aria-expanded={open} aria-controls="mobile-menu" style={{ width: 44, height: 44, borderRadius: 999, border: `1px solid ${T.creamBorder}`, background: "white", display: "flex", alignItems: "center", justifyContent: "center" }} className="lg:hidden">
-              <span aria-hidden="true">{open ? "✕" : "☰"}</span>
+              <span aria-hidden="true">{open ? "âœ•" : "â˜°"}</span>
               <span className="vh">{open ? "Close" : "Menu"}</span>
             </button>
           </div>
@@ -130,10 +130,10 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
             </div>
             <div style={{ borderRadius: 16, border: `1px solid ${T.creamBorder}`, background: "white", padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}>Credits</span>
-              <span style={{ fontSize: 13, fontWeight: 500 }}>5 trial • £0.10/app</span>
+              <span style={{ fontSize: 13, fontWeight: 500 }}>10 free jobs • £0.10/app</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <a href="#start" onClick={(e) => { setOpen(false); goPricing(e); }} style={{ height: 44, borderRadius: 999, background: T.ink, color: T.onColor, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontSize: 14, fontWeight: 500, textDecoration: "none" }}>Start free — 5 credits <span aria-hidden="true">→</span></a>
+              <a href="#start" onClick={(e) => { setOpen(false); goPricing(e); }} style={{ height: 44, borderRadius: 999, background: T.ink, color: T.onColor, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontSize: 14, fontWeight: 500, textDecoration: "none" }}>Start free — your first 10 jobs are on us <span aria-hidden="true">â†’</span></a>
               <span style={{ fontSize: 10, textAlign: "center", color: T.mutedArtifact, letterSpacing: "0.08em", textTransform: "uppercase" }}>£0.33/day • you keep them • never expire</span>
             </div>
           </div>
@@ -146,7 +146,7 @@ export function MarketingLayout({ children }: { children: React.ReactNode }) {
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "40px 20px 32px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 32 }}>
           <div>
             <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 8 }}>Job<span style={{ color: T.lavenderAA }}>Compass</span> <span style={{ fontSize: 10, background: T.surfaceCool, border: `1px solid ${T.border}`, padding: "2px 6px", borderRadius: 999 }}>Infonaut</span></div>
-            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>UK job search, done properly — agentic tailoring you can trust, not volume you regret.</p>
+            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>One good CV does more than fifty rushed ones. We make each one count.</p>
             <div style={{ marginTop: 12, fontSize: 11, color: T.hint }}>© {new Date().getFullYear()} Infonaut · jobcompass.io · Cloudflare Workers</div>
           </div>
           <div>

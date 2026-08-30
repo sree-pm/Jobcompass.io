@@ -22,7 +22,7 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
       <div style={{ maxWidth: 800, margin: "60px auto", textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
         <h2 style={{ fontSize: 20, fontWeight: 700, color: T.textStrong }}>No Job Selected</h2>
-        <p style={{ fontSize: 13, color: T.muted }}>Select an application from the Job Pipeline to enter the Human-In-The-Loop review station.</p>
+        <p style={{ fontSize: 13, color: T.muted }}>Pick a job to review the tailored CV. You approve every change before it goes out.</p>
       </div>
     );
   }
@@ -247,9 +247,9 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
           </div>
         </Card>
 
-        {/* Center: Application Dossier */}
+        {/* Center: Tailored CV */}
         <Card style={{ padding: 16 }}>
-          <h3 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 4px", color: T.textStrong }}>2. Application Dossier</h3>
+          <h3 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 4px", color: T.textStrong }}>2. Tailored CV</h3>
           <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>Patches · Cover Letter · Screening · Scores</div>
           {tailorResult ? (
             <ApplicationDossierView tailorResult={tailorResult} />
@@ -265,12 +265,12 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
                 background: T.stripeBg,
               }}
             >
-              Click “Tailor” to generate atomic bullet patches.
+              Click Tailor to start.
             </div>
           )}
         </Card>
 
-        {/* Right: Verifier Audit & HITL Sign-off — Stripe checkout right rail */}
+        {/* Right: Verifier Audit & Sign-off — Stripe checkout right rail */}
         <Card style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", minHeight: 520 }}>
           <div style={{ padding: "16px 16px 0" }}>
             <h3 style={{ fontSize: 13, fontWeight: 700, margin: "0 0 12px", color: T.textStrong }}>3. Verifier Audit & Sign-Off</h3>
@@ -350,7 +350,7 @@ export function HitlReviewStation({ job, candidate, masterResume, constraintsDoc
                   <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>{verifier.correctiveOperations.length} corrective operation(s) available — Fix buttons above apply them on next Tailor run.</div>
                 )}
 
-                {/* HITL Explicit Sign-off Gate */}
+                {/* Sign-off Gate */}
                 <div
                   style={{
                     border: `1px solid ${userSignedOff ? T.greenMid : T.greenMid}`,

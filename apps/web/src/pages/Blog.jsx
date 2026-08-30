@@ -3,10 +3,10 @@ import { useParams, Link } from "react-router-dom";
 import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 const POSTS=[
-  { slug:"british-cv-vs-resume", title:"British CV vs Resume — what UK ATS expects", excerpt:"UK recruiters expect Personal Profile, Core Competencies, A4 with no photo. US Letter templates clip when printed.", body:"UK recruiters expect a Personal Profile, Core Competencies and a clean A4 page with no photo. US Letter templates clip when printed — every JobCompass CV renders A4 at 16/18mm margins." },
-  { slug:"ats-keywords-uk", title:"ATS keywords UK — the 2× rule that gets interviews", excerpt:"Every keyword appearing twice in a job description should appear twice in your CV — we enforce it, not just score it.", body:"Keywords appearing twice in a job description should appear twice in your CV. Our drafts enforce it and a second model audits coverage before you see the diff." },
-  { slug:"did-did-not-ground-truth", title:"DID / DID NOT — stop hallucinating your CV", excerpt:"Tell us what you did and did not do — honesty is built into your confidence score.", body:"Tell us what you did and did not do. Without that evidence your confidence score is capped at 70 — honesty is built in." },
-  { slug:"companies-house-trust", title:"Companies House trust — not all UK jobs are real", excerpt:"Every employer is checked at Companies House before you apply.", body:"Every employer is checked at Companies House. Active companies score higher; dissolved ones warn you before you apply." },
+  { slug:"british-cv-vs-resume", title:"British CV vs résumé — what UK employers expect", excerpt:"One page. A4. British spelling. That's what UK employers expect.", body:"UK employers look for a Personal Profile, clear job history and one page. US résumés often use different headings and paper size. Print a US résumé on A4 and it looks wrong. Every JobCompass CV is one page, A4, British spelling — ready for UK desks." },
+  { slug:"ats-keywords-uk", title:"The two-time rule that gets interviews", excerpt:"If a job ad says it twice, your CV should too. Most people forget. We don't.", body:"If a job advert mentions 'customer service' twice, your CV should too. Most people forget. Our helper counts for you and fixes the gaps — then a second helper double-checks." },
+  { slug:"tell-the-truth-once", title:"Tell the truth once, then let the tool remember", excerpt:"Tell us what you did — and what you didn't. Our score drops when we're unsure.", body:"Tell us what you did — and what you didn't. Our score drops when we're unsure, so you always know which CV is ready. No made-up facts, ever." },
+  { slug:"companies-house-trust", title:"Check the company before you apply", excerpt:"Some job ads are fake. We check every employer before you waste an evening.", body:"Some job ads are fake. We check every employer against the UK's official company register. Active company? Good sign. Closed company? You'll know before you waste an evening." },
 ];
 export default function Blog({ slug: slugProp }){
   const params = useParams();
@@ -42,8 +42,8 @@ export default function Blog({ slug: slugProp }){
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin:"0 auto", padding:"40px 24px" }}>
-        <h1 style={{ fontSize:28, fontWeight:800 }}>Blog — UK CV advice that beats US tools</h1>
-        <p style={{ color:T.muted }}>Straight-talking UK CV guides, each one tied to how JobCompass actually works.</p>
+        <h1 style={{ fontSize:28, fontWeight:800 }}>CV advice for UK jobs</h1>
+        <p style={{ color:T.muted }}>Short guides. Each one shows how JobCompass works.</p>
         <div style={{ display:"grid", gap:12, marginTop:16 }}>
           {POSTS.map(card)}
         </div>

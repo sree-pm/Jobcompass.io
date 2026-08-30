@@ -181,7 +181,7 @@ export function ApplicationDossierView({ tailorResult }) {
                 background: T.stripeBg,
               }}
             >
-              No patch operations — run Tailor to generate atomic bullet patches.
+              No changes yet. Run Tailor to start.
             </div>
           )}
         </div>
@@ -264,7 +264,7 @@ export function ApplicationDossierView({ tailorResult }) {
               <ScoreBar label="ATS Keyword Match" score={scores.atsScore ?? 0} target={75} note="Terminology parity" />
               <ScoreBar label="Experience & Seniority" score={scores.experienceScore ?? 0} target={75} note="Scope match" />
               <ScoreBar label="UK Compliance & Structure" score={scores.readabilityScore ?? 0} target={80} note="A4 2-page fit" />
-              <ScoreBar label="Constraints Alignment" score={scores.constraintsScore ?? 0} target={80} note="0 Hallucination" />
+              <ScoreBar label="How well it matches" score={scores.constraintsScore ?? 0} target={80} note="0 made-up facts" />
             </div>
           )}
           <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 12 }}>

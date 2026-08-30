@@ -37,8 +37,8 @@ export function TailorPanel({ masterResumeId, candidateId, job, constraintsDoc, 
     <div style={{ border: `1px solid ${T.border}`, borderRadius: 10, background: T.card, overflow: "hidden" }}>
       <div style={{ padding: "14px 16px", background: T.bg, borderBottom: `1px solid ${T.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: T.text }}>Agentic Tailor — bullet-level patches + verifier</div>
-          <div style={{ fontSize: 11, color: T.muted }}>Editable fields only · British spelling · £ metrics · second-pass audit</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: T.text }}>Tailor for this role</div>
+          <div style={{ fontSize: 11, color: T.muted }}>One page, A4, British spelling, double-checked</div>
         </div>
         <button
           onClick={run}
@@ -68,7 +68,7 @@ export function TailorPanel({ masterResumeId, candidateId, job, constraintsDoc, 
 
       {!result && !error && (
         <div style={{ padding: "18px 14px", fontSize: 12, color: T.muted, textAlign: "center" }}>
-          JD length: {(job?.jd || job?.jobDescription || "").length} chars · Locks: {Object.values(fieldLocks || {}).filter(Boolean).length} locked · Click Tailor to run two-pass agent.
+          JD length: {(job?.jd || job?.jobDescription || "").length} characters · {Object.values(fieldLocks || {}).filter(Boolean).length} fields locked · Click Tailor to run.
         </div>
       )}
     </div>

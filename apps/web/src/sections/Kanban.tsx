@@ -40,15 +40,15 @@ export function Kanban() {
         <div className={styles.head}>
           <div>
             <div className="mono" style={{ fontSize: 10, color: T.white60 }}>
-              PIPELINE KANBAN · SAVED-&gt;OFFER
+              YOUR JOBS · SAVED → OFFER
             </div>
-            <h2 className={`serif ${styles.h2}`}>Drag. Review. Dispatch.</h2>
+            <h2 className={`serif ${styles.h2}`}>Drag each job to where it is.</h2>
           </div>
           <div className="mono" style={{ fontSize: 10, color: T.white60, maxWidth: "40ch" }}>
-            280px cols · PipelineKanban.jsx · JobCard drag updateApplication · HitlReviewStation tailorResumeApi · HitlReviewStation.jsx:34
+            See your whole search at a glance.
           </div>
         </div>
-        <div className={styles.scroller} role="region" aria-label="Application pipeline">
+        <div className={styles.scroller} role="region" aria-label="Your job search">
           <div className={styles.row}>
             {Qm.map((col) => (
               <div
@@ -118,7 +118,7 @@ export function Kanban() {
                     ))}
                   {cards.filter((c) => c.col === col.id).length === 0 && (
                     <div className={styles.empty} style={{ borderColor: T.white10, color: T.white60 }}>
-                      No applications here yet
+                      No jobs here yet
                     </div>
                   )}
                 </div>

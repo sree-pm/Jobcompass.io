@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { T } from "../components/common/Theme.js";
 import styles from "./Pricing.module.css";
 export function Pricing() {
@@ -17,9 +17,9 @@ export function Pricing() {
     window.setTimeout(() => { window.location.href = "/auth"; }, 900);
   };
   const packs = [
-    { name: "Starter", credits: 100, price: "£10", per: "£0.10/app", highlight: false },
-    { name: "Active", credits: 250, price: "£25", per: "£0.10/app · popular", highlight: true },
-    { name: "Power", credits: 500, price: "£50", per: "£0.10/app", highlight: false },
+    { name: "Starter", jobs: 100, price: "£10", per: "10p each", highlight: false },
+    { name: "Active", jobs: 250, price: "£25", per: "10p each · popular", highlight: true },
+    { name: "Power", jobs: 500, price: "£50", per: "10p each", highlight: false },
   ];
   return (
     <section id="pricing" className={styles.wrap} style={{ background: T.ink, color: T.onColor }}>
@@ -27,19 +27,19 @@ export function Pricing() {
       <div className={styles.inner}>
         <div>
           <div className="mono" style={{ fontSize: 10, color: T.white60 }}>
-            CREDIT PACKS · PER-DAY ANCHOR · NEVER EXPIRE
+            PAY AS YOU GO · NO SUBSCRIPTION · NO EXPIRY
           </div>
           <h2 className={`serif ${styles.h2}`}>
-            £0.33/day <span style={{ color: T.white60 }}>(and you keep them)</span>
+            £10 for 100 jobs. <span style={{ color: T.white60 }}>Keep them forever.</span>
           </h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: T.white60, maxWidth: "44ch" }}>
-            You do the shifts. We structure the proof. Secure credits, pay only when it ships — and your page finally collects what your content earned.
+            Other tools charge you every month whether you use them or not. Here, one job costs 10p. Buy 100, use them this week or next year.
           </p>
           <div className={styles.packs}>
             {packs.map((p) => (
               <div key={p.name} className={styles.pack} style={p.highlight ? { background: T.onColor, color: T.ink, borderColor: T.onColor, boxShadow: `0 8px 32px ${T.white10}` } : { background: T.white08, borderColor: T.white20, color: T.onColor }}>
                 <div className="mono" style={{ fontSize: 10, opacity: 0.6 }}>
-                  {p.name} · {p.credits} credits
+                  {p.name} · {p.jobs} jobs
                 </div>
                 <div className={`serif ${styles.price}`}>{p.price}</div>
                 <div className="mono" style={{ fontSize: 10, marginTop: 8, opacity: 0.6 }}>
@@ -47,16 +47,13 @@ export function Pricing() {
                 </div>
                 {p.highlight ? (
                   <button onClick={buy} className={styles.ctaDark} style={{ background: T.ink, color: T.onColor }}>
-                    Buy 250 — £25 <span aria-hidden="true">→</span>
+                    Buy 250 — £25 <span aria-hidden="true">â†’</span>
                   </button>
                 ) : (
                   <button onClick={buy} className={styles.ctaGhost}>
-                    Buy {p.credits}
+                    Buy {p.jobs} jobs
                   </button>
                 )}
-                <div className={`mono ${styles.perDay}`}>
-                  you keep them • never expire
-                </div>
               </div>
             ))}
           </div>
@@ -71,7 +68,7 @@ export function Pricing() {
               Teal · no proof
             </span>
             <span className="mono" style={{ fontSize: 10, padding: "4px 10px", borderRadius: 999, background: T.success, color: T.onColor }}>
-              JobCompass £0.10/app · never expire
+              JobCompass 10p per job · never expire
             </span>
           </div>
         </div>
@@ -81,14 +78,14 @@ export function Pricing() {
           </div>
           <div className={styles.billingList}>
             {[
-              ["Secure deduction", "Only charged after checks pass"],
-              ["Idempotent payments", "Retries never double-charge"],
-              ["Stripe Checkout", "GBP · Cards · Apple Pay · Google Pay"],
-              ["Receipt", "Emailed after every purchase"],
-              ["Sandbox-safe", "Tested before live"],
+              ["Simple pricing", "10p per job. That's it."],
+              ["Never expires", "Use them whenever you're ready"],
+              ["Safe checkout", "Card, Apple Pay or Google Pay"],
+              ["Email receipt", "Sent after every purchase"],
+              ["Try before you buy", "10 free jobs, no card"],
             ].map(([a, b]) => (
               <div key={a} className={styles.billingRow}>
-                <span aria-hidden="true" style={{ color: T.success }}>✓</span>
+                <span aria-hidden="true" style={{ color: T.success }}>âœ“</span>
                 <div>
                   <span style={{ fontSize: 13, fontWeight: 500 }}>{a}</span>{" "}
                   <span className="mono" style={{ fontSize: 10, color: T.mutedStrong, marginLeft: 8 }}>
@@ -101,16 +98,16 @@ export function Pricing() {
           <button onClick={goPricing} className={styles.startCta} style={{ background: T.ink, color: T.onColor }}>
             <div>
               <div className="serif" style={{ fontSize: 20, lineHeight: 1 }}>
-                Start free — 5 credits
+                Start free — your first 10 jobs are on us
               </div>
               <div className="mono" style={{ fontSize: 10, color: T.white60, marginTop: 4 }}>
-                £0.10/app · never expire · £0.33/day
+                10 free jobs · then 10p each
               </div>
             </div>
-            <span aria-hidden="true">→</span>
+            <span aria-hidden="true">â†’</span>
           </button>
           <div className="mono" style={{ marginTop: 12, textAlign: "center", fontSize: 10, color: T.mutedStrong }}>
-            Live · health, jobs and auth verified
+            Live. Sign in and start.
           </div>
         </div>
       </div>

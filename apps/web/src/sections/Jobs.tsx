@@ -8,7 +8,7 @@ const Wm = [
   { role: "Product Manager", company: "Starling Bank", loc: "London", type: "Hybrid", salary: "£70k – £90k", trust: 89, source: "Ashby" },
   { role: "Marketing Manager", company: "Ocado", loc: "Hatfield", type: "Full-time", salary: "£45k – £60k", trust: 81, source: "Adzuna" },
   { role: "Software Engineer", company: "Skyscanner", loc: "Edinburgh", type: "Remote", salary: "£60k – £80k", trust: 90, source: "Reed" },
-  { role: "Finance Analyst", company: "Barclays", loc: "Birmingham", type: "Full-time", salary: "£50k – £65k", trust: 87, source: "Apify" },
+  { role: "Finance Analyst", company: "Barclays", loc: "Birmingham", type: "Full-time", salary: "£50k – £65k", trust: 87, source: "CV-Library" },
   { role: "Customer Support Lead", company: "Revolut", loc: "Leeds", type: "Hybrid", salary: "£32k – £40k", trust: 79, source: "Greenhouse" },
   { role: "HR Manager", company: "John Lewis", loc: "London", type: "Full-time", salary: "£42k – £55k", trust: 83, source: "Lever" },
   { role: "Operations Manager", company: "Deliveroo", loc: "London", type: "Full-time", salary: "£48k – £62k", trust: 85, source: "Adzuna" },
@@ -29,7 +29,7 @@ export function Jobs() {
             </div>
             <h2 className={`serif ${styles.h2}`}>30 live UK roles, all functions.</h2>
             <p className="mono" style={{ marginTop: 12, fontSize: 10, color: T.mutedStrong }}>
-              Roles refreshed daily at 06:00 GMT, verified before you see them.
+              Fresh jobs every morning. Each employer checked before you apply.
             </p>
           </div>
           <a href="#companies" className={styles.viewBtn} style={{ borderColor: T.creamBorder, background: T.onColor, color: T.ink }}>
@@ -59,13 +59,13 @@ export function Jobs() {
                   UK verified
                 </span>
                 <span className="mono" style={{ fontSize: 9, padding: "4px 8px", borderRadius: 999, border: `1px solid ${T.creamBorder}` }}>
-                  hiring_confidence
+                  Employer check
                 </span>
               </div>
               <div className={styles.divider} style={{ background: T.creamBorder }} />
               <div className={styles.cardFoot}>
                 <span className="mono" style={{ fontSize: 9, color: T.mutedStrong }}>
-                  human date · {today}
+                  Posted · {today}
                 </span>
                 <Link to="/jobs" className="mono" style={{ fontSize: 9, color: T.ink, display: "flex", gap: 4, alignItems: "center", textDecoration: "none", minHeight: 44 }}>
                   Apply <span aria-hidden="true">→</span>

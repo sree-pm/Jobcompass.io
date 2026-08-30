@@ -2,22 +2,22 @@ import { T } from "../components/common/Theme.js";
 import styles from "./Locks.module.css";
 export function Locks() {
   const rows = [
-    { path: "Experience bullets", editable: true, note: "Requires a metric", ok: true },
+    { path: "Experience bullets", editable: true, note: "Needs a number or amount", ok: true },
     { path: "Professional summary", editable: true, note: "British spelling enforced", ok: true },
-    { path: "Your name", editable: false, note: "Locked for UK compliance", ok: false },
-    { path: "Photo", editable: false, note: "No photo — UK standard", ok: false },
-    { path: "Education", editable: false, note: "Identity locked", ok: false },
+    { path: "Your name", editable: false, note: "UK rules", ok: false },
+    { path: "Photo", editable: false, note: "UK rules", ok: false },
+    { path: "Education", editable: false, note: "UK rules", ok: false },
   ];
   return (
     <section className={styles.wrap} style={{ background: T.cream, borderTop: `1px solid ${T.creamBorder}`, borderBottom: `1px solid ${T.creamBorder}` }}>
       <div className={styles.inner}>
         <div>
           <div className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
-            MASTER CV + FIELD LOCKS
+            MASTER CV · WHAT WE NEVER TOUCH
           </div>
-          <h2 className={`serif ${styles.h2}`}>Identity locked. Metrics required.</h2>
+          <h2 className={`serif ${styles.h2}`}>Your real details never change.</h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: T.ink60 }}>
-            Lock any bullet you never want touched. Identity, education and photo fields can never be unlocked — enforced on every run.
+            Lock anything you never want touched. Your name, school and photo stay exactly as they are — on every single CV.
           </p>
           <div className={styles.registry}>
             <div className={styles.registryHead}>
@@ -76,7 +76,7 @@ export function Locks() {
           <div className={styles.guard} style={{ background: T.successBg, borderColor: T.success }}>
             <span aria-hidden="true" style={{ color: T.success }}>✓</span>
             <span style={{ fontSize: 12, lineHeight: 1.5 }}>
-              <b>UK Guard:</b> British spelling enforced. Photo, date of birth and NI number are blocked. Locked fields are re-checked after every edit.
+              <b>UK Guard:</b> British spelling is enforced. Photo, date of birth and NI number are never added — UK rules.
             </span>
           </div>
         </div>

@@ -450,9 +450,9 @@ export function FieldLocks(props) {
           <GhostBulkBtn
             onClick={() => handleGlobalBulk(false)}
             disabled={allEditableUnlocked}
-            title="Unlock all editable fields"
+            title="Unlock everything we can change"
           >
-            Unlock all
+            Unlock all editable
           </GhostBulkBtn>
         </div>
       </div>
@@ -473,7 +473,7 @@ export function FieldLocks(props) {
           lineHeight: "16px",
         }}
       >
-        <span>{filtered.length}/{effective.length} shown</span>
+        <span>{filtered.length} of {effective.length} shown</span>
         <span style={{ width: 3, height: 3, borderRadius: 999, background: T.borderStrong, display: "inline-block" }} />
         <span>{totalLocked} locked</span>
         <span style={{ width: 3, height: 3, borderRadius: 999, background: T.borderStrong, display: "inline-block" }} />
@@ -583,7 +583,7 @@ export function FieldLocks(props) {
         </span>
         <span style={{ color: T.borderStrong }}>·</span>
         <span title="Always locked rows are T.surfaceAlt, grayscale 0.2, opacity 0.6 — Equality Act 2010 / GDPR: identity, photo/DOB and education cannot be unlocked." style={{ cursor: "help", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}>
-          Always locked = Equality Act — not toggleable
+          Some things stay locked by UK law — your name, school and photo
         </span>
       </div>
     </div>

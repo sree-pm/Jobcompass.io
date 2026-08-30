@@ -30,7 +30,7 @@ export default function App() {
   const [fieldLocks, setFieldLocks] = useState({});
   const [applications, setApplications] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [activeTab, setActiveTab] = useState("pipeline"); // "pipeline" | "hitl" | "master_cv" | "constraints" | "settings"
+  const [activeTab, setActiveTab] = useState("jobs"); // "jobs" | "review" | "master_cv" | "constraints" | "settings"
   const [isLoading, setIsLoading] = useState(true);
 
   // Add Job Modal State
@@ -179,22 +179,22 @@ export default function App() {
       const initialConstraints = (wizardDidList?.length || wizardDidNotList?.length)
         ? {
             content: [
-              "CAREER CONSTRAINTS — UK GROUND TRUTH",
+              "YOUR CV DETAILS — UK",
               "",
-              "DID (Verified Experience & Metrics):",
+              "WHAT YOU ACTUALLY DID (with numbers):",
               ...(wizardDidList?.length ? wizardDidList.map((d) => `• ${d}`) : ["• [none yet]"]),
               "",
-              "DID NOT (Strictly Forbidden for AI to Claim):",
+              "WHAT YOU DID NOT DO:",
               ...(wizardDidNotList?.length ? wizardDidNotList.map((d) => `• ${d}`) : ["• [none yet]"]),
               "",
               `RIGHT TO WORK: ${profile.rightToWork || "British Citizen"}${profile.rightToWorkExpiry ? ` (expiry ${profile.rightToWorkExpiry})` : ""}`,
-              "UK RULES: A4 format, British English spelling, £ metrics, 0 hallucination.",
+              "UK RULES: one page, A4, British spelling. Nothing made up.",
             ].join("\n"),
             didList: wizardDidList || [],
             didNotList: wizardDidNotList || [],
           }
         : {
-        content: `CAREER CONSTRAINTS — UK GROUND TRUTH\nDID:\n• Led key architecture migration with 24% gain (£400k saved)\n• Delivered core features\n\nDID NOT:\n• Did not manage people/hiring\n• Did not write mobile code\n\nUK RULES: A4 format, British spelling, £ metrics, 0 hallucination.`,
+        content: `YOUR CV DETAILS — UK\nDID:\n• Led key architecture migration with 24% gain (£400k saved)\n• Delivered core features\n\nDID NOT:\n• Did not manage people/hiring\n• Did not write mobile code\n\nUK RULES: one page, A4, British spelling. Nothing made up.`,
         didList: ["Led key architecture migration with 24% gain (£400k saved)", "Delivered core features"],
         didNotList: ["Did not manage people/hiring", "Did not write mobile code"],
       };
@@ -221,9 +221,9 @@ export default function App() {
       });
       setApplications([sampleApp]);
       setSelectedJob(sampleApp);
-      setActiveTab("pipeline");
+      setActiveTab("jobs");
     } catch (e) {
-      alert("Setup error: " + e.message);
+      alert("Setup didn't work: " + (e?.message || "please try again"));
     } finally {
       setIsLoading(false);
     }
@@ -247,7 +247,7 @@ export default function App() {
   // Handle Add New Job
   const handleAddJobSubmit = async () => {
     if (!candidate || !newJob.company || !newJob.role) {
-      alert("Company and Role are required.");
+      alert("Add a company name and a role title to continue.");
       return;
     }
     setIsSavingJob(true);
@@ -267,9 +267,9 @@ export default function App() {
       setSelectedJob(created);
       setShowAddJobModal(false);
       setNewJob({ company: "", role: "", location: "London, UK", salary: "£75,000", sourceUrl: "", jobDescription: "" });
-      setActiveTab("hitl");
+      setActiveTab("review");
     } catch (e) {
-      alert("Failed to add job: " + e.message);
+      alert("Couldn't add the job: " + (e?.message || "try again"));
     } finally {
       setIsSavingJob(false);
     }
@@ -285,7 +285,7 @@ export default function App() {
         setNewJob(prev => ({ ...prev, jobDescription: res.text }));
       }
     } catch (e) {
-      alert("Extraction error: " + e.message);
+      alert("Couldn't read that page: " + (e?.message || "paste the job ad text instead"));
     } finally {
       setIsIngestingUrl(false);
     }
@@ -296,17 +296,17 @@ export default function App() {
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: T.bg }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>🇬🇧</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Loading Agentic CV (UK)...</div>
-          <div style={{ fontSize: 11, color: T.muted, marginTop: 4 }}>Connecting to Cloudflare D1 & R2</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Loading JobCompass…</div>
+          <div style={{ fontSize: 11, color: T.muted, marginTop: 4 }}>Setting up your workspace…</div>
         </div>
       </div>
     );
   }
 
-  // RequireAuth guard — redirect to LoginView if no candidate or no valid JWT token
+  // RequireAuth guard — redirects to sign-in if no candidate or no valid sign-in code.
   if (!candidate) {
     return <LoginView onLogin={(res) => {
-      // LoginView already stores agentic_cv_uk_token; mirror here for safety
+      // LoginView already stores the sign-in code; mirror here for safety
       if (res.token) localStorage.setItem("agentic_cv_uk_token", res.token);
       setCandidate(res.candidate);
       setCredits(res.credits || 0);
@@ -350,15 +350,15 @@ export default function App() {
       />
 
       <main style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px" }}>
-        {activeTab === "pipeline" && (
+        {activeTab === "jobs" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "20px 0 10px" }}>
               <div>
                 <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: T.text }}>
-                  📊 UK Job Pipeline
+                  📊 Your jobs
                 </h1>
                 <p style={{ fontSize: 12, color: T.muted, margin: "2px 0 0" }}>
-                  Human-In-The-Loop tracking: Click any role to enter the HITL Review Station.
+                  Click any role to review and tailor it. You approve before anything sends.
                 </p>
               </div>
 
@@ -372,14 +372,14 @@ export default function App() {
               selectedJobId={selectedJob?.id}
               onSelectJob={job => {
                 setSelectedJob(job);
-                setActiveTab("hitl");
+                setActiveTab("review");
               }}
               onStatusChange={() => refreshCandidateData(candidate.id)}
             />
           </div>
         )}
 
-        {activeTab === "hitl" && (
+        {activeTab === "review" && (
           <HitlReviewStation
             job={selectedJob}
             candidate={candidate}
@@ -395,10 +395,10 @@ export default function App() {
         {activeTab === "master_cv" && (
           <div style={{ maxWidth: 900, margin: "24px auto" }}>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: T.text, margin: "0 0 6px" }}>
-              📄 Master CV & Bullet-Level Field Locks
+              📄 Your CV and locks
             </h2>
             <p style={{ fontSize: 13, color: T.muted, marginBottom: 20 }}>
-              Toggle 🔒 Lock or ✏️ Edit permissions per bullet. Factual identity and education fields are permanently locked.
+              Choose what we can change. Your name, school and photo stay as you wrote them, every time.
             </p>
 
             {masterResume?.registry ? (
@@ -437,9 +437,9 @@ export default function App() {
 
       {/* Add / Ingest Job Modal */}
       {showAddJobModal && (
-        <Modal title="Add Job for Tailoring" onClose={() => setShowAddJobModal(false)} maxWidth={560}>
+        <Modal title="Add a job to tailor" onClose={() => setShowAddJobModal(false)} maxWidth={560}>
           <div style={{ marginBottom: 12 }}>
-            <Label>1. Ingest from Employer URL (Optional)</Label>
+            <Label>1. Add from job ad link (Optional)</Label>
             <Row gap={8}>
               <div style={{ flex: 1 }}>
                 <input
@@ -459,7 +459,7 @@ export default function App() {
                 />
               </div>
               <Btn size="sm" variant="outline" onClick={handleExtractFromUrl} disabled={isIngestingUrl || !newJob.sourceUrl}>
-                {isIngestingUrl ? "Extracting..." : "⚡ Extract JD"}
+                {isIngestingUrl ? "Reading…" : "Get job ad"}
               </Btn>
             </Row>
           </div>
@@ -486,7 +486,7 @@ export default function App() {
             label="Job Description"
             value={newJob.jobDescription}
             onChange={v => setNewJob({ ...newJob, jobDescription: v })}
-            placeholder="Paste target job requirements, responsibilities, and qualifications..."
+            placeholder="Paste the job requirements, responsibilities and qualifications…"
             multi
             rows={6}
           />
@@ -494,7 +494,7 @@ export default function App() {
           <Row justify="flex-end" gap={10} style={{ marginTop: 20 }}>
             <Btn variant="ghost" onClick={() => setShowAddJobModal(false)}>Cancel</Btn>
             <Btn variant="primary" onClick={handleAddJobSubmit} disabled={isSavingJob || !newJob.company || !newJob.role}>
-              {isSavingJob ? "Saving..." : "Add to Pipeline & Tailor →"}
+              {isSavingJob ? "Saving…" : "Add to pipeline"}
             </Btn>
           </Row>
         </Modal>

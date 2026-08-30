@@ -9,31 +9,31 @@ export function Manifesto() {
             YOU'VE DONE THE HARD PART
           </p>
           <h2 className={`serif ${styles.h2}`}>
-            You don't need more applications. You need <span style={{ color: T.ink }}>one that proves every claim.</span>
+            You don't need more applications. You need <span style={{ color: T.ink }}>better ones.</span>
           </h2>
         </div>
         <div className={styles.right}>
           <p style={{ color: T.ink70 }}>
-            You've got the shifts. The £400k migration. The British spelling you fixed twice.
+            You've done the hard part — the skills, the experience, the results.
           </p>
           <p style={{ color: T.ink70, marginTop: 12 }}>
-            Every week, someone lands on your CV trying to trust one bullet. Most leave in 6 seconds. Not because you lack skill — because your page didn't prove it fast, trust deep, or give them a reason to stay.
+            Every week, good people send the same CV everywhere. It gets ignored. Not because they're bad — because it wasn't written for that job.
           </p>
           <p style={{ color: T.ink, fontWeight: 600, marginTop: 16 }}>
-            The gap between your effort and your interviews isn't a content problem. It's one missing receipt.
+            The problem isn't you. It's the one page that was never quite right.
           </p>
         </div>
       </div>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 20px 32px" }}>
         <div className={styles.pains}>
           <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 16 }}>
-            <strong>The £400k bullet you couldn't claim.</strong> You shipped it. Your CV still says "helped with".
+            The £400k result you saved, that your CV never mentions
           </div>
           <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 16 }}>
-            <strong>The dissolved LTD you almost joined.</strong> Trust 80/100 would have warned you.
+            The company that went bust before your interview
           </div>
           <div style={{ borderLeft: `2px solid ${T.creamBorder}`, paddingLeft: 16 }}>
-            <strong>The photo/DOB you shouldn't have sent.</strong> Blocked in the UK — but your tool didn't know.
+            The US spelling that got you binned by a UK recruiter
           </div>
         </div>
       </div>

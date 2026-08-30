@@ -12,8 +12,8 @@ function initialsFromCandidate(candidate) {
 }
 
 const TABS = [
-  { id: "pipeline", label: "Pipeline" },
-  { id: "hitl", label: "HITL" },
+  { id: "jobs", label: "Jobs" },
+  { id: "review", label: "Review" },
   { id: "master_cv", label: "Master CV" },
   { id: "constraints", label: "Constraints" },
   { id: "settings", label: "Settings" },
@@ -103,7 +103,7 @@ export function Navbar({ activeTab, onTabChange, candidate, onOpenNewJob, credit
               href="#"
               onClick={(e) => { e.preventDefault(); onTabChange?.("pipeline"); }}
               style={{ display: "flex", alignItems: "baseline", gap: 8, textDecoration: "none", flexShrink: 0 }}
-              aria-label="Agentic CV home"
+              aria-label="JobCompass home"
             >
               <span
                 style={{

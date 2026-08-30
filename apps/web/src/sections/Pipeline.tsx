@@ -1,9 +1,9 @@
 import styles from "./Pipeline.module.css";
 const PILLARS = [
-  { title: "No hallucination, provably", desc: "Two-pass: tailor (DeepSeek) → verifier (Claude Haiku) + hard guards. Diff + errors/warnings + correctiveOps shown; sign-off gate before dispatch.", badge: "HITL ✓" },
-  { title: "UK-first, not ported", desc: "A4, GBP, British spelling, Equality Act (photo/DOB/NI blocked), Companies House trust 80/20.", badge: "🇬🇧" },
-  { title: "Per-bullet control", desc: "FieldLocks per exp.0.bullet.2 — lock any bullet. Identity/education never unlockable. 40% finer than Teal/Huntr.", badge: "🔒" },
-  { title: "£0.10/app, forever", desc: "Starter £10/100, Active £25/250, Power £50/500. Credits never expire. Sonara $80, Huntr $40, JobScan $49 — subscription trap.", badge: "GBP" },
+  { title: "No made-up facts", desc: "Two AI helpers check every word. You approve before anything sends.", badge: "✓" },
+  { title: "Made for UK jobs", desc: "A4, pounds, British spelling. Photo, date of birth and NI number are never added. Every employer checked at Companies House.", badge: "🇬🇧" },
+  { title: "You control every line", desc: "Lock anything you never want touched. Your name and school never change.", badge: "🔒" },
+  { title: "10p per job, forever", desc: "£10 buys 100 jobs. They never expire. No subscription.", badge: "GBP" },
 ];
 export function Pipeline() {
   return (

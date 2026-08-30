@@ -3,18 +3,18 @@ import { T } from "../components/common/Theme.js";
 import styles from "./Dossier.module.css";
 
 const Sr = [
-  { n: "01", label: "registry", title: "Field Registry", file: "Your CV, field by field", desc: "Every bullet in your CV is a lockable field. Identity, education and photo stay locked.", code: "Lock every bullet" },
-  { n: "02", label: "tailor", title: "Tailor", file: "Drafts with proof", desc: "One model drafts the edits — every bullet needs a verb, an outcome and a £ or % figure.", code: "Verb + outcome + £" },
-  { n: "03", label: "validate", title: "Validate Patch", file: "Safety gate", desc: "Locked fields, British spelling and banned phrases are checked. Blocked edits never reach your CV.", code: "Nothing slips through" },
-  { n: "04", label: "quickVerify", title: "Quick Verify", file: "Instant scan", desc: "A fast no-AI scan catches protected details and locked fields before anything is applied.", code: "Instant pre-check" },
-  { n: "05", label: "patched", title: "Patched Clone", file: "Safe copy", desc: "Edits apply to a cloned CV — your master stays untouched.", code: "Master stays intact" },
-  { n: "06", label: "verifier", title: "Verifier", file: "Independent audit", desc: "A second, different model audits the result — confidence is capped at 70 without your ground truth.", code: "Second opinion, always" },
-  { n: "07", label: "corrective", title: "Corrective Loop", file: "Self-repair", desc: "Up to 10 auto-fixes are re-validated, then applied. Nothing unlocks.", code: "Auto-fix, re-checked" },
-  { n: "08", label: "persist", title: "Persist + Credits", file: "Fair billing", desc: "One credit is deducted only after checks pass. Failed runs are refunded automatically.", code: "Charge only on success" },
-  { n: "09", label: "matcher", title: "Matcher Score", file: "Your score", desc: "Your match score blends ATS, experience and your constraints — capped at 70 without evidence.", code: "Honest match score" },
-  { n: "10", label: "HITL", title: "HITL Review Station", file: "Your sign-off", desc: "You see the diff, the issues and the score. Nothing dispatches until you tick 'I have reviewed'.", code: "Your approval gates send" },
-  { n: "11", label: "PDF", title: "PDF Render", file: "Final document", desc: "A print-perfect A4 with 16/18mm margins. Stored to your private library.", code: "Print-ready A4" },
-  { n: "12", label: "apply", title: "Apply Dispatch", file: "The send", desc: "You click the employer's site and submit. We mark it applied — no auto-submit, ever.", code: "You stay in control" },
+  { n: "01", label: "read", title: "Read your CV", file: "Your CV, field by field", desc: "We read your CV and mark what can change", code: "Your name stays yours" },
+  { n: "02", label: "tailor", title: "Tailor your CV", file: "Drafts with proof", desc: "We rewrite your CV for one exact job", code: "Written for this job" },
+  { n: "03", label: "check", title: "Check every change", file: "Safety gate", desc: "Every change is checked before it touches your CV", code: "Nothing sneaks in" },
+  { n: "04", label: "quick scan", title: "Quick scan", file: "First check", desc: "A quick computer check runs first", code: "Instant safety check" },
+  { n: "05", label: "safe copy", title: "Your safe copy", file: "Side by side", desc: "You see your CV with the changes, side by side", code: "Your CV, improved" },
+  { n: "06", label: "second check", title: "Second opinion", file: "Independent audit", desc: "A second AI helper checks the first one's work", code: "Two pairs of eyes" },
+  { n: "07", label: "fix up", title: "Fix and re-check", file: "Self-repair", desc: "Small fixes get applied and checked again", code: "Tidied up" },
+  { n: "08", label: "billing", title: "Fair billing", file: "No surprise charges", desc: "You only pay when it works", code: "Free if it fails" },
+  { n: "09", label: "score", title: "Match score", file: "Your score", desc: "We score how well your CV fits the job", code: "Honest match score" },
+  { n: "10", label: "you approve", title: "You approve", file: "Your sign-off", desc: "You tick a box to say it's all true", code: "You have the final say" },
+  { n: "11", label: "PDF", title: "Your PDF", file: "Final document", desc: "You get a clean one-page PDF, ready to print", code: "Ready to send" },
+  { n: "12", label: "you apply", title: "You apply", file: "The send", desc: "You apply on the company's site yourself", code: "You stay in charge" },
 ];
 
 export function Dossier() {
@@ -24,11 +24,11 @@ export function Dossier() {
       <div className={styles.inner}>
         <div className={styles.left}>
           <div className="mono" style={{ fontSize: 10, color: T.mutedStrong }}>
-            12-STAGE DOSSIER · REGISTRY→APPLY
+            12 STEPS · YOUR CV TO APPLIED
           </div>
-          <h2 className={`serif ${styles.h2}`}>Evidence chain, not black box.</h2>
+          <h2 className={`serif ${styles.h2}`}>Every step, out in the open.</h2>
           <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, color: T.ink60, maxWidth: "32ch" }}>
-            From docs/AGENT_FLOW.md — every application is a 12-step evidence chain with British spelling guard, field locks, Claude Haiku verifier, and atomic credits.
+            Twelve small steps. Two AI helpers. One CV you're proud to send.
           </p>
           <div className={styles.flowNav}>
             <div className="mono" style={{ fontSize: 10, color: T.mutedStrong, marginBottom: 8 }}>

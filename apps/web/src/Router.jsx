@@ -20,7 +20,7 @@ import { LoginView } from "./components/auth/LoginView.jsx";
 // Wrapper to keep App's internal activeTab in sync with URL /app/* for deep linking
 function AppRoute() {
   const loc = useLocation();
-  // /app, /app/master-cv, /app/constraints, /app/settings, /app/billing, /app/pipeline, /app/hitl
+  // /app, /app/master-cv, /app/constraints, /app/settings, /app/billing, /app/pipeline, /app/review
   // App.jsx still owns its own tab state; we just mount it. For launch, /app covers all.
   return <App />;
 }

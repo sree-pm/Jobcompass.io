@@ -5,13 +5,13 @@ const STAGES = [
   { n: 1, k: "registry", label: "Registry", desc: "buildFieldRegistry()", color: T.blue },
   { n: 2, k: "tailor", label: "Tailor", desc: "DeepSeek V3 · JSON Patch", color: T.indigo },
   { n: 3, k: "validate", label: "Validate", desc: "validatePatchOperations", color: T.purple },
-  { n: 4, k: "quickVerify", label: "QuickVerify", desc: "deterministic · no AI", color: T.amber },
+  { n: 4, k: "quickVerify", label: "QuickVerify", desc: "instant safety check", color: T.amber },
   { n: 5, k: "patched", label: "Patched", desc: "applyPatch()", color: T.green },
   { n: 6, k: "verifier", label: "Verifier", desc: "Claude Haiku · 2nd pass", color: T.red },
   { n: 7, k: "corrective", label: "Corrective", desc: "auto-fix ≤10 ops", color: T.indigoDeep },
   { n: 8, k: "persist", label: "Persist", desc: "D1 resumes + applications", color: T.blue },
   { n: 9, k: "matcher", label: "Matcher", desc: "calculateSemanticFit", color: T.purpleVivid },
-  { n: 10, k: "hitl", label: "HITL", desc: "human sign-off gate", color: T.amberAccent },
+  { n: 10, k: "review", label: "Your review", desc: "approve before anything goes out", color: T.amberAccent },
   { n: 11, k: "pdf", label: "PDF", desc: "R2 A4 · Browser or HTML", color: T.greenDark },
   { n: 12, k: "apply", label: "Apply", desc: "sourceUrl dispatch", color: T.text },
 ];
@@ -41,7 +41,7 @@ export function AgentFlowDiagram({ interactive = false, onInject }) {
           {active && <span style={{ fontSize: 11, color: T.muted, background: T.surface, border: `1px solid ${T.border}`, padding: "6px 10px", borderRadius: 999 }}>{STAGES.find(s=>s.k===active)?.label}: {STAGES.find(s=>s.k===active)?.desc}</span>}
         </div>
       )}
-      <div style={{ marginTop: 12, fontSize: 11, color: T.hint, textAlign: "center" }}>registry → tailor → validate → quickVerify → patched → verifier → corrective → persist → matcher → HITL → PDF → apply</div>
+      <div style={{ marginTop: 12, fontSize: 11, color: T.hint, textAlign: "center" }}>register · tailor · check · tailor · review · save · print · send</div>
     </div>
   );
 }

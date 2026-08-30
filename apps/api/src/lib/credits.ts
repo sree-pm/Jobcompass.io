@@ -6,7 +6,7 @@ export const CREDIT_PACKS = [
   { id: "pack_power", name: "Power Pack", credits: 500, priceGbp: 50.0, pricePence: 5000, perApp: "£0.10", badge: "Maximum Search" },
 ];
 
-const DEFAULT_TRIAL_CREDITS = 5;
+const DEFAULT_TRIAL_CREDITS = 10;
 
 /**
  * Get or initialize candidate credit balance (default 5 trial credits on first query).
@@ -23,7 +23,7 @@ export async function getCreditBalance(db: D1Database, candidateId: string): Pro
     .run();
 
   await db.prepare("INSERT INTO credit_transactions (id, candidate_id, amount, type, description) VALUES (?, ?, ?, 'grant', ?)")
-    .bind(crypto.randomUUID(), candidateId, DEFAULT_TRIAL_CREDITS, "Welcome bonus — 5 free tailoring credits")
+    .bind(crypto.randomUUID(), candidateId, DEFAULT_TRIAL_CREDITS, "Welcome bonus — 10 free tailored applications")
     .run();
 
   return DEFAULT_TRIAL_CREDITS;

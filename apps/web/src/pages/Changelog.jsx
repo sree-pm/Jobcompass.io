@@ -3,15 +3,15 @@ import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 const ENTRIES=[
-  ["2026-08-27","Marketing site + reliability fixes","JobCompass v2.3 — 15 public pages, human-in-the-loop showcase, £0.10 per application."],
-  ["2026-08-26","Production hardening","CORS allowlist, queue dead-letter queue, retries and batch tuning."],
+  ["2026-08-27","Marketing site + reliability fixes","JobCompass v2.3 — 15 public pages, new 'you approve everything' pages, 10p per job."],
+  ["2026-08-26","Fewer errors","Jobs load faster and fail less. Bigger queue, better retries."],
   ["2026-08-26","Web","New jobcompass-web domain."],
-  ["2026-08-26","Design system","All styles now served from design tokens with CI guard."],
-  ["2026-08-26","Email","PIN codes and Stripe receipts via jobcompass.io."],
-  ["2026-08-26","8-agent pipeline","Shared job library, enrichment, classification, verification and matching."],
+  ["2026-08-26","One design","Every page now shares the same styles. No exceptions."],
+  ["2026-08-26","Email","Sign-in codes and Stripe receipts now come from jobcompass.io."],
+  ["2026-08-26","8 steps behind the scenes","One shared job library — every employer checked, sorted and scored for you."],
 ];
 export default function Changelog(){
-  usePageMeta("Changelog — JobCompass", "Every JobCompass release — marketing site, pipeline, billing and design system changes, newest first.", "/changelog");
+  usePageMeta("Changelog — JobCompass", "Every JobCompass release — what changed and when, newest first.", "/changelog");
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin:"0 auto", padding:"40px 24px" }}>

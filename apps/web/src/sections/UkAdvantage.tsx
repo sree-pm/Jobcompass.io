@@ -2,9 +2,9 @@ import { T } from "../components/common/Theme.js";
 import styles from "./UkAdvantage.module.css";
 export function UkAdvantage() {
   const cards = [
-    { title: "Companies House Verified", body: "We verify every employer at Companies House — no shell companies, no fakes." },
-    { title: "British Spelling & Format", body: "Optimise, colour, centre — British spelling enforced + A4 16/18mm, no photo or DOB." },
-    { title: "UK Region + Salary Band", body: "Location-aware search with UK regions and salary bands that make sense here." },
+    { title: "Companies House Verified", body: "We check every employer against the UK's official company register. No fake companies, no wasted applications." },
+    { title: "British Spelling & Format", body: "Optimise, colour, centre. Your CV speaks British — and prints perfectly on A4." },
+    { title: "UK Region + Salary Band", body: "Search by UK region and real salary bands. No guessing what a job pays." },
   ];
   return (
     <section id="uk" className={styles.wrap} style={{ background: T.ink, color: T.onColor }}>

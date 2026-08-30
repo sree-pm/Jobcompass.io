@@ -293,7 +293,7 @@ export function OnboardingWizard({ onComplete }) {
               <div>
                 <h2 style={{ fontSize: 15, fontWeight: 700, color: T.text, margin: "0 0 6px" }}>Upload your CV</h2>
                 <p style={{ fontSize: 12, color: T.muted, margin: "0 0 16px", lineHeight: 1.5 }}>
-                  PDF or plain text. We parse it into atomic fields with bullet-level locks — UK A4, no hallucination.
+                  PDF or plain text. We turn it into a clean A4 CV, one page, British spelling. Nothing made up.
                 </p>
 
                 {/* Drag-drop zone */}
@@ -489,7 +489,7 @@ export function OnboardingWizard({ onComplete }) {
               <div>
                 <h2 style={{ fontSize: 15, fontWeight: 700, color: T.text, margin: "0 0 6px" }}>Career constraints & right to work</h2>
                 <p style={{ fontSize: 12, color: T.muted, margin: "0 0 16px", lineHeight: 1.5 }}>
-                  Ground truth for tailoring — verifier blocks any claim not in <strong style={{ color: T.text }}>DID</strong>. Be specific: £, %, team size.
+                  Tell us what you did, and what you didn't. We won't add anything you didn't actually do. Be specific: how big, how many, by how much.
                 </p>
 
                 {/* Profile row — required for candidate contract */}

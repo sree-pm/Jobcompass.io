@@ -1,4 +1,4 @@
-import { T } from "../components/common/Theme.js";
+﻿import { T } from "../components/common/Theme.js";
 import styles from "./Hero.module.css";
 
 export function Hero() {
@@ -15,29 +15,29 @@ export function Hero() {
         <div className={styles.left}>
           <div className={styles.eyebrow}>
             <span className={styles.dot} style={{ background: T.success }} />
-            <span className="mono">£0.10/job applied · PAYG credits · never expire</span>
+            <span className="mono">10 free jobs · no card needed</span>
           </div>
           <h1 className={`${styles.h1} serif`}>
             You've got the CV.{" "}
-            <span style={{ color: T.lavenderAA }}>We build the receipt</span>{" "}
-            <span className={styles.italic}>that collects</span> interviews.
+            <span style={{ color: T.lavenderAA }}>We make the version</span>{" "}
+            <span className={styles.italic}>that gets</span> interviews.
           </h1>
           <p className={styles.sub} style={{ color: T.ink70 }}>
-            You've done the hard part — the skills, the shifts, the £400k migration. A done-for-you UK apply system from the team behind 12-stage proof. For UK jobseekers, not US templates.
+            Your first 10 tailored CVs are free. British spelling, one page, checked twice. You approve every word.
           </p>
           <div className={styles.actions}>
             <a href="#start" onClick={onPricing} className={styles.primary} style={{ background: T.ink, color: T.onColor }}>
-              Start free — 5 credits
+              Start free — your first 10 jobs are on us
             </a>
             <span className="mono" style={{ fontSize: 11, color: T.mutedStrong, alignSelf: "center" }}>
-              Your proof in 7 minutes.
+              Your first CV in 7 minutes.
             </span>
           </div>
           <p className="mono" style={{ marginTop: 8, fontSize: 10, color: T.mutedStrong }}>
-            Trusted by early Infonaut teams — 30 live UK roles verified.
+            30 live UK roles today. Every employer checked first.
           </p>
           <div className={styles.badges}>
-            {["One PIN · one approve · we handle the rest"].map((b) => (
+            {["Made for UK jobs", "Checked twice", "You approve everything"].map((b) => (
               <span key={b} className={styles.badge}>
                 {b}
               </span>
@@ -50,7 +50,7 @@ export function Hero() {
             <div className={styles.cardSheen} aria-hidden />
             <div className={styles.cardHead}>
               <span className="mono" style={{ color: T.white50, fontSize: 10, letterSpacing: "0.14em" }}>
-                APPLICATION RECEIPT 03 · UK VERIFIED
+                APPLICATION 03 · UK VERIFIED
               </span>
               <span className={styles.liveDot} style={{ background: T.success }} />
             </div>
@@ -64,10 +64,10 @@ export function Hero() {
                 </div>
                 <div className={styles.proofGrid}>
                   {[
-                    ["Found 0.3s Greenhouse", "Source verified"],
-                    ["Tailored optimise +23%", "British spelling"],
-                    ["Field locks protected", "Identity safe"],
-                    ["Screenshot proof", "Trust 80/100"],
+                    ["Found in 0.3 seconds", "Real employer"],
+                    ["Written for this job", "Not generic"],
+                    ["Your details stay locked", "Name and school never change"],
+                    ["Ready to print", "One page A4"],
                   ].map(([a, b]) => (
                     <div key={a} className={styles.proofCell} style={{ borderColor: T.white08, background: T.white04 }}>
                       <div style={{ color: T.onColor, fontSize: 12, fontWeight: 500 }}>{a}</div>
@@ -78,15 +78,15 @@ export function Hero() {
                   ))}
                 </div>
                 <div className={styles.pills}>
-                  {["A4 PDF, ATS-ready", "British spelling", "Companies House verified"].map((p) => (
+                  {["A4 one page", "British spelling", "Companies House checked"].map((p) => (
                     <span key={p} className={styles.pill}>
                       {p}
                     </span>
                   ))}
                 </div>
                 <div className={styles.status} style={{ background: T.success, color: T.onColor }}>
-                  <span className="mono">Status · Applied · Receipt #03</span>
-                  <span>✓</span>
+                  <span className="mono">Applied · 10 jobs free · you pressed send</span>
+                  <span>âœ“</span>
                 </div>
               </div>
               <div className={styles.dialWrap}>
@@ -101,25 +101,25 @@ export function Hero() {
                   </div>
                 </div>
                 <div className="mono" style={{ color: T.white60, fontSize: 9, lineHeight: 1.3 }}>
-                  ATS 50<br />Exp 30<br />Const 20
+                  Job match 92%
                 </div>
               </div>
             </div>
             <div className={styles.cardFoot} style={{ borderColor: T.white10 }}>
               <span className="mono" style={{ color: T.white60, fontSize: 9 }}>
-                Verified application · Receipt #03
+                Made in the UK
               </span>
               <span className="mono" style={{ color: T.white60, fontSize: 9 }}>
-                UK · GDPR
+                Your data stays yours
               </span>
             </div>
           </div>
           <div className={styles.floatedBadges} aria-hidden="true">
             <div className={styles.floated}>
-              <span style={{ color: T.success }}>✓</span> Companies House
+              <span style={{ color: T.success }}>âœ“</span> Companies House
             </div>
             <div className={styles.floated}>
-              <span style={{ color: T.lavenderAA }}>✦</span> British spelling
+              <span style={{ color: T.lavenderAA }}>âœ¦</span> British spelling
             </div>
           </div>
         </div>

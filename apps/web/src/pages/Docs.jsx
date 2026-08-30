@@ -3,22 +3,22 @@ import { MarketingLayout } from "../components/marketing/MarketingLayout.jsx";
 import { T } from "../components/common/Theme.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 const CAPS=[
-  { title:"Agent Flow", desc:"The 12-stage evidence chain behind every application." },
-  { title:"UK CV Spec", desc:"A4, GBP, British spelling, Equality Act rules." },
-  { title:"Design System", desc:"One token source, every page consistent." },
-  { title:"E2E Walkthrough", desc:"Five flows from signup to dispatch." },
-  { title:"AI Router", desc:"Two models, one honest audit." },
-  { title:"Data Model", desc:"Your data, your exports, deletable anytime." },
+  { title:"The 12 steps", desc:"What happens between your CV and the send button." },
+  { title:"UK rules", desc:"One page, A4, British spelling, no photo." },
+  { title:"One design", desc:"Every page looks the same, on purpose." },
+  { title:"A walk-through", desc:"Five quick tours, signup to send." },
+  { title:"Two helpers", desc:"One writes, one checks." },
+  { title:"Your data", desc:"Yours to see, download and delete." },
 ];
 const STEPS=[
-  "Create your account with an email PIN",
-  "Paste your CV or start from scratch",
-  "Add your DID/DID NOT ground truth",
-  "Tailor a role and approve the diff",
-  "Download the A4 PDF and apply",
+  "1. Type your email — we send a code",
+  "2. Paste your CV or start fresh",
+  "3. Tell us what you did (and didn't) do",
+  "4. Pick a job — we tailor your CV",
+  "5. Check it, approve it, send it",
 ];
 export default function Docs(){
-  usePageMeta("Docs — JobCompass", "The 12-stage agent flow, UK CV spec, design system and data model behind every JobCompass application.", "/docs");
+  usePageMeta("Docs — JobCompass", "How JobCompass works, in five steps. Then the detail, in plain English.", "/docs");
   const Card=({title,desc})=> <div style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:10, padding:14 }}><div style={{ fontWeight:700, fontSize:13 }}>{title}</div><div style={{ fontSize:12, color:T.muted, marginTop:6, lineHeight:1.5 }}>{desc}</div></div>;
   return (
     <MarketingLayout>

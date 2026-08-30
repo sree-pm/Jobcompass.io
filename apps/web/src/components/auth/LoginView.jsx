@@ -134,7 +134,7 @@ export function LoginView({ onLogin }) {
             Welcome back
           </h1>
           <p style={{ fontSize: 13, color: T.muted, margin: 0, lineHeight: 1.4, fontWeight: 400 }}>
-            Sign in to Agentic CV — UK job tailoring, A4 · GDPR
+            Sign in to JobCompass — tailor UK CVs, first 10 free
           </p>
         </div>
 

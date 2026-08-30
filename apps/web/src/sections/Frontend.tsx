@@ -7,12 +7,12 @@ export function Frontend() {
       <div className={styles.inner}>
         <div>
           <div className="mono" style={{ fontSize: 10, color: T.mutedStrong, letterSpacing: "0.08em" }}>
-            DESIGNED AS ONE SYSTEM · SHIPPED DAILY
+            BUILT CAREFULLY · SHIPPED DAILY
           </div>
-          <h2 className={`serif ${styles.h2}`} style={{ color: T.ink }}>One design system. Every page consistent.</h2>
+          <h2 className={`serif ${styles.h2}`} style={{ color: T.ink }}>One clean design. On every page.</h2>
           <div className={styles.routeCard} style={{ background: T.onColor, borderColor: T.creamBorder }}>
             <div className="mono" style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: T.ink }}>
-              Public pages — every route on one system
+              Every page you'll see
             </div>
             <div className={styles.routePills}>
               {routes.map((r) => (
@@ -22,54 +22,53 @@ export function Frontend() {
               ))}
             </div>
             <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
-              Every public page, one consistent layout
+              Same clean look on all of them
             </div>
           </div>
           <div className={styles.threeCol}>
             <div className={styles.infoCard} style={{ background: T.onColor, borderColor: T.creamBorder }}>
               <div className="mono" style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: T.ink }}>
-                Design System
-              </div>
-              <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: T.ink70 }}>One token source drives every page — consistent type, colour and spacing across the whole site.</div>
-              <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
-                Consistency by construction, not by review
-              </div>
+              Design
+            </div>
+            <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: T.ink70 }}>One look, everywhere — no surprises.</div>
+            <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
+              Same type, colour and spacing on every page
+            </div>
             </div>
             <div className={styles.infoCard} style={{ background: T.onColor, borderColor: T.creamBorder }}>
               <div className="mono" style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: T.ink }}>
-                API Client
-              </div>
-              <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: T.ink70 }}>One secure connection to your data — signed-in pages stay signed-in.</div>
-              <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
-                Your session, protected end to end
-              </div>
+              Your account
+            </div>
+            <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: T.ink70 }}>Your jobs and CVs in one place.</div>
+            <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
+              One sign-in keeps you signed in
+            </div>
             </div>
             <div className={styles.infoCard} style={{ background: T.onColor, borderColor: T.creamBorder }}>
               <div className="mono" style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: T.ink }}>
-                AI Router
-              </div>
-              <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: T.ink70 }}>The right model for each job — drafting, checking and verifying are handled by different specialists.</div>
-              <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
-                No single point of failure
-              </div>
+              Smart helpers
+            </div>
+            <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: T.ink70 }}>Two AI helpers check every word.</div>
+            <div className="mono" style={{ fontSize: 9, color: T.mutedStrong, marginTop: 12, letterSpacing: "0.02em" }}>
+              You approve before anything sends
+            </div>
             </div>
           </div>
         </div>
         <div className={styles.deployCard} style={{ background: T.ink, color: T.onColor, border: `1px solid ${T.white20}` }}>
           <div className="mono" style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", color: T.onColor }}>
-            Deployed · Live
+            Ready for you
           </div>
           <div className="mono" style={{ fontSize: 9, color: T.white60, marginTop: 4, letterSpacing: "0.02em" }}>
-            wrangler.toml · Cloudflare Workers · production
+            Checked and running right now
           </div>
           <div className={`mono ${styles.deployList}`}>
-            <div className={styles.deployRow}><span style={{ color: T.white60 }}>api</span><span>jobcompass-api.infonaut.workers.dev</span></div>
-            <div className={styles.deployRow}><span style={{ color: T.white60 }}>web</span><span>jobcompass-web.infonaut.workers.dev</span></div>
-            <div className={styles.deployRow}><span style={{ color: T.white60 }}>domain</span><span>jobcompass.io</span></div>
-            <div className={styles.deployRow}><span style={{ color: T.white60 }}>status</span><span style={{ color: T.onColor }}>Status verified at deploy</span></div>
+            <div className={styles.deployRow}><span style={{ color: T.white60 }}>Website</span><span>Live</span></div>
+            <div className={styles.deployRow}><span style={{ color: T.white60 }}>Job board</span><span>Live</span></div>
+            <div className={styles.deployRow}><span style={{ color: T.white60 }}>Sign-in</span><span>Live</span></div>
           </div>
           <div className="mono" style={{ fontSize: 9, color: T.white60, marginTop: 12, letterSpacing: "0.02em" }}>
-            Status verified at deploy
+            Everything working
           </div>
         </div>
       </div>

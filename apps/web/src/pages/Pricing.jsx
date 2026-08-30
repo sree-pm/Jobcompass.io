@@ -5,40 +5,40 @@ import { Link } from "react-router-dom";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 const PACKS = [
-  { id:"pack_starter", name:"Starter", credits:100, price:"£10", badge: PACK_BADGE.Starter, blurb:"Try the full pipeline. Recommended first purchase." },
-  { id:"pack_active", name:"Active", credits:250, price:"£25", badge: PACK_BADGE.Active, blurb:"Most chosen — 250 tailored dossiers." },
-  { id:"pack_power", name:"Power", credits:500, price:"£50", badge: PACK_BADGE.Power, blurb:"Maximum search — power users." },
+  { id:"pack_starter", name:"Starter", credits:100, price:"£10", badge: PACK_BADGE.Starter, blurb:"Your first top-up. Most people start here." },
+  { id:"pack_active", name:"Active", credits:250, price:"£25", badge: PACK_BADGE.Active, blurb:"Most chosen — 250 tailored CVs." },
+  { id:"pack_power", name:"Power", credits:500, price:"£50", badge: PACK_BADGE.Power, blurb:"For a long search — 500 jobs." },
 ];
 
 export default function Pricing() {
-  usePageMeta("Pricing — £0.10 per application, never expire — JobCompass", "Starter £10, Active £25, Power £50 — pay-as-you-go credits with no subscription and no expiry.", "/pricing");
+  usePageMeta("Pricing — 10p per job, never expire — JobCompass", "10p per job. £10 gets you 100. No subscription. They never expire.", "/pricing");
   React.useEffect(()=>{ document.title="Pricing — JobCompass"; },[]);
   return (
     <MarketingLayout>
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px", textAlign:"center" }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800 }}>Simple, GBP — credits never expire</h1>
-        <p style={{ color: T.muted }}>1 credit = 1 tailored dossier. <b style={{ color:T.text }}>£0.10/app, credits never expire</b> — Sonara $80/mo, Huntr $40/mo subscription. Use in 1 day or 12 months → effectively £0.33/day over 30 days, and you keep them.</p>
-        <p style={{ fontSize:12, color:T.hint, marginTop:6 }}>LoopCV €9.99 → ~€3.33/day · JobCopilot $28 → $0.93/day · JobCompass £10 = 100 apps → £0.33/day over 30 days (and you keep them)</p>
+        <h1 style={{ fontSize: 32, fontWeight: 800 }}>10p per job. They never expire.</h1>
+        <p style={{ color: T.muted }}>1 credit = 1 tailored CV. <b style={{ color:T.text }}>£10 gets you 100 jobs, and they never expire.</b> Other tools charge up to $80 a month — stop paying and you lose it. Ours wait for you.</p>
+        <p style={{ fontSize:12, color:T.hint, marginTop:6 }}>LoopCV €9.99 → ~€3.33/day · JobCopilot $28 → $0.93/day · JobCompass £10 = 100 jobs → £0.33/day over 30 days (and you keep them)</p>
         <div className="pricing-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap: 16, marginTop: 28, textAlign:"left" }}>
           {PACKS.map(p=> (
             <div key={p.id} style={{ background: T.card, border:`1px solid ${T.border}`, borderRadius:12, padding:20, boxShadow: T.shadowSm }}>
               <span style={{ fontSize:10, fontWeight:800, letterSpacing:"0.06em", background:p.badge.bg, border:`1px solid ${p.badge.border}`, color:p.badge.color, padding:"4px 8px", borderRadius:999 }}>{p.name.toUpperCase()}</span>
               <div style={{ fontSize:36, fontWeight:800, marginTop:12 }}>{p.price}</div>
               <div style={{ fontSize:13, fontWeight:700 }}>{p.credits} credits</div>
-              <div style={{ fontSize:11, fontFamily: T.mono, color:T.muted }}>£0.10 / app</div>
+              <div style={{ fontSize:11, fontFamily: T.mono, color:T.muted }}>10p per job</div>
               <div style={{ fontSize:12, color:T.muted, marginTop:8, lineHeight:1.5 }}>{p.blurb}</div>
               <Link to="/app" style={{ display:"block", marginTop:16, textAlign:"center", background:T.blue, color:T.onColor, fontWeight:700, padding:"10px 12px", borderRadius:8, textDecoration:"none" }}>Buy in app →</Link>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 16, background:T.greenPale, border:`1px solid ${T.greenMid}`, borderRadius:10, padding:12, fontSize:12, color:T.greenDark, fontWeight:600 }}>Secure Stripe checkout · GBP · Cards, Apple Pay, Google Pay · Receipt by email · Automatic refund if a tailor fails after charging</div>
+        <div style={{ marginTop: 16, background:T.greenPale, border:`1px solid ${T.greenMid}`, borderRadius:10, padding:12, fontSize:12, color:T.greenDark, fontWeight:600 }}>Secure Stripe checkout · GBP · Cards, Apple Pay, Google Pay · Receipt by email · If a job fails after charging, we refund it automatically</div>
         <details style={{ marginTop: 20, textAlign:"left", background:T.surface, border:`1px solid ${T.border}`, borderRadius:10, padding:14 }}>
-          <summary style={{ fontWeight:700, cursor:"pointer" }}>FAQ — credits, refunds, trial</summary>
+          <summary style={{ fontWeight:700, cursor:"pointer" }}>Common questions</summary>
           <div style={{ fontSize:12, color:T.muted, marginTop:8, lineHeight:1.6 }}>
-            <p><b>5 trial credits</b> on signup. No card required.</p>
-            <p><b>Refund:</b> if a tailor is blocked or fails after we deduct, you are refunded automatically.</p>
-            <p><b>Safe payments:</b> a payment can only ever be recorded once — Stripe retries never double-credit you.</p>
-            <p><b>Why not subscription:</b> Teal ~£7/week, Huntr ~£32/month — we charge per outcome and credits never expire.</p>
+            <p><b>Your first 10 jobs are free.</b> No card needed.</p>
+            <p><b>Refunds:</b> if a job fails after we charge you, we refund it automatically. You don't have to ask.</p>
+            <p><b>Safe payments:</b> you're never charged twice, even if your bank retries.</p>
+            <p><b>Why not a subscription:</b> Teal ~£7/week, Huntr ~£32/month — we charge per job, and your jobs never expire.</p>
           </div>
         </details>
       </section>

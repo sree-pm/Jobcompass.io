@@ -147,7 +147,7 @@ export function ApplyDispatchDrawer({ job, candidate, tailorResult, onClose, onA
 
           <Card style={{ padding: 14 }}>
             <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 4, color: T.textStrong }}>2. Tailored A4 Resume</div>
-            <div style={{ fontSize: 11, color: T.muted, marginBottom: 10 }}>British English · £ Metrics · Verified 0 Hallucination</div>
+            <div style={{ fontSize: 11, color: T.muted, marginBottom: 10 }}>British English · money in pounds · nothing made up</div>
             <Btn size="sm" variant="success" onClick={downloadPdf} disabled={isDownloadingPdf} style={{ width: "100%" }}>
               {isDownloadingPdf ? "Opening PDF…" : "Open Verified A4 PDF"}
             </Btn>
@@ -165,7 +165,7 @@ export function ApplyDispatchDrawer({ job, candidate, tailorResult, onClose, onA
             <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10, color: T.textStrong }}>4. ATS Screening Answers</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <Btn size="xs" variant="ghost" onClick={() => copy(qa.why_this_role || "Proven record of delivery in UK tech.", "qa1")}>
-                {copiedField === "qa1" ? "✓ Copied" : `Copy: "Why ${job.company}?"`}
+                {copiedField === "qa1" ? "✓ Copied" : `Copy: “Why ${job.company}?”`}
               </Btn>
               <Btn size="xs" variant="ghost" onClick={() => copy(qa.key_achievement || "Delivered architecture overhaul with 24% gain.", "qa2")}>
                 {copiedField === "qa2" ? "✓ Copied" : "Copy: Key Project Achievement"}
@@ -187,7 +187,7 @@ export function ApplyDispatchDrawer({ job, candidate, tailorResult, onClose, onA
           }}
         >
           <Btn variant="indigo" size="md" onClick={onAppliedSuccess} style={{ width: "100%", background: T.indigo, borderColor: T.indigo }}>
-            ✓ I Have Submitted My Application on Portal
+            I’ve applied on the company’s site
           </Btn>
         </div>
       </div>

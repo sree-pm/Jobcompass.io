@@ -1,27 +1,27 @@
 import { T } from "../components/common/Theme.js";
 import styles from "./Guards.module.css";
 const guards = [
-  ["Prompt injection blocked", "Job descriptions are data, never instructions"],
-  ["Locked fields verified twice", "Deterministic checks after every edit"],
-  ["British spelling enforced", "US spellings flagged per bullet"],
-  ["Honest confidence score", "Capped at 70 without your evidence"],
-  ["Banned clichés removed", "'Team player' never ships"],
-  ["Protected details blocked", "Photo, DOB, NI never sent"],
-  ["Atomic credits", "Charged only on success, refunded on failure"],
-  ["Rate-limited sign-in", "3 attempts per 10 minutes"],
-  ["Allowlisted origins", "Only known domains can call the API"],
-  ["Encrypted sessions", "Signed tokens, single-use codes"],
-  ["Receipt-grade proof", "Every application leaves a trace"],
-  ["No auto-apply", "You click submit, always"],
+  ["Your CV stays truthful", "We never invent experience you don't have"],
+  ["Your details stay locked", "Name and school never change"],
+  ["British spelling, always", "US spellings get fixed"],
+  ["An honest match score", "We show a lower score when we're unsure"],
+  ["No empty clichés", "\"Team player\" never ships"],
+  ["Private by default", "Photo, birthday and NI number never added"],
+  ["Fair billing", "You only pay when it works"],
+  ["Safe sign-in", "Only you can use your email"],
+  ["Only our apps connect", "Strangers can't talk to your account"],
+  ["Your session, your control", "Sign-in codes work once, then expire"],
+  ["A record of every application", "Nothing happens silently"],
+  ["You always press send", "We never apply without you"],
 ];
 export function Guards() {
   return (
     <section className={styles.wrap} style={{ background: T.ink, color: T.onColor }}>
       <div className={styles.inner}>
         <div className="mono" style={{ fontSize: 10, color: T.white60 }}>
-          SECURITY GUARDS · 5/5 · 50 FILES 100% T.*
+          SAFETY · BUILT IN
         </div>
-        <h2 className={`serif ${styles.h2}`}>Guardrails, not prompts.</h2>
+        <h2 className={`serif ${styles.h2}`}>Twelve promises. All kept.</h2>
         <div className={styles.grid}>
           {guards.map(([a, b]) => (
             <div key={a} className={styles.card} style={{ borderColor: T.white20, background: T.white08 }}>

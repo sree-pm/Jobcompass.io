@@ -17,7 +17,7 @@ import { usePageMeta } from "../lib/usePageMeta.js";
 export default function Landing() {
   usePageMeta(
     "UK job search, done properly — JobCompass",
-    "UK-first agentic CV tailoring — A4 GBP British spelling, per-bullet field locks, two-pass hallucination audit, DID ground truth, Companies House trust. £10/100 credits, never expire. Not volume — trust.",
+    "Tailored CVs for UK jobs — one page, A4, British spelling, every employer checked. Your first 10 jobs are free. Then 10p per job, and they never expire. You approve everything before it's sent.",
     "/"
   );
   return (

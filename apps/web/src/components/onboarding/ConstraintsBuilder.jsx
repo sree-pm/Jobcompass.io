@@ -2,36 +2,35 @@ import React, { useState, useMemo, useEffect } from "react";
 import { T } from "../common/Theme.js";
 import { StorageMeter } from "../common/UiPrimitives.jsx";
 
-const CONSTRAINTS_TEMPLATE = `CAREER CONSTRAINTS DOCUMENT — UK Tech Ground Truth
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Fill this in for every employer. Be specific about what you DID and DID NOT do.
-This is the strict ground-truth for Agentic Tailoring — preventing AI hallucination.
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const CONSTRAINTS_TEMPLATE = `YOUR CV DETAILS — UK
+
+Fill this in once. Be specific about what you DID and DID NOT do.
+This is your ground truth — we won't add anything you didn't write.
 
 EMPLOYER 1
-──────────────────────────────────────────────────
+──────────────────────────────────────────
 Company Name:
-Industry & Scale (e.g. B2B FinTech, Series B, 150 headcount):
+Industry & Scale (e.g. B2B FinTech, Series B, 150 staff):
 Exact Job Title:
 Dates (MM/YYYY – MM/YYYY):
-Direct Reports & Team:
+Direct Reports & Team Size:
 
-WHAT YOU ACTUALLY DID (Include £, %, or team metrics):
+WHAT YOU ACTUALLY DID (include numbers, money, team size):
 • 
-• 
-• 
-
-WHAT YOU DID NOT DO (Strict boundary for AI):
 • 
 • 
 
-CONFIDENTIALITY (Do not disclose client names/proprietary algorithms):
+WHAT YOU DID NOT DO (this is a hard line):
+• 
+• 
+
+CONFIDENTIAL (don't name clients or proprietary algorithms):
 • 
 
 SKILLS YOU DEFINITELY HAVE:
 • 
 
-SKILLS YOU DO NOT HAVE (Even if common for your title):
+SKILLS YOU DO NOT HAVE (even if common for your title):
 • 
 `;
 
@@ -53,16 +52,16 @@ function buildPreview({ didList, didNotList, rightToWork, expiry }) {
     ? `RIGHT TO WORK: ${rightToWork}${expiry ? ` (expiry ${expiry})` : ""}`
     : "RIGHT TO WORK: [not set]";
   return [
-    "CAREER CONSTRAINTS — UK CANDIDATE GROUND TRUTH",
+    "YOUR CV DETAILS — UK",
     "",
-    "DID (Verified Experience & Metrics):",
+    "WHAT YOU ACTUALLY DID (verified results with numbers):",
     ...(didList.length ? didList.map((d) => `• ${d}`) : ["• [none yet]"]),
     "",
-    "DID NOT (Strictly Forbidden for AI to Claim):",
+    "WHAT YOU DID NOT DO (the AI must never claim these):",
     ...(didNotList.length ? didNotList.map((d) => `• ${d}`) : ["• [none yet]"]),
     "",
     rtwLine,
-    "UK RULES: A4 format, British English spelling, £ metrics, 0 hallucination.",
+    "UK RULES: one page, A4, British spelling. Nothing made up.",
   ].join("\n");
 }
 
@@ -202,10 +201,10 @@ export function ConstraintsBuilder({
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
         <h2 style={{ fontSize: 18, fontWeight: 700, color: T.text, margin: "0 0 6px", fontFamily: T.sans, letterSpacing: "-0.01em" }}>
-          Career Constraints — Source of Truth
+          Career Constraints — what we can and can’t add
         </h2>
         <p style={{ fontSize: 13, color: T.muted, margin: 0, fontFamily: T.sans, lineHeight: 1.5 }}>
-          Strict ground-truth for agentic tailoring. If it isn’t in <span style={{ color: T.text, fontWeight: 600 }}>DID</span>, the verifier blocks it.
+          We only add things you list under <span style={{ color: T.text, fontWeight: 600 }}>WHAT YOU ACTUALLY DID</span>. Anything else stays as you wrote it.
         </p>
       </div>
 
@@ -257,7 +256,7 @@ export function ConstraintsBuilder({
           {/* DID textarea */}
           <div>
             <div style={labelStyle}>
-              <span>DID — Verified experience</span>
+              <span>What you actually did</span>
               <span style={countStyle}>{parsedDid.length}</span>
             </div>
             <textarea
@@ -274,7 +273,7 @@ export function ConstraintsBuilder({
           {/* DID NOT textarea */}
           <div>
             <div style={labelStyle}>
-              <span>DID NOT — Guardrails</span>
+              <span>What you didn't do</span>
               <span style={countStyle}>{parsedDidNot.length}</span>
             </div>
             <textarea
@@ -376,7 +375,7 @@ export function ConstraintsBuilder({
                 }}
               >
                 {rightToWork === "British Citizen" || rightToWork === "Irish Citizen"
-                  ? "No expiry needed — right to work is permanent."
+                  ? "No expiry — your right to work is permanent."
                   : "No expiry required for this status."}
               </div>
             )}
@@ -558,11 +557,11 @@ export function ConstraintsBuilder({
               e.currentTarget.style.borderColor = T.blue;
             }}
           >
-            {isSaving ? "Saving…" : dirty ? "Save Career Constraints" : "No changes to save"}
+            {isSaving ? "Saving…" : dirty ? "              Save changes" : "No changes to save"}
           </button>
         </div>
         {!dirty && !isSaving && (
-          <div style={{ fontSize: 11, color: T.hint, marginTop: 8, fontFamily: T.sans }}>Edit DID / DID NOT or Right-to-work to enable Save.</div>
+          <div style={{ fontSize: 11, color: T.hint, marginTop: 8, fontFamily: T.sans }}>          Add to your list of what you did, or your list of things to avoid, to enable Save.</div>
         )}
       </div>
     </div>

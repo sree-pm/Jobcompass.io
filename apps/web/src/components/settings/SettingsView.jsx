@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+﻿import React, { useState, useEffect, useRef, useCallback } from "react";
 import { T } from "../common/Theme.js";
 import { updateCandidate, req } from "../../lib/cloudflareApi.js";
 
-// DELETE helper — preserves existing data flow: DELETE /candidates/:id
+// DELETE helper ” preserves existing data flow: DELETE /candidates/:id
 async function deleteCandidateAccount(id) {
   return req(`/candidates/${id}`, { method: "DELETE" });
 }
 
-// ── shared input styles matching Stripe Billing spec ──
+// â”€â”€ shared input styles matching Stripe Billing spec â”€â”€
 const LABEL_STYLE = {
   display: "block",
   fontSize: 12,
@@ -63,7 +63,7 @@ function SInput({ label, value, onChange, placeholder, disabled, type = "text" }
   );
 }
 
-// ── DELETE confirm modal ──
+// â”€â”€ DELETE confirm modal â”€â”€
 function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
   const [typed, setTyped] = useState("");
   const [confirmTick, setConfirmTick] = useState(false);
@@ -121,7 +121,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
             aria-label="Close"
             style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: T.muted, lineHeight: 1, padding: "0 0 0 12px" }}
           >
-            ×
+            Ã—
           </button>
         </div>
 
@@ -136,8 +136,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
         >
           <div style={{ fontSize: 13, fontWeight: 700, color: T.red, marginBottom: 4, fontFamily: T.sans }}>This is irreversible</div>
           <div style={{ fontSize: 12, color: T.redDark, lineHeight: 1.5, fontFamily: T.sans }}>
-            This will permanently delete <strong>{candidateEmail || "your account"}</strong>, all resumes, applications, tailored
-            dossiers and credit history. This exercises your <strong>Right to Erasure (GDPR Art. 17)</strong> and cannot be undone.
+            This will permanently delete <strong>{candidateEmail || "your account"}</strong>, every CV, every application, and your credit history. This uses your right to be forgotten under UK GDPR and cannot be undone.
           </div>
         </div>
 
@@ -205,7 +204,7 @@ function DeleteConfirmModal({ onClose, onConfirm, candidateEmail }) {
         >
           <input type="checkbox" checked={confirmTick} onChange={(e) => setConfirmTick(e.target.checked)} style={{ marginTop: 3, accentColor: T.blue }} />
           <span style={{ fontSize: 12, color: T.text, lineHeight: 1.5, fontFamily: T.sans }}>
-            I understand this will <strong>permanently erase</strong> my personal data and generated documents under GDPR and I want to proceed.
+            I understand this will <strong>permanently erase</strong> my data under UK GDPR, and I want to continue.
           </span>
         </label>
 
@@ -300,13 +299,13 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
       try {
         await updateCandidate(candidate.id, payload);
         setSaveStatus("saved");
-        setMessage("✓ Auto-saved");
+        setMessage("âœ“ Auto-saved");
         initialRef.current = payload;
         onUpdateCandidate?.();
         setTimeout(() => setSaveStatus("idle"), 2000);
       } catch (e) {
         setSaveStatus("error");
-        setMessage("✕ Save failed: " + e.message);
+        setMessage("âœ• Save failed: " + e.message);
       }
     },
     [candidate, onUpdateCandidate]
@@ -367,7 +366,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
       return { label: "Saving…", dot: T.blue, bg: T.blueLight, border: T.blueMid, color: T.blue, pulse: true };
     }
     if (saveStatus === "saved") {
-      return { label: "Saved ✓", dot: T.green, bg: T.greenLight, border: T.greenMid, color: T.green, pulse: false };
+      return { label: "Saved âœ“", dot: T.green, bg: T.greenLight, border: T.greenMid, color: T.green, pulse: false };
     }
     if (saveStatus === "error") {
       return { label: "Save failed", dot: T.red, bg: T.redLight, border: T.redMid, color: T.red, pulse: false };
@@ -390,7 +389,8 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
               <h2 style={{ fontSize: 18, fontWeight: 600, color: T.text, margin: "0 0 4px", letterSpacing: "-0.015em", lineHeight: 1.3, fontFamily: T.sans }}>
                 Profile
               </h2>
-              <p style={{ fontSize: 13, color: T.muted, margin: 0, lineHeight: 1.5, fontFamily: T.sans }}>Manage your personal information.</p>
+              <p style={{ fontSize: 13, color: T.muted, margin: 0, lineHeight: 1.5, fontFamily: T.sans }}>Manage your personal information and right to work.
+              </p>
             </div>
             <span
               style={{
@@ -437,7 +437,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
           >
             <SInput label="Full name" value={form.fullName} onChange={(v) => setForm({ ...form, fullName: v })} placeholder="Your full name" />
 
-            <SInput label="Email — cannot be changed here" value={candidate?.email || ""} onChange={() => {}} disabled placeholder="" />
+            <SInput label="Email ” cannot be changed here" value={candidate?.email || ""} onChange={() => {}} disabled placeholder="" />
 
             <div style={{ display: "flex", gap: 12 }}>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -464,12 +464,12 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
                 style={{
                   padding: "8px 12px",
                   borderRadius: 6,
-                  background: message.startsWith("✓") ? T.greenLight : message.startsWith("✕") ? T.redLight : T.surface,
-                  color: message.startsWith("✓") ? T.green : message.startsWith("✕") ? T.red : T.muted,
+                  background: message.startsWith("âœ“") ? T.greenLight : message.startsWith("âœ•") ? T.redLight : T.surface,
+                  color: message.startsWith("âœ“") ? T.green : message.startsWith("âœ•") ? T.red : T.muted,
                   fontSize: 12,
                   fontWeight: 600,
                   marginBottom: 12,
-                  border: `1px solid ${message.startsWith("✓") ? T.greenMid : message.startsWith("✕") ? T.redMid : T.border}`,
+                  border: `1px solid ${message.startsWith("âœ“") ? T.greenMid : message.startsWith("âœ•") ? T.redMid : T.border}`,
                   fontFamily: T.sans,
                 }}
               >
@@ -479,7 +479,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
 
             {/* Buttons: Save primary T.blue + Reset ghost + hint 12px */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 12, color: T.hint, marginRight: "auto", fontFamily: T.sans }}>Auto-save debounced 800 ms · manual save also available</span>
+              <span style={{ fontSize: 12, color: T.hint, marginRight: "auto", fontFamily: T.sans }}>Auto-save runs as you type. You can also Save manually.</span>
               <button
                 onClick={handleReset}
                 disabled={!isDirty || saveStatus === "saving"}
@@ -540,9 +540,7 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
               UK Compliance
             </h3>
             <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, margin: "0 0 12px", fontFamily: T.sans }}>
-              Agentic CV UK strictly prohibits age, marital status, gender, nationality, photos, or NI numbers in résumé patches.
-              This prevents discrimination and keeps processing compliant with <strong style={{ color: T.text, fontWeight: 600 }}>ICO</strong>{" "}
-              data-privacy regulations.
+              JobCompass never adds age, marital status, gender, nationality, photos or NI numbers to your CV. That keeps it fair and keeps us on the right side of UK law.
             </p>
             <div
               style={{
@@ -560,8 +558,8 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
                 lineHeight: 1.4,
               }}
             >
-              <span style={{ fontSize: 13, flexShrink: 0 }}>✓</span>
-              <span>All Equality Act &amp; GDPR safeguards are actively enforced at the patch layer.</span>
+              <span style={{ fontSize: 13, flexShrink: 0 }}>âœ“</span>
+              <span>UK Equality Act and GDPR safeguards are always on.</span>
             </div>
           </div>
 
@@ -576,11 +574,10 @@ export function SettingsView({ candidate, onUpdateCandidate }) {
           >
             <h3 style={{ fontSize: 13, fontWeight: 800, margin: "0 0 6px", color: T.red, fontFamily: T.sans }}>Danger zone</h3>
             <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, margin: "0 0 14px", fontFamily: T.sans }}>
-              Permanently delete your account and all associated data (profile, Master CV, applications, tailored dossiers, credits).
-              You will be logged out immediately.
+              Permanently delete your account and everything in it ” your profile, every CV, every job, every tailored package, and your credits. We'll sign you out straight after.
             </p>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 11, color: T.hint, fontFamily: T.sans }}>Requires typing DELETE + confirmation</span>
+              <span style={{ fontSize: 11, color: T.hint, fontFamily: T.sans }}>You need to type DELETE and tick the box</span>
               <button
                 onClick={() => setShowDeleteModal(true)}
                 style={{
